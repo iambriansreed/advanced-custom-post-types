@@ -48,7 +48,7 @@ if ( ! class_exists( 'acpt' ) ) :
 
 			// all back end related functionality is only loaded if needed
 			if ( is_admin() ) {
-				require dirname( __FILE__ ) . '/admin.php';
+				require_once dirname( __FILE__ ) . '/admin.php';
 			}
 
 			add_action( 'init', array( $this, 'init' ) );
