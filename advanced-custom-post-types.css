@@ -1,0 +1,18 @@
+.acf-postbox > button.handlediv,
+.acf-postbox > h2.hndle,
+.acf-field.hide-title .acf-label,
+#minor-publishing,
+#submitdiv > button.handlediv,
+#post-body-content {
+    display: none !important;
+
+}
+
+.acf-fields > .acf-field.child-field {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.acf-fields > .acf-field.child-field .acf-label {
+    font-style: italic;
+}
