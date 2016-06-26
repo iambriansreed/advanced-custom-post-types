@@ -118,12 +118,3 @@ class acpt {
 if ( ! class_exists( 'acpt' ) ) {
 	$Advanced_Custom_Post_Types = new acpt();
 }
-
-//dev only
-
-function pre( $value, $exit = false ) {
-	echo '<pre>' . print_r( $value, 1 ) . '</pre>';
-	if ( $exit ) {
-		exit;
-	}
-}
