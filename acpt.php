@@ -115,6 +115,6 @@ class acpt {
 
 }
 
-if ( ! class_exists( 'acpt' ) ) {
+if ( class_exists( 'acpt' ) ) {
 	$Advanced_Custom_Post_Types = new acpt();
 }
