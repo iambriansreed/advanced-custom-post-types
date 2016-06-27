@@ -1,8 +1,6 @@
-(function ($)
-{
+(function ($) {
 
-    $(document).ready(function ()
-    {
+    $(document).ready(function () {
 
         var
             plural_name_input = $('[data-name="acpt_plural_name"] :input'),
@@ -15,21 +13,17 @@
 
         auto_generate_checkbox.on('change', generate_titles);
 
-        function generate_titles()
-        {
+        function generate_titles() {
             if (!auto_generate_checkbox[0].checked) return;
 
             var names_values = label_patterns(singular_name_input.val(), plural_name_input.val());
 
-            $.each(names_values, function (name, value)
-            {
+            $.each(names_values, function (name, value) {
                 $('[data-name="' + name + '"] :input').val(value).trigger('change');
-
             });
         }
 
-        function label_patterns(_singular_name, _plural_name)
-        {
+        function label_patterns(_singular_name, _plural_name) {
             var
                 singular_name_lowercase = _singular_name.toLowerCase(),
                 plural_name_lowercase = _plural_name.toLowerCase(),
@@ -65,8 +59,7 @@
 
     });
 
-    function toTitleCase(str)
-    {
+    function toTitleCase(str) {
         return str.replace(/\w\S*/g, function (txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     }
 

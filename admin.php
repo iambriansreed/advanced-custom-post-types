@@ -1,13 +1,11 @@
 <?php
 
-class acpt_admin
-{
+class acpt_admin {
 	var $post_type = 'acpt_content_type';
 
 	var $post_types_info = null;
 
-	function __construct( $post_types_info )
-	{
+	function __construct( $post_types_info ) {
 		// actions
 
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -25,12 +23,10 @@ class acpt_admin
 
 	}
 
-	function admin_head()
-	{
+	function admin_head() {
 		echo '<style>';
 
-		foreach ( $this->post_types_info as $post_type_info )
-		{
+		foreach ( $this->post_types_info as $post_type_info ) {
 			echo '#dashboard_right_now .' . $post_type_info['post_type'] . '-count a:before {
                     content: "\f' . $post_type_info['menu_icon_unicode_number'] . '";
 				}';
@@ -40,20 +36,16 @@ class acpt_admin
 
 	}
 
-	function dashboard_glance_items( $items )
-	{
-		foreach ( $this->post_types_info as $post_type_info )
-		{
+	function dashboard_glance_items( $items ) {
+		foreach ( $this->post_types_info as $post_type_info ) {
 			$type = $post_type_info['post_type'];
 
-			if ( ! post_type_exists( $type ) )
-			{
+			if ( ! post_type_exists( $type ) ) {
 				continue;
 			}
 			$num_posts = wp_count_posts( $type );
 
-			if ( $num_posts )
-			{
+			if ( $num_posts ) {
 				$published = intval( $num_posts->publish );
 
 				$post_type = get_post_type_object( $type );
@@ -63,12 +55,10 @@ class acpt_admin
 
 				$text = sprintf( $text, number_format_i18n( $published ) );
 
-				if ( current_user_can( $post_type->cap->edit_posts ) )
-				{
+				if ( current_user_can( $post_type->cap->edit_posts ) ) {
 					echo '<li class="post-count ' . $post_type->name . '-count">' . '<a href="edit.php?post_type=' . $post_type->name . '">' . $text . '</a>' . '</li>';
 				}
-				else
-				{
+				else {
 					echo '<li class="post-count ' . $post_type->name . '-count">' . '<span>' . $text . '</span>' . '</li>';
 				}
 			}
@@ -79,8 +69,7 @@ class acpt_admin
 		return $items;
 	}
 
-	function admin_init()
-	{
+	function admin_init() {
 		$cap = acf_get_setting( 'capability' );
 
 		register_post_type( $this->post_type, array(
@@ -114,8 +103,7 @@ class acpt_admin
 		) );
 	}
 
-	function post_updated_messages( $messages )
-	{
+	function post_updated_messages( $messages ) {
 		global $post;
 
 		$messages[ $this->post_type ] = array(
@@ -138,23 +126,19 @@ class acpt_admin
 		);
 	}
 
-	function admin_enqueue_scripts( $hook )
-	{
-		if ( $this->post_type !== get_post_type() )
-		{
+	function admin_enqueue_scripts( $hook ) {
+		if ( $this->post_type !== get_post_type() ) {
 			return;
 		}
 
-		if ( 'post-new.php' === $hook || 'post.php' === $hook )
-		{
+		if ( 'post-new.php' === $hook || 'post.php' === $hook ) {
 			wp_enqueue_script( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) . 'advanced-custom-post-types.js', array( 'jquery' ) );
 			wp_enqueue_style( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) . 'advanced-custom-post-types
 				.css' );
 		}
 	}
 
-	function admin_menu()
-	{
+	function admin_menu() {
 
 		$slug = 'edit.php?post_type=' . $this->post_type;
 		$cap  = acf_get_setting( 'capability' );
@@ -172,12 +156,10 @@ class acpt_admin
 
 	}
 
-	function save_post()
-	{
+	function save_post() {
 		global $post;
 
-		if ( ! $post || $this->post_type !== $post->post_type )
-		{
+		if ( ! $post || $this->post_type !== $post->post_type ) {
 			return;
 		}
 
@@ -195,14 +177,12 @@ class acpt_admin
 
 	}
 
-	function acf_load_field_name_acpt_taxonomies( $field )
-	{
+	function acf_load_field_name_acpt_taxonomies( $field ) {
 		$field['choices'] = array();
 
 		$taxonomies = get_taxonomies( array( 'public' => true ), 'objects' );
 
-		foreach ( $taxonomies as $value => $taxonomy )
-		{
+		foreach ( $taxonomies as $value => $taxonomy ) {
 			$field['choices'][ $value ] = $taxonomy->labels->name;
 		}
 
@@ -212,8 +192,7 @@ class acpt_admin
 		return $field;
 	}
 
-	function get_post_type_meta( $post_id )
-	{
+	function get_post_type_meta( $post_id ) {
 		global $wpdb;
 
 		$acpt_fields = array(
@@ -261,15 +240,13 @@ class acpt_admin
 
 		$sql = 'SELECT ';
 
-		foreach ( $acpt_fields as $field )
-		{
+		foreach ( $acpt_fields as $field ) {
 			$sql .= "\r\nmeta_$field.meta_value AS $field,";
 		}
 
 		$sql .= "\r\n$wpdb->posts.ID FROM $wpdb->posts";
 
-		foreach ( $acpt_fields as $field )
-		{
+		foreach ( $acpt_fields as $field ) {
 			$sql .= "\r\nLEFT JOIN $wpdb->postmeta AS meta_$field 
 	ON meta_$field.post_id = $wpdb->posts.ID AND meta_$field.meta_key = 'acpt_$field'";
 		}
@@ -292,8 +269,7 @@ class acpt_admin
 			'singular_name' => ucwords( $args['singular_name'] )
 		);
 
-		if ( $args['auto_generate_additional_labels'] )
-		{
+		if ( $args['auto_generate_additional_labels'] ) {
 			$singular_name = $args['labels']['singular_name'];
 			$plural_name   = $args['labels']['name'];
 
@@ -326,12 +302,9 @@ class acpt_admin
 			);
 
 		}
-		else
-		{
-			foreach ( $args as $field_name => $field_value )
-			{
-				if ( 'label_' === substr( $field_name, 0, 6 ) )
-				{
+		else {
+			foreach ( $args as $field_name => $field_value ) {
+				if ( 'label_' === substr( $field_name, 0, 6 ) ) {
 					$args['labels'][ substr( $field_name, 6 ) ] = $field_value;
 					unset( $args[ $field_name ] );
 				}
@@ -339,12 +312,10 @@ class acpt_admin
 
 		}
 
-		if ( $args['show_in_admin_menu_under_parent'] )
-		{
+		if ( $args['show_in_admin_menu_under_parent'] ) {
 			$args['show_in_menu'] = $args['show_in_admin_menu_under_parent'];
 		}
-		else
-		{
+		else {
 			// could be a string cast to bool if 1 or 0
 			$args['show_in_menu'] = (bool) $args['show_in_menu'];
 		}
