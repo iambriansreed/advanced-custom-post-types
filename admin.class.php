@@ -35,6 +35,8 @@ class acpt_admin
 
 		foreach ( $this->post_types_info as $post_type_info )
 		{
+			print_r( $post_type_info, 1 );
+
 			echo '#dashboard_right_now .' . $post_type_info['post_type'] . '-count a:before {
                     content: "\f' . $post_type_info['menu_icon_unicode_number'] . '";
 				}';
@@ -388,13 +390,13 @@ class acpt_admin
 
 		$args['menu_position'] = intval( $args['menu_position'] ) . '.17574474777';
 
-		$acpt_menu_icon = 'dashicons-' . get_field( 'acpt_menu_icon', $post_id );
+		$dashicons = $this->get_dashicons();
 
 		return array(
 			'post_type'                => $post_type,
 			'args'                     => $args,
 			'taxonomies'               => $taxonomies,
-			'menu_icon_unicode_number' => str_replace( array( '&#', ';' ), '', $acpt_menu_icon->unicode ),
+			'menu_icon_unicode_number' => $dashicons[ substr( $args['menu_icon'], 10 ) ],
 			'saved'                    => time()
 		);
 	}

@@ -7,7 +7,7 @@ class acpt
 	private $post_types_info = array();
 
 	private $acf_activated = false;
-	
+
 	public function __construct()
 	{
 		$active_plugins = (array) get_option( 'active_plugins', array() );
@@ -82,7 +82,7 @@ class acpt
 
 		$post_type_rows = $wpdb->get_results( "SELECT" . " * FROM $wpdb->options WHERE option_name LIKE 
 			'acpt_post_type_%'" );
-
+		
 		$post_types_info = array();
 
 		foreach ( $post_type_rows as $post_type_row )
