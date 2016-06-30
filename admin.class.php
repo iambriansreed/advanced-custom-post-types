@@ -200,7 +200,6 @@ class acpt_admin
 
 		update_option( 'acpt_post_type_' . $post_type_meta['post_type'], json_encode( $post_type_meta ) );
 
-
 		$singular_name = get_post_meta( $post->ID, 'acpt_singular_name', 1 );
 
 		$labels = $this->generate_labels( $plural_name, $singular_name );
@@ -231,25 +230,42 @@ class acpt_admin
 		return $field;
 	}
 
+	private $dashicons = false;
+
+	public function get_dashicons()
+	{
+		if ( ! $this->dashicons )
+		{
+			$dashicons =
+				(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/dashicons.json' ) );
+
+			$this->dashicons = array();
+
+			foreach ( $dashicons as $dashicon )
+			{
+				$this->dashicons[ $dashicon->class ] = $dashicon->content;
+			}
+		}
+
+		return $this->dashicons;
+
+	}
+
 	public function acf_load_field_name_acpt_menu_icon( $field )
 	{
 		$field['choices'] = array(
 			'' => 'Select Icon'
 		);
 
-		$dashicons =
-			(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/dashicons.json' ) );
-
-		foreach ( $dashicons as $icon )
+		foreach ( $this->get_dashicons() as $class => $unicode )
 		{
-			$field['choices'][ 'dashicons-' . $icon->class ] = $icon->class;
+			$field['choices'][ 'dashicons-' . $class ] = $class;
 		}
 
-		// return the field
 		return $field;
 	}
 
-	private function get_post_type_meta( $post_id )
+	public function get_post_type_meta( $post_id )
 	{
 		global $wpdb;
 
@@ -372,7 +388,7 @@ class acpt_admin
 
 		$args['menu_position'] = intval( $args['menu_position'] ) . '.17574474777';
 
-		$acpt_menu_icon = get_field( 'acpt_menu_icon', $post_id );
+		$acpt_menu_icon = 'dashicons-' . get_field( 'acpt_menu_icon', $post_id );
 
 		return array(
 			'post_type'                => $post_type,
