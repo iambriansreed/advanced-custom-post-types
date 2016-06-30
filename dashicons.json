@@ -1,0 +1,966 @@
+[
+  {
+    "class": "menu",
+    "content": 333
+  },
+  {
+    "class": "admin-site",
+    "content": 319
+  },
+  {
+    "class": "dashboard",
+    "content": 226
+  },
+  {
+    "class": "admin-media",
+    "content": 104
+  },
+  {
+    "class": "admin-page",
+    "content": 105
+  },
+  {
+    "class": "admin-comments",
+    "content": 101
+  },
+  {
+    "class": "admin-appearance",
+    "content": 100
+  },
+  {
+    "class": "admin-plugins",
+    "content": 106
+  },
+  {
+    "class": "admin-users",
+    "content": 110
+  },
+  {
+    "class": "admin-tools",
+    "content": 107
+  },
+  {
+    "class": "admin-settings",
+    "content": 108
+  },
+  {
+    "class": "admin-network",
+    "content": 112
+  },
+  {
+    "class": "admin-generic",
+    "content": 111
+  },
+  {
+    "class": "admin-home",
+    "content": 102
+  },
+  {
+    "class": "admin-collapse",
+    "content": 148
+  },
+  {
+    "class": "filter",
+    "content": 536
+  },
+  {
+    "class": "admin-customizer",
+    "content": 540
+  },
+  {
+    "class": "admin-multisite",
+    "content": 541
+  },
+  {
+    "class": "admin-links",
+    "content": 103
+  },
+  {
+    "class": "format-links",
+    "content": 103
+  },
+  {
+    "class": "admin-post",
+    "content": 109
+  },
+  {
+    "class": "format-standard",
+    "content": 109
+  },
+  {
+    "class": "format-image",
+    "content": 128
+  },
+  {
+    "class": "format-gallery",
+    "content": 161
+  },
+  {
+    "class": "format-audio",
+    "content": 127
+  },
+  {
+    "class": "format-video",
+    "content": 126
+  },
+  {
+    "class": "format-chat",
+    "content": 125
+  },
+  {
+    "class": "format-status",
+    "content": 130
+  },
+  {
+    "class": "format-aside",
+    "content": 123
+  },
+  {
+    "class": "format-quote",
+    "content": 122
+  },
+  {
+    "class": "welcome-write-blog",
+    "content": 119
+  },
+  {
+    "class": "welcome-edit-page",
+    "content": 119
+  },
+  {
+    "class": "welcome-add-page",
+    "content": 133
+  },
+  {
+    "class": "welcome-view-site",
+    "content": 115
+  },
+  {
+    "class": "welcome-widgets-menus",
+    "content": 116
+  },
+  {
+    "class": "welcome-comments",
+    "content": 117
+  },
+  {
+    "class": "welcome-learn-more",
+    "content": 118
+  },
+  {
+    "class": "image-crop",
+    "content": 165
+  },
+  {
+    "class": "image-rotate",
+    "content": 531
+  },
+  {
+    "class": "image-rotate-left",
+    "content": 166
+  },
+  {
+    "class": "image-rotate-right",
+    "content": 167
+  },
+  {
+    "class": "image-flip-vertical",
+    "content": 168
+  },
+  {
+    "class": "image-flip-horizontal",
+    "content": 169
+  },
+  {
+    "class": "image-filter",
+    "content": 533
+  },
+  {
+    "class": "undo",
+    "content": 171
+  },
+  {
+    "class": "redo",
+    "content": 172
+  },
+  {
+    "class": "editor-bold",
+    "content": 200
+  },
+  {
+    "class": "editor-italic",
+    "content": 201
+  },
+  {
+    "class": "editor-ul",
+    "content": 203
+  },
+  {
+    "class": "editor-ol",
+    "content": 204
+  },
+  {
+    "class": "editor-quote",
+    "content": 205
+  },
+  {
+    "class": "editor-alignleft",
+    "content": 206
+  },
+  {
+    "class": "editor-aligncenter",
+    "content": 207
+  },
+  {
+    "class": "editor-alignright",
+    "content": 208
+  },
+  {
+    "class": "editor-insertmore",
+    "content": 209
+  },
+  {
+    "class": "editor-spellcheck",
+    "content": 210
+  },
+  {
+    "class": "editor-distractionfree",
+    "content": 211
+  },
+  {
+    "class": "editor-expand",
+    "content": 211
+  },
+  {
+    "class": "editor-contract",
+    "content": 506
+  },
+  {
+    "class": "editor-kitchensink",
+    "content": 212
+  },
+  {
+    "class": "editor-underline",
+    "content": 213
+  },
+  {
+    "class": "editor-justify",
+    "content": 214
+  },
+  {
+    "class": "editor-textcolor",
+    "content": 215
+  },
+  {
+    "class": "editor-paste-word",
+    "content": 216
+  },
+  {
+    "class": "editor-paste-text",
+    "content": 217
+  },
+  {
+    "class": "editor-removeformatting",
+    "content": 218
+  },
+  {
+    "class": "editor-video",
+    "content": 219
+  },
+  {
+    "class": "editor-customchar",
+    "content": 220
+  },
+  {
+    "class": "editor-outdent",
+    "content": 221
+  },
+  {
+    "class": "editor-indent",
+    "content": 222
+  },
+  {
+    "class": "editor-help",
+    "content": 223
+  },
+  {
+    "class": "editor-strikethrough",
+    "content": 224
+  },
+  {
+    "class": "editor-unlink",
+    "content": 225
+  },
+  {
+    "class": "editor-rtl",
+    "content": 320
+  },
+  {
+    "class": "editor-break",
+    "content": 474
+  },
+  {
+    "class": "editor-code",
+    "content": 475
+  },
+  {
+    "class": "editor-paragraph",
+    "content": 476
+  },
+  {
+    "class": "editor-table",
+    "content": 535
+  },
+  {
+    "class": "align-left",
+    "content": 135
+  },
+  {
+    "class": "align-right",
+    "content": 136
+  },
+  {
+    "class": "align-center",
+    "content": 134
+  },
+  {
+    "class": "align-none",
+    "content": 138
+  },
+  {
+    "class": "lock",
+    "content": 160
+  },
+  {
+    "class": "unlock",
+    "content": 528
+  },
+  {
+    "class": "calendar",
+    "content": 145
+  },
+  {
+    "class": "calendar-alt",
+    "content": 508
+  },
+  {
+    "class": "visibility",
+    "content": 177
+  },
+  {
+    "class": "hidden",
+    "content": 530
+  },
+  {
+    "class": "post-status",
+    "content": 173
+  },
+  {
+    "class": "edit",
+    "content": 464
+  },
+  {
+    "class": "post-trash",
+    "content": 182
+  },
+  {
+    "class": "trash",
+    "content": 182
+  },
+  {
+    "class": "sticky",
+    "content": 537
+  },
+  {
+    "class": "external",
+    "content": 504
+  },
+  {
+    "class": "arrow-up",
+    "content": 142
+  },
+  {
+    "class": "arrow-down",
+    "content": 140
+  },
+  {
+    "class": "arrow-left",
+    "content": 141
+  },
+  {
+    "class": "arrow-right",
+    "content": 139
+  },
+  {
+    "class": "arrow-up-alt",
+    "content": 342
+  },
+  {
+    "class": "arrow-down-alt",
+    "content": 346
+  },
+  {
+    "class": "arrow-left-alt",
+    "content": 340
+  },
+  {
+    "class": "arrow-right-alt",
+    "content": 344
+  },
+  {
+    "class": "arrow-up-alt2",
+    "content": 343
+  },
+  {
+    "class": "arrow-down-alt2",
+    "content": 347
+  },
+  {
+    "class": "arrow-left-alt2",
+    "content": 341
+  },
+  {
+    "class": "arrow-right-alt2",
+    "content": 345
+  },
+  {
+    "class": "leftright",
+    "content": 229
+  },
+  {
+    "class": "sort",
+    "content": 156
+  },
+  {
+    "class": "randomize",
+    "content": 503
+  },
+  {
+    "class": "list-view",
+    "content": 163
+  },
+  {
+    "class": "exerpt-view",
+    "content": 164
+  },
+  {
+    "class": "excerpt-view",
+    "content": 164
+  },
+  {
+    "class": "grid-view",
+    "content": 509
+  },
+  {
+    "class": "move",
+    "content": 545
+  },
+  {
+    "class": "hammer",
+    "content": 308
+  },
+  {
+    "class": "art",
+    "content": 309
+  },
+  {
+    "class": "migrate",
+    "content": 310
+  },
+  {
+    "class": "performance",
+    "content": 311
+  },
+  {
+    "class": "universal-access",
+    "content": 483
+  },
+  {
+    "class": "universal-access-alt",
+    "content": 507
+  },
+  {
+    "class": "tickets",
+    "content": 486
+  },
+  {
+    "class": "nametag",
+    "content": 484
+  },
+  {
+    "class": "clipboard",
+    "content": 481
+  },
+  {
+    "class": "heart",
+    "content": 487
+  },
+  {
+    "class": "megaphone",
+    "content": 488
+  },
+  {
+    "class": "schedule",
+    "content": 489
+  },
+  {
+    "class": "wordpress",
+    "content": 120
+  },
+  {
+    "class": "wordpress-alt",
+    "content": 324
+  },
+  {
+    "class": "pressthis",
+    "content": 157
+  },
+  {
+    "class": "update",
+    "content": 463
+  },
+  {
+    "class": "screenoptions",
+    "content": 180
+  },
+  {
+    "class": "cart",
+    "content": 174
+  },
+  {
+    "class": "feedback",
+    "content": 175
+  },
+  {
+    "class": "cloud",
+    "content": 176
+  },
+  {
+    "class": "translation",
+    "content": 326
+  },
+  {
+    "class": "tag",
+    "content": 323
+  },
+  {
+    "class": "category",
+    "content": 318
+  },
+  {
+    "class": "archive",
+    "content": 480
+  },
+  {
+    "class": "tagcloud",
+    "content": 479
+  },
+  {
+    "class": "text",
+    "content": 478
+  },
+  {
+    "class": "media-archive",
+    "content": 501
+  },
+  {
+    "class": "media-audio",
+    "content": 500
+  },
+  {
+    "class": "media-code",
+    "content": 499
+  },
+  {
+    "class": "media-default",
+    "content": 498
+  },
+  {
+    "class": "media-document",
+    "content": 497
+  },
+  {
+    "class": "media-interactive",
+    "content": 496
+  },
+  {
+    "class": "media-spreadsheet",
+    "content": 495
+  },
+  {
+    "class": "media-text",
+    "content": 491
+  },
+  {
+    "class": "media-video",
+    "content": 490
+  },
+  {
+    "class": "playlist-audio",
+    "content": 492
+  },
+  {
+    "class": "playlist-video",
+    "content": 493
+  },
+  {
+    "class": "controls-play",
+    "content": 522
+  },
+  {
+    "class": "controls-pause",
+    "content": 523
+  },
+  {
+    "class": "controls-forward",
+    "content": 519
+  },
+  {
+    "class": "controls-skipforward",
+    "content": 517
+  },
+  {
+    "class": "controls-back",
+    "content": 518
+  },
+  {
+    "class": "controls-skipback",
+    "content": 516
+  },
+  {
+    "class": "controls-repeat",
+    "content": 515
+  },
+  {
+    "class": "controls-volumeon",
+    "content": 521
+  },
+  {
+    "class": "controls-volumeoff",
+    "content": 520
+  },
+  {
+    "class": "yes",
+    "content": 147
+  },
+  {
+    "class": "no",
+    "content": 158
+  },
+  {
+    "class": "no-alt",
+    "content": 335
+  },
+  {
+    "class": "plus",
+    "content": 132
+  },
+  {
+    "class": "plus-alt",
+    "content": 502
+  },
+  {
+    "class": "plus-alt2",
+    "content": 543
+  },
+  {
+    "class": "minus",
+    "content": 460
+  },
+  {
+    "class": "dismiss",
+    "content": 153
+  },
+  {
+    "class": "marker",
+    "content": 159
+  },
+  {
+    "class": "star-filled",
+    "content": 155
+  },
+  {
+    "class": "star-half",
+    "content": 459
+  },
+  {
+    "class": "star-empty",
+    "content": 154
+  },
+  {
+    "class": "flag",
+    "content": 227
+  },
+  {
+    "class": "info",
+    "content": 348
+  },
+  {
+    "class": "warning",
+    "content": 534
+  },
+  {
+    "class": "share",
+    "content": 237
+  },
+  {
+    "class": "share1",
+    "content": 237
+  },
+  {
+    "class": "share-alt",
+    "content": 240
+  },
+  {
+    "class": "share-alt2",
+    "content": 242
+  },
+  {
+    "class": "twitter",
+    "content": 301
+  },
+  {
+    "class": "rss",
+    "content": 303
+  },
+  {
+    "class": "email",
+    "content": 465
+  },
+  {
+    "class": "email-alt",
+    "content": 466
+  },
+  {
+    "class": "facebook",
+    "content": 304
+  },
+  {
+    "class": "facebook-alt",
+    "content": 305
+  },
+  {
+    "class": "networking",
+    "content": 325
+  },
+  {
+    "class": "googleplus",
+    "content": 462
+  },
+  {
+    "class": "location",
+    "content": 230
+  },
+  {
+    "class": "location-alt",
+    "content": 231
+  },
+  {
+    "class": "camera",
+    "content": 306
+  },
+  {
+    "class": "images-alt",
+    "content": 232
+  },
+  {
+    "class": "images-alt2",
+    "content": 233
+  },
+  {
+    "class": "video-alt",
+    "content": 234
+  },
+  {
+    "class": "video-alt2",
+    "content": 235
+  },
+  {
+    "class": "video-alt3",
+    "content": 236
+  },
+  {
+    "class": "vault",
+    "content": 178
+  },
+  {
+    "class": "shield",
+    "content": 332
+  },
+  {
+    "class": "shield-alt",
+    "content": 334
+  },
+  {
+    "class": "sos",
+    "content": 468
+  },
+  {
+    "class": "search",
+    "content": 179
+  },
+  {
+    "class": "slides",
+    "content": 181
+  },
+  {
+    "class": "analytics",
+    "content": 183
+  },
+  {
+    "class": "chart-pie",
+    "content": 184
+  },
+  {
+    "class": "chart-bar",
+    "content": 185
+  },
+  {
+    "class": "chart-line",
+    "content": 238
+  },
+  {
+    "class": "chart-area",
+    "content": 239
+  },
+  {
+    "class": "groups",
+    "content": 307
+  },
+  {
+    "class": "businessman",
+    "content": 338
+  },
+  {
+    "class": "id",
+    "content": 336
+  },
+  {
+    "class": "id-alt",
+    "content": 337
+  },
+  {
+    "class": "products",
+    "content": 312
+  },
+  {
+    "class": "awards",
+    "content": 313
+  },
+  {
+    "class": "forms",
+    "content": 314
+  },
+  {
+    "class": "testimonial",
+    "content": 473
+  },
+  {
+    "class": "portfolio",
+    "content": 322
+  },
+  {
+    "class": "book",
+    "content": 330
+  },
+  {
+    "class": "book-alt",
+    "content": 331
+  },
+  {
+    "class": "download",
+    "content": 316
+  },
+  {
+    "class": "upload",
+    "content": 317
+  },
+  {
+    "class": "backup",
+    "content": 321
+  },
+  {
+    "class": "clock",
+    "content": 469
+  },
+  {
+    "class": "lightbulb",
+    "content": 339
+  },
+  {
+    "class": "microphone",
+    "content": 482
+  },
+  {
+    "class": "desktop",
+    "content": 472
+  },
+  {
+    "class": "laptop",
+    "content": 547
+  },
+  {
+    "class": "tablet",
+    "content": 471
+  },
+  {
+    "class": "smartphone",
+    "content": 470
+  },
+  {
+    "class": "phone",
+    "content": 525
+  },
+  {
+    "class": "smiley",
+    "content": 328
+  },
+  {
+    "class": "index-card",
+    "content": 510
+  },
+  {
+    "class": "carrot",
+    "content": 511
+  },
+  {
+    "class": "building",
+    "content": 512
+  },
+  {
+    "class": "store",
+    "content": 513
+  },
+  {
+    "class": "album",
+    "content": 514
+  },
+  {
+    "class": "palmtree",
+    "content": 527
+  },
+  {
+    "class": "tickets-alt",
+    "content": 524
+  },
+  {
+    "class": "money",
+    "content": 526
+  },
+  {
+    "class": "thumbs-up",
+    "content": 529
+  },
+  {
+    "class": "thumbs-down",
+    "content": 542
+  },
+  {
+    "class": "layout",
+    "content": 538
+  },
+  {
+    "class": "paperclip",
+    "content": 546
+  }
+]

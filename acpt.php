@@ -36,9 +36,7 @@ if ( ! class_exists( 'acpt' ) ) :
 				in_array( 'advanced-custom-fields/acf.php', $active_plugins )
 			);
 
-			$this->acf_dashicons_activated = in_array( 'advanced-custom-fields-dashicons/acf-dashicons.php', $active_plugins );
-
-			if ( ! $this->acf_activated || ! $this->acf_dashicons_activated )
+			if ( ! $this->acf_activated )
 			{
 				if ( is_admin() )
 				{
@@ -114,23 +112,8 @@ if ( ! class_exists( 'acpt' ) ) :
 		{
 			$class = 'notice notice-error';
 
-			$plugins_not_loaded = array();
 
-			if ( ! $this->acf_activated )
-			{
-				$plugins_not_loaded[] = '<a href="https://www.advancedcustomfields.com/" target="_blank">Advanced 
-				Custom Fields</a>';
-			}
-
-			if ( ! $this->acf_dashicons_activated )
-			{
-				$plugins_not_loaded[] = '<a href="https://wordpress.org/plugins/advanced-custom-fields-dashicons/" target="_blank">Advanced 
-				Custom Fields - Dashicons</a>';
-			}
-
-			$message = __( implode( ' and ', $plugins_not_loaded ) . ' must be activated to run <strong>Advanced Custom 
-			Post 
-			Types</strong>.' );
+			$message = '<a href="https://www.advancedcustomfields.com/" target="_blank">Advanced Custom Fields</a>' . ' must be activated to run <strong>Advanced Custom Post Types</strong>.';
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
 		}

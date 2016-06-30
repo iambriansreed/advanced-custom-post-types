@@ -70,4 +70,24 @@
         return str.replace(/\w\S*/g, function (txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     }
 
+    function format(data)
+    {
+        if (!data.id) return data.text;
+
+        return '<i style="vertical-align: middle;" class="dashicons ' + data.id.toLowerCase() + '"></i> ' + data.text;
+    }
+
+    acf.add_action('ready append', function ($el)
+    {
+        $('[data-name="acpt_menu_icon"] select').select2({
+            width: '100%',
+            formatResult: format,
+            formatSelection: format,
+            escapeMarkup: function (m)
+            {
+                return m;
+            }
+        });
+    });
+
 })(jQuery);

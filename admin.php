@@ -13,11 +13,15 @@ class acpt_admin
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
+		add_action( 'acf/init', array( $this, 'acf_init' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
 		add_filter( 'acf/load_field/name=acpt_taxonomies', array( $this, 'acf_load_field_name_acpt_taxonomies' ) );
+		add_filter( 'acf/load_field/name=acpt_menu_icon', array( $this, 'acf_load_field_name_acpt_menu_icon' ) );
+
+
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
 
@@ -112,6 +116,11 @@ class acpt_admin
 			'supports'        => array( 'title' ),
 			'show_in_menu'    => false
 		) );
+	}
+
+	function acf_init()
+	{
+		require dirname( __FILE__ ) . '/admin-custom-fields.php';
 	}
 
 	function post_updated_messages( $messages )
@@ -211,6 +220,25 @@ class acpt_admin
 		// return the field
 		return $field;
 	}
+
+	function acf_load_field_name_acpt_menu_icon( $field )
+	{
+		$field['choices'] = array(
+			'' => 'Select Icon'
+		);
+
+		$dashicons =
+			(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/dashicons.json' ) );
+
+		foreach ( $dashicons as $icon )
+		{
+			$field['choices'][ 'dashicons-' . $icon->class ] = $icon->class;
+		}
+
+		// return the field
+		return $field;
+	}
+
 
 	function get_post_type_meta( $post_id )
 	{
