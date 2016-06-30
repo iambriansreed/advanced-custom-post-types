@@ -2,9 +2,9 @@
 
 class acpt_admin
 {
-	var $post_type = 'acpt_content_type';
+	private $post_type = 'acpt_content_type';
 
-	var $post_types_info = null;
+	private $post_types_info = null;
 
 	function __construct( $post_types_info )
 	{

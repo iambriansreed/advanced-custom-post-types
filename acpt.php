@@ -21,7 +21,7 @@ if ( ! class_exists( 'acpt' ) ) :
 
 		public $post_types_info = array();
 
-		var $acf_activated = false;
+		private $acf_activated = false;
 
 		/**
 		 * acpt constructor.
