@@ -400,6 +400,3 @@ class acpt_admin
 		);
 	}
 }
-
-
-new acpt_admin( $this->post_types_info );
