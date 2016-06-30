@@ -26,7 +26,7 @@ if ( ! class_exists( 'acpt' ) ) :
 		/**
 		 * acpt constructor.
 		 */
-		function __construct()
+		public function __construct()
 		{
 			$active_plugins = (array) get_option( 'active_plugins', array() );
 
@@ -51,18 +51,18 @@ if ( ! class_exists( 'acpt' ) ) :
 			// all back end related functionality is only loaded if needed
 			if ( is_admin() )
 			{
-				require dirname( __FILE__ ) . '/admin.php';
+				require_once dirname( __FILE__ ) . '/admin.php';
 			}
 
 			add_action( 'init', array( $this, 'init' ) );
 		}
 
-		function init()
+		public function init()
 		{
 			$this->register_post_types();
 		}
 
-		function register_post_types()
+		private function register_post_types()
 		{
 			$acpt_reset_last = intval( get_option( 'acpt_reset_last', 0 ) );
 
@@ -91,7 +91,7 @@ if ( ! class_exists( 'acpt' ) ) :
 			}
 		}
 
-		function set_post_types_info()
+		public function set_post_types_info()
 		{
 			global $wpdb;
 
@@ -108,7 +108,7 @@ if ( ! class_exists( 'acpt' ) ) :
 			$this->post_types_info = $post_types_info;
 		}
 
-		function admin_notice_acf_not_activated()
+		public  function admin_notice_acf_not_activated()
 		{
 			$class = 'notice notice-error';
 

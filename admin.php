@@ -6,7 +6,7 @@ class acpt_admin
 
 	private $post_types_info = null;
 
-	function __construct( $post_types_info )
+	public function __construct( $post_types_info )
 	{
 		// actions
 
@@ -29,7 +29,7 @@ class acpt_admin
 
 	}
 
-	function admin_head()
+	public function admin_head()
 	{
 		echo '<style>';
 
@@ -44,7 +44,7 @@ class acpt_admin
 
 	}
 
-	function dashboard_glance_items( $items )
+	public function dashboard_glance_items( $items )
 	{
 		foreach ( $this->post_types_info as $post_type_info )
 		{
@@ -83,7 +83,7 @@ class acpt_admin
 		return $items;
 	}
 
-	function admin_init()
+	public function admin_init()
 	{
 		$cap = acf_get_setting( 'capability' );
 
@@ -118,12 +118,12 @@ class acpt_admin
 		) );
 	}
 
-	function acf_init()
+	public function acf_init()
 	{
-		require dirname( __FILE__ ) . '/admin-custom-fields.php';
+		require_once dirname( __FILE__ ) . '/admin-custom-fields.php';
 	}
 
-	function post_updated_messages( $messages )
+	public function post_updated_messages( $messages )
 	{
 		global $post;
 
@@ -147,7 +147,7 @@ class acpt_admin
 		);
 	}
 
-	function admin_enqueue_scripts( $hook )
+	public function admin_enqueue_scripts( $hook )
 	{
 		if ( $this->post_type !== get_post_type() )
 		{
@@ -162,7 +162,7 @@ class acpt_admin
 		}
 	}
 
-	function admin_menu()
+	public function admin_menu()
 	{
 
 		$slug = 'edit.php?post_type=' . $this->post_type;
@@ -181,7 +181,7 @@ class acpt_admin
 
 	}
 
-	function save_post()
+	public function save_post()
 	{
 		global $post;
 
@@ -204,7 +204,7 @@ class acpt_admin
 
 	}
 
-	function acf_load_field_name_acpt_taxonomies( $field )
+	public function acf_load_field_name_acpt_taxonomies( $field )
 	{
 		$field['choices'] = array();
 
@@ -221,7 +221,7 @@ class acpt_admin
 		return $field;
 	}
 
-	function acf_load_field_name_acpt_menu_icon( $field )
+	public function acf_load_field_name_acpt_menu_icon( $field )
 	{
 		$field['choices'] = array(
 			'' => 'Select Icon'
@@ -239,8 +239,7 @@ class acpt_admin
 		return $field;
 	}
 
-
-	function get_post_type_meta( $post_id )
+	public function get_post_type_meta( $post_id )
 	{
 		global $wpdb;
 
