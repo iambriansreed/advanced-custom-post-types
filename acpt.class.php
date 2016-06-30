@@ -7,10 +7,7 @@ class acpt
 	private $post_types_info = array();
 
 	private $acf_activated = false;
-
-	/**
-	 * acpt constructor.
-	 */
+	
 	public function __construct()
 	{
 		$active_plugins = (array) get_option( 'active_plugins', array() );
@@ -79,7 +76,7 @@ class acpt
 		}
 	}
 
-	public function set_post_types_info()
+	private function set_post_types_info()
 	{
 		global $wpdb;
 

@@ -2,7 +2,6 @@
 
 if ( function_exists( 'acf_add_local_field_group' ) ):
 
-
 	acf_add_local_field_group( array(
 		'key'                   => 'group_576c917f2166e',
 		'title'                 => 'acpt-basic',
@@ -244,22 +243,6 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 					'id'    => '',
 				),
 				'message'           => 'Controls how the type is visible to authors and readers.',
-				'default_value'     => 1,
-			),
-			array(
-				'key'               => 'field_576f06fc8304f',
-				'label'             => 'Auto Generate Additional Labels',
-				'name'              => 'acpt_auto_generate_additional_labels',
-				'type'              => 'true_false',
-				'instructions'      => '',
-				'required'          => 0,
-				'conditional_logic' => 0,
-				'wrapper'           => array(
-					'width' => '',
-					'class' => 'hide-title',
-					'id'    => '',
-				),
-				'message'           => 'Auto Generate Additional Labels',
 				'default_value'     => 1,
 			),
 			array(
@@ -835,15 +818,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 				'type'              => 'tab',
 				'instructions'      => '',
 				'required'          => 0,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field'    => 'field_576f06fc8304f',
-							'operator' => '!=',
-							'value'    => '1',
-						),
-					),
-				),
+				'conditional_logic' => 0,
 				'wrapper'           => array(
 					'width' => '',
 					'class' => '',
@@ -851,6 +826,22 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 				),
 				'placement'         => 'top',
 				'endpoint'          => 0,
+			),
+			array(
+				'key'               => 'field_5774abc0a9dfc',
+				'label'             => 'Auto Generate',
+				'name'              => 'acpt_auto_generate_labels',
+				'type'              => 'true_false',
+				'instructions'      => '',
+				'required'          => 0,
+				'conditional_logic' => 0,
+				'wrapper'           => array(
+					'width' => '',
+					'class' => '',
+					'id'    => '',
+				),
+				'message'           => 'Generate the text below automatically from the plural and singular names.',
+				'default_value'     => 1,
 			),
 			array(
 				'key'               => 'field_576f06fc83188',

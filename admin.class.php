@@ -200,6 +200,16 @@ class acpt_admin
 
 		update_option( 'acpt_post_type_' . $post_type_meta['post_type'], json_encode( $post_type_meta ) );
 
+
+		$singular_name = get_post_meta( $post->ID, 'acpt_singular_name', 1 );
+
+		$labels = $this->generate_labels( $plural_name, $singular_name );
+
+		foreach ( $labels as $name => $value )
+		{
+			update_post_meta( $post->ID, 'acpt_label_' . $name, $value );
+		}
+
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
 	}
@@ -239,7 +249,7 @@ class acpt_admin
 		return $field;
 	}
 
-	public function get_post_type_meta( $post_id )
+	private function get_post_type_meta( $post_id )
 	{
 		global $wpdb;
 
@@ -250,7 +260,7 @@ class acpt_admin
 			'singular_name',
 			'description',
 			'hierarchical',
-			'auto_generate_additional_labels',
+			'auto_generate_labels',
 			'public',
 			'exclude_from_search',
 			'publicly_queryable',
@@ -319,39 +329,12 @@ class acpt_admin
 			'singular_name' => ucwords( $args['singular_name'] )
 		);
 
-		if ( $args['auto_generate_additional_labels'] )
+		if ( $args['auto_generate_labels'] )
 		{
-			$singular_name = $args['labels']['singular_name'];
-			$plural_name   = $args['labels']['name'];
-
-			$args['labels'] = array_merge(
-				$args['labels'],
-				array(
-					'add_new'               => 'Add New',
-					'add_new_item'          => 'Add New ' . $singular_name,
-					'edit_item'             => 'Edit ' . $singular_name,
-					'new_item'              => 'New ' . $singular_name,
-					'view_item'             => 'View ' . $singular_name,
-					'search_items'          => 'Search ' . $plural_name,
-					'not_found'             => 'No ' . strtolower( $plural_name ) . ' found',
-					'not_found_in_trash'    => 'No ' . strtolower( $plural_name ) . ' found in Trash',
-					'parent_item_colon'     => 'Parent ' . $singular_name,
-					'all_items'             => 'All ' . $plural_name,
-					'archives'              => $plural_name . ' Archives',
-					'insert_into_item'      => 'I' . 'nsert into ' . strtolower( $singular_name ),
-					'uploaded_to_this_item' => 'Uploaded to this ' . strtolower( $singular_name ),
-					'featured_image'        => 'Featured Image',
-					'set_featured_image'    => 'Set featured image',
-					'remove_featured_image' => 'Remove featured image',
-					'use_featured_image'    => 'Use as featured image',
-					'menu_name'             => $plural_name,
-					'filter_items_list'     => $plural_name,
-					'items_list_navigation' => $plural_name,
-					'items_list'            => $plural_name,
-					'name_admin_bar'        => $singular_name
-				)
-			);
-
+			$args['labels'] = $this->generate_labels(
+				$args['labels']['name'],
+				$args['labels']['singular_name'],
+				$args['labels'] );
 		}
 		else
 		{
@@ -382,7 +365,7 @@ class acpt_admin
 			$args['ID'],
 			$args['plural_name'],
 			$args['singular_name'],
-			$args['auto_generate_additional_labels'],
+			$args['auto_generate_labels'],
 			$args['taxonomies'],
 			$args['show_in_admin_menu_under_parent']
 		);
@@ -397,6 +380,44 @@ class acpt_admin
 			'taxonomies'               => $taxonomies,
 			'menu_icon_unicode_number' => str_replace( array( '&#', ';' ), '', $acpt_menu_icon->unicode ),
 			'saved'                    => time()
+		);
+	}
+
+	/**
+	 * @param $plural_name
+	 * @param $singular_name
+	 * @param $labels
+	 *
+	 * @return array
+	 */
+	public static function generate_labels( $plural_name, $singular_name, $labels = array() )
+	{
+		return array_merge(
+			(array) $labels,
+			array(
+				'add_new'               => 'Add New',
+				'add_new_item'          => 'Add New ' . $singular_name,
+				'edit_item'             => 'Edit ' . $singular_name,
+				'new_item'              => 'New ' . $singular_name,
+				'view_item'             => 'View ' . $singular_name,
+				'search_items'          => 'Search ' . $plural_name,
+				'not_found'             => 'No ' . strtolower( $plural_name ) . ' found',
+				'not_found_in_trash'    => 'No ' . strtolower( $plural_name ) . ' found in Trash',
+				'parent_item_colon'     => 'Parent ' . $singular_name,
+				'all_items'             => 'All ' . $plural_name,
+				'archives'              => $plural_name . ' Archives',
+				'insert_into_item'      => 'I' . 'nsert into ' . strtolower( $singular_name ),
+				'uploaded_to_this_item' => 'Uploaded to this ' . strtolower( $singular_name ),
+				'featured_image'        => 'Featured Image',
+				'set_featured_image'    => 'Set featured image',
+				'remove_featured_image' => 'Remove featured image',
+				'use_featured_image'    => 'Use as featured image',
+				'menu_name'             => $plural_name,
+				'filter_items_list'     => $plural_name,
+				'items_list_navigation' => $plural_name,
+				'items_list'            => $plural_name,
+				'name_admin_bar'        => $singular_name
+			)
 		);
 	}
 }

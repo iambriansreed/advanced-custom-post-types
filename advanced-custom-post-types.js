@@ -7,13 +7,20 @@
         var
             plural_name_input = $('[data-name="acpt_plural_name"] :input'),
             singular_name_input = $('[data-name="acpt_singular_name"] :input'),
-            auto_generate_checkbox = $('[data-name="acpt_auto_generate_additional_labels"] :checkbox');
+            auto_generate_checkbox = $('[data-name="acpt_auto_generate_labels"] :checkbox'),
+            label_inputs = $('[data-name^="acpt_label_"] :input');
 
         plural_name_input.on('keyup', generate_titles);
 
         singular_name_input.on('keyup', generate_titles);
 
-        auto_generate_checkbox.on('change', generate_titles);
+        auto_generate_checkbox.on('change', function(){
+
+            generate_titles();
+
+            label_inputs.prop('readonly', auto_generate_checkbox[0].checked);
+
+        }).trigger('change');
 
         function generate_titles()
         {
@@ -24,7 +31,6 @@
             $.each(names_values, function (name, value)
             {
                 $('[data-name="' + name + '"] :input').val(value).trigger('change');
-
             });
         }
 
