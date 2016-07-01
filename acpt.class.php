@@ -4,8 +4,6 @@ class acpt
 {
 	private $post_type = 'acpt_content_type';
 
-	private $post_types_info = array();
-
 	private $acf_activated = false;
 
 	public function __construct()
@@ -28,14 +26,12 @@ class acpt
 			return;
 		}
 
-		$this->set_post_types_info();
-
 		// all back end related functionality is only loaded if needed
 		if ( is_admin() )
 		{
 			require_once dirname( __FILE__ ) . '/admin.class.php';
 
-			new acpt_admin( $this->post_types_info );
+			new acpt_admin( $this->get_post_types_info() );
 
 		}
 
@@ -53,7 +49,7 @@ class acpt
 
 		$last_saved = 0;
 
-		foreach ( $this->post_types_info as $post_type_data )
+		foreach ( $this->get_post_types_info() as $post_type_data )
 		{
 			register_post_type( $post_type_data['post_type'], $post_type_data['args'] );
 
@@ -74,26 +70,46 @@ class acpt
 
 			update_option( 'acpt_reset_last', $last_saved );
 		}
+
+		register_post_type( 'test', array( 'supports' => array( 'hierarchical' => 1 ) ) );
+
+		if ( isset( $_GET['get_post_type_object'] ) )
+		{
+			foreach ( get_post_types( null, 'objects' ) as $post_type_object )
+			{
+				echo '<pre>';
+
+				print_r( $post_type_object );
+			}
+			exit;
+		}
 	}
 
-	private function set_post_types_info()
+	private $post_types_info = null;
+
+	private function get_post_types_info()
 	{
-		global $wpdb;
-
-		$post_type_rows = $wpdb->get_results( "SELECT" . " * FROM $wpdb->options WHERE option_name LIKE 
-			'acpt_post_type_%'" );
-		
-		$post_types_info = array();
-
-		foreach ( $post_type_rows as $post_type_row )
+		if ( ! $this->post_types_info )
 		{
-			$post_types_info[] = json_decode( $post_type_row->option_value, true );
+			global $wpdb;
+
+			$post_type_rows = $wpdb->get_results( "SELECT" . " * FROM $wpdb->options WHERE option_name LIKE 
+			'acpt_post_type_%'" );
+
+			$info = array();
+
+			foreach ( $post_type_rows as $post_type_row )
+			{
+				$info[] = json_decode( $post_type_row->option_value, true );
+			}
+
+			$this->post_types_info = $info;
 		}
 
-		$this->post_types_info = $post_types_info;
+		return $this->post_types_info;
 	}
 
-	public  function admin_notice_acf_not_activated()
+	public function admin_notice_acf_not_activated()
 	{
 		$class = 'notice notice-error';
 
@@ -103,3 +119,5 @@ class acpt
 		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
 	}
 }
+
+

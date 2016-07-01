@@ -10,7 +10,7 @@ Author URI: http://iambrian.com/
 if ( ! defined( 'ABSPATH' ) )
 {
 	exit;
-	
+
 } // Exit if accessed directly
 
 if ( ! class_exists( 'acpt' ) ) :

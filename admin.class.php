@@ -8,7 +8,7 @@ class acpt_admin
 
 	public function __construct( $post_types_info )
 	{
-		// actions
+		$this->post_types_info = $post_types_info;
 
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -17,15 +17,14 @@ class acpt_admin
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
+		add_action( 'delete_post', array( $this, 'delete_post' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
 		add_filter( 'acf/load_field/name=acpt_taxonomies', array( $this, 'acf_load_field_name_acpt_taxonomies' ) );
 		add_filter( 'acf/load_field/name=acpt_menu_icon', array( $this, 'acf_load_field_name_acpt_menu_icon' ) );
 
-
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
-
-		$this->post_types_info = $post_types_info;
 
 	}
 
@@ -118,6 +117,7 @@ class acpt_admin
 			'supports'        => array( 'title' ),
 			'show_in_menu'    => false
 		) );
+
 	}
 
 	public function acf_init()
@@ -187,31 +187,62 @@ class acpt_admin
 	{
 		global $post;
 
+		if (
+			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			|| ! $post
+			|| $this->post_type !== $post->post_type
+			|| 'trash' == $post->post_status
+		)
+		{
+			log_acpt( 'save_post skipped', $post );
+
+			return;
+		}
+
+		$post_data = $this->get_post_data( $post );
+
+		remove_action( 'save_post', array( $this, 'save_post' ) );
+
+		wp_update_post( array(
+			'ID'          => $post->ID,
+			'post_title'  => $post_data->plural_name,
+			'post_name'   => $post_data->post_name,
+			'post_status' => $post_data->error ? 'draft' : 'publish'
+		) );
+
+		add_action( 'save_post', array( $this, 'save_post' ) );
+
+		if ( $post_data->args['labels'] && is_array( $post_data->args['labels'] ) )
+		{
+			foreach ( $post_data->args['labels'] as $name => $value )
+			{
+				update_post_meta( $post->ID, 'acpt_label_' . $name, $value );
+			}
+		}
+
+		if ( ! $post_data->error )
+		{
+			log_acpt( '$post_data saved', $post_data );
+			update_option( $post_data->post_name, json_encode( $post_data ) );
+		}
+		else
+		{
+			log_acpt( '$post_data not saved', $post_data->error );
+			$this->add_notice( $post_data->error, 'error', false );
+		}
+
+	}
+
+	public function delete_post()
+	{
+		global $post;
+
 		if ( ! $post || $this->post_type !== $post->post_type )
 		{
 			return;
 		}
 
-		$plural_name = get_post_meta( $post->ID, 'acpt_plural_name', 1 );
-
-		remove_action( 'save_post', array( $this, 'save_post' ) );
-
-		wp_update_post( array( 'ID' => $post->ID, 'post_title' => $plural_name ) );
-
-		$post_type_meta = $this->get_post_type_meta( $post->ID );
-
-		update_option( 'acpt_post_type_' . $post_type_meta['post_type'], json_encode( $post_type_meta ) );
-
-		$singular_name = get_post_meta( $post->ID, 'acpt_singular_name', 1 );
-
-		$labels = $this->generate_labels( $plural_name, $singular_name );
-
-		foreach ( $labels as $name => $value )
-		{
-			update_post_meta( $post->ID, 'acpt_label_' . $name, $value );
-		}
-
-		add_action( 'save_post', array( $this, 'save_post' ) );
+		pre( $post );
 
 	}
 
@@ -267,7 +298,12 @@ class acpt_admin
 		return $field;
 	}
 
-	public function get_post_type_meta( $post_id )
+	/**
+	 * @param $post
+	 *
+	 * @return object
+	 */
+	public function get_post_data( $post )
 	{
 		global $wpdb;
 
@@ -314,94 +350,151 @@ class acpt_admin
 			'label_name_admin_bar'
 		);
 
-		$sql = 'SELECT ';
+		$post_data = (object) array(
+			'post_type'                => '',
+			'plural_name'              => '',
+			'singular_name'            => '',
+			'args'                     => array(),
+			'taxonomies'               => array(),
+			'menu_icon_unicode_number' => 0,
+			'valid'                    => null,
+			'saved'                    => time()
+		);
 
-		foreach ( $acpt_fields as $field )
+		$post_meta = array();
+
+		if ( 'get post_meta' )
 		{
-			$sql .= "\r\nmeta_$field.meta_value AS $field,";
-		}
+			$sql = 'SELECT ';
 
-		$sql .= "\r\n$wpdb->posts.ID FROM $wpdb->posts";
+			foreach ( $acpt_fields as $field )
+			{
+				$sql .= "\r\nmeta_$field.meta_value AS $field,";
+			}
 
-		foreach ( $acpt_fields as $field )
-		{
-			$sql .= "\r\nLEFT JOIN $wpdb->postmeta AS meta_$field 
+			$sql .= "\r\n$wpdb->posts.ID FROM $wpdb->posts";
+
+			foreach ( $acpt_fields as $field )
+			{
+				$sql .= "\r\nLEFT JOIN $wpdb->postmeta AS meta_$field 
 	ON meta_$field.post_id = $wpdb->posts.ID AND meta_$field.meta_key = 'acpt_$field'";
-		}
+			}
 
-		$sql .= "
-		WHERE $wpdb->posts.ID = $post_id
+			$sql .= "
+		WHERE $wpdb->posts.ID = $post->ID
 		AND $wpdb->posts.post_type = 'acpt_content_type' 
 		AND $wpdb->posts.post_status = 'publish';";
 
-		$args = $wpdb->get_row( $sql, ARRAY_A );
+			$post_meta = $wpdb->get_row( $sql, ARRAY_A );
+		}
 
-		$post_type = str_replace( '-', '_', sanitize_title( $args['singular_name'] ) );
+		$post_data->plural_name   = $post_meta['plural_name'];
+		$post_data->singular_name = $post_meta['singular_name'];
+		$post_data->post_type     = str_replace( '-', '_', sanitize_title( $post_meta['singular_name'] ) );
+		$post_data->post_name     = 'acpt_post_type_' . $post_data->post_type;
+		$post_data->error         = '';
 
-		$args['label'] = $args['plural_name'];
-
-		$args['supports'] = unserialize( $args['supports'] );
-
-		$args['labels'] = array(
-			'name'          => ucwords( $args['plural_name'] ),
-			'singular_name' => ucwords( $args['singular_name'] )
+		$unique_metas = array(
+			'singular_name' => 'singular name',
+			'plural_name'   => 'plural name'
 		);
 
-		if ( $args['auto_generate_labels'] )
+		foreach ( $unique_metas as $meta_key => $meta_title )
 		{
-			$args['labels'] = $this->generate_labels(
-				$args['labels']['name'],
-				$args['labels']['singular_name'],
-				$args['labels'] );
+			$count = $wpdb->get_var( $wpdb->prepare(
+				"SELECT" . " COUNT(*) 
+				FROM $wpdb->posts as posts
+				LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
+				AND postmeta.meta_key = 'acpt_$meta_key'
+				WHERE 1 = 1
+				AND posts.post_type = 'acpt_content_type'
+				AND posts.post_status = 'publish'
+				AND postmeta.meta_value = %s;", $post_data->$meta_key ) );
+
+			if ( $count > 1 )
+			{
+				$post_data->error =
+					"Another post type has the same label '{$post_data->$meta_key}'. Please change the 
+					$meta_title and save again.";
+
+				return $post_data;
+			}
+		}
+
+		$post_meta['label']    = $post_meta['plural_name'];
+		$post_meta['supports'] = unserialize( $post_meta['supports'] );
+
+		$post_meta['labels'] = array(
+			'name'          => ucwords( $post_meta['plural_name'] ),
+			'singular_name' => ucwords( $post_meta['singular_name'] )
+		);
+
+		if ( $post_meta['auto_generate_labels'] )
+		{
+			$post_meta['labels'] = $this->generate_labels(
+				$post_meta['labels']['name'],
+				$post_meta['labels']['singular_name'],
+				$post_meta['labels'] );
 		}
 		else
 		{
-			foreach ( $args as $field_name => $field_value )
+			foreach ( $post_meta as $field_name => $field_value )
 			{
 				if ( 'label_' === substr( $field_name, 0, 6 ) )
 				{
-					$args['labels'][ substr( $field_name, 6 ) ] = $field_value;
-					unset( $args[ $field_name ] );
+					$post_meta['labels'][ substr( $field_name, 6 ) ] = $field_value;
+					unset( $post_meta[ $field_name ] );
 				}
 			}
 
 		}
 
-		if ( $args['show_in_admin_menu_under_parent'] )
+		if ( $post_meta['show_in_admin_menu_under_parent'] )
 		{
-			$args['show_in_menu'] = $args['show_in_admin_menu_under_parent'];
+			$post_meta['show_in_menu'] = $post_meta['show_in_admin_menu_under_parent'];
 		}
 		else
 		{
-			// could be a string cast to bool if 1 or 0
-			$args['show_in_menu'] = (bool) $args['show_in_menu'];
+			// could be a string so cast to bool if 1 or 0
+			$post_meta['show_in_menu'] = (bool) $post_meta['show_in_menu'];
 		}
 
-		$taxonomies = unserialize( $args['taxonomies'] );
+		$post_data->taxonomies = unserialize( $post_meta['taxonomies'] );
 
 		unset(
-			$args['ID'],
-			$args['plural_name'],
-			$args['singular_name'],
-			$args['auto_generate_labels'],
-			$args['taxonomies'],
-			$args['show_in_admin_menu_under_parent']
+			$post_meta['ID'],
+			$post_meta['plural_name'],
+			$post_meta['singular_name'],
+			$post_meta['auto_generate_labels'],
+			$post_meta['taxonomies'],
+			$post_meta['show_in_admin_menu_under_parent']
 		);
 
-		$args['menu_position'] = intval( $args['menu_position'] ) . '.17574474777';
+		$post_meta['menu_position'] = intval( $post_meta['menu_position'] ) . '.17574474777';
 
 		$dashicons = $this->get_dashicons();
 
-		return array(
-			'post_type'                => $post_type,
-			'args'                     => $args,
-			'taxonomies'               => $taxonomies,
-			'menu_icon_unicode_number' => $dashicons[ substr( $args['menu_icon'], 10 ) ],
-			'saved'                    => time()
-		);
+		if ( 10 <= strlen( $post_meta['menu_icon'] )
+		     || ! isset( $dashicons[ substr( $post_meta['menu_icon'], 10 ) ] )
+		)
+		{
+			$post_meta['menu_icon'] = 'dashicons-admin-page';
+		}
+
+		$post_data->args = $post_meta;
+
+		$post_data->menu_icon_unicode_number = $dashicons[ substr( $post_meta['menu_icon'], 10 ) ];
+
+		$post_data->saved = time();
+
+		// echo '<pre>'; print_r( $post_data );
+
+		return $post_data;
 	}
 
 	/**
+	 * generates all labels based on the plural and singular names
+	 *
 	 * @param $plural_name
 	 * @param $singular_name
 	 * @param $labels
@@ -438,4 +531,93 @@ class acpt_admin
 			)
 		);
 	}
+
+	/**
+	 * adds a notice to set of saved notices
+	 *
+	 * @param $message
+	 * @param string $type
+	 * @param bool $is_dismissible
+	 */
+	function add_notice( $message, $type = 'info', $is_dismissible = true )
+	{
+		$notices = $this->get_notices();
+
+		$notices[] = (object) compact( 'message', 'type', 'is_dismissible' );
+
+		$this->set_notices( $notices );
+	}
+
+	/**
+	 * gets saved notices
+	 * @return array
+	 */
+	function get_notices()
+	{
+		$notices = (array) json_decode( get_option( 'acpt_admin_notices_' . get_current_user_id() ) );
+
+		return $notices;
+	}
+
+	/**
+	 * saves notices to be later displayed
+	 *
+	 * @param $notices
+	 */
+	function set_notices( $notices )
+	{
+		if ( $notices === false )
+		{
+			delete_option( 'acpt_admin_notices_' . get_current_user_id() );
+		}
+		else
+		{
+			update_option( 'acpt_admin_notices_' . get_current_user_id(), json_encode( $notices ) );
+		}
+
+		return;
+	}
+
+	/**
+	 * Displays admin notices
+	 */
+	function admin_notices()
+	{
+		$notices = $this->get_notices();
+
+		if ( count( $notices ) )
+		{
+			foreach ( $notices as $notice )
+			{
+				printf(
+					'<div class="%1$s"><p>%2$s</p></div>',
+					'notice notice-' . $notice->type . ( $notice->is_dismissible ? ' is-dismissible' : '' ),
+					$notice->message
+				);
+			}
+
+			$this->set_notices( false );
+		}
+	}
+}
+
+function log_acpt( $message = '', $data = null )
+{
+	global $wpdb;
+
+	$debug_backtrace = debug_backtrace();
+
+	$caller = array_shift( $debug_backtrace );
+
+	$wpdb->insert(
+		'log_acpt',
+		array(
+			'message' => $message . "\r\n" . print_r( $data, 1 ),
+			'file'    => $caller['file'] . ' on line ' . $caller['line']
+		),
+		array(
+			'%s',
+			'%s'
+		)
+	);
 }
