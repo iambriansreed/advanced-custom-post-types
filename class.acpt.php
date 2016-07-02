@@ -12,11 +12,8 @@ class acpt {
 			in_array( 'advanced-custom-fields/acf.php', $active_plugins )
 		);
 
-		if ( ! $acf_activated ) {
-			if ( is_admin() ) {
-				add_action( 'admin_notices', array( $this, 'admin_notice_acf_not_activated' ) );
-			}
-
+		if ( ! $acf_activated && is_admin() ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice_acf_not_activated' ) );
 			return;
 		}
 
