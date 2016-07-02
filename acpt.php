@@ -7,16 +7,13 @@ Author: Brian Reed
 Author URI: http://iambrian.com/
 */
 
-if ( ! defined( 'ABSPATH' ) )
-{
-	exit;
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-} // Exit if accessed directly
-
-if ( ! class_exists( 'acpt' ) ) :
+if ( ! class_exists( 'acpt' ) ) {
 
 	require_once dirname( __FILE__ ) . '/acpt.class.php';
 
 	$Advanced_Custom_Post_Types = new acpt();
 
-endif;
+}
