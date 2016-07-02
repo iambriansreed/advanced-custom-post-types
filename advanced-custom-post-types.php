@@ -3,7 +3,7 @@
 Plugin Name: Advanced Custom Post Types
 Description: Customise WordPress with custom post types
 Version: 0.0.1.0
-Author: Brian Reed
+Author: iambriansreed
 Author URI: http://iambrian.com/
 */
 
@@ -13,9 +13,5 @@ if ( ! defined( 'ABSPATH' ) )
 	exit;
 }
 
-if ( ! class_exists( 'acpt' ) )
-{
-	require_once dirname( __FILE__ ) . '/acpt.class.php';
-
-	$Advanced_Custom_Post_Types = new acpt();
-}
+require_once dirname( __FILE__ ) . '/class.acpt.php';
+new acpt();

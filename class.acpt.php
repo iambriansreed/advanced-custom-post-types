@@ -4,32 +4,29 @@ class acpt
 {
 	const ACPT_POST_TYPE = 'acpt_content_type';
 
-	private $acf_activated = false;
-
 	public function __construct()
 	{
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 
-		$this->acf_activated = (
+		$acf_activated = (
 			in_array( 'advanced-custom-fields-pro/acf.php', $active_plugins )
 			||
 			in_array( 'advanced-custom-fields/acf.php', $active_plugins )
 		);
 
-		if ( ! $this->acf_activated )
+		if ( ! $acf_activated )
 		{
 			if ( is_admin() )
 			{
 				add_action( 'admin_notices', array( $this, 'admin_notice_acf_not_activated' ) );
 			}
-
 			return;
 		}
-
+		
 		// all back end related functionality is only loaded if needed
 		if ( is_admin() )
 		{
-			require_once dirname( __FILE__ ) . '/admin.class.php';
+			require_once dirname( __FILE__ ) . '/class.admin.php';
 
 			new acpt_admin( $this->get_post_types_info() );
 		}
@@ -69,9 +66,6 @@ class acpt
 
 			update_option( 'acpt_reset_last', $last_saved );
 		}
-
-		register_post_type( 'test', array( 'supports' => array( 'hierarchical' => 1 ) ) );
-
 	}
 
 	private $post_types_info = null;
@@ -108,5 +102,3 @@ class acpt
 		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
 	}
 }
-
-

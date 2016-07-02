@@ -25,7 +25,6 @@ class acpt_admin
 
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
-
 	}
 
 	public function admin_head()
@@ -53,17 +52,6 @@ class acpt_admin
 
 	function admin_footer()
 	{
-		global $wpdb;
-
-		$post_type_rows = $wpdb->get_results( "SELECT" . " * FROM $wpdb->options WHERE option_name LIKE
-			'acpt_post_type_%'" );
-
-		foreach ( $post_type_rows as $post_type_row )
-		{
-			echo '<pre style="margin-left: 160px; padding: 0 0 0 20px;">';
-			echo json_encode( json_decode( $post_type_row->option_value ), JSON_PRETTY_PRINT );
-			echo '</pre><hr>';
-		}
 
 	}
 
@@ -139,7 +127,7 @@ class acpt_admin
 
 	public function acf_init()
 	{
-		require_once dirname( __FILE__ ) . '/admin-custom-fields.php';
+		require_once dirname( __FILE__ ) . '/inc/fields.php';
 	}
 
 	public function post_updated_messages( $messages )
@@ -175,9 +163,10 @@ class acpt_admin
 
 		if ( 'post-new.php' === $hook || 'post.php' === $hook )
 		{
-			wp_enqueue_script( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) . 'advanced-custom-post-types.js', array( 'jquery' ) );
-			wp_enqueue_style( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) . 'advanced-custom-post-types
-				.css' );
+			wp_enqueue_script( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) .
+			                                                 'inc/advanced-custom-post-types.js', array( 'jquery' ) );
+			wp_enqueue_style( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) .
+			                                                'inc/advanced-custom-post-types.css' );
 		}
 	}
 
@@ -225,14 +214,8 @@ class acpt_admin
 		$doing_autosave     = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
 		$not_acpt_post_type = get_post_type( $post_id ) !== self::ACPT_POST_TYPE;
 
-		log_acpt( 'save_post attempt', array(
-			compact( 'doing_autosave', 'not_acpt_post_type' )
-		) );
-
 		if ( $doing_autosave || $not_acpt_post_type )
 		{
-			log_acpt( 'save_post skipped', $post );
-
 			return;
 		}
 
@@ -258,15 +241,12 @@ class acpt_admin
 
 		if ( ! $post_data->error )
 		{
-			log_acpt( '$post_data saved', $post_data );
 			self::set_post_data_cache( $post_data->post_name, $post_data );
 		}
 		else
 		{
-			log_acpt( '$post_data not saved', $post_data->error );
 			$this->add_notice( $post_data->error, 'error', false );
 		}
-
 	}
 
 	public function acf_load_field_name_acpt_taxonomies( $field )
@@ -293,7 +273,7 @@ class acpt_admin
 		if ( ! $this->dashicons )
 		{
 			$dashicons =
-				(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/dashicons.json' ) );
+				(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/inc/dashicons.json' ) );
 
 			$this->dashicons = array();
 
