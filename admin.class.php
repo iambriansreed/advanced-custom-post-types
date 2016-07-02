@@ -2,7 +2,7 @@
 
 class acpt_admin
 {
-	private $post_type = 'acpt_content_type';
+	const ACPT_POST_TYPE = 'acpt_content_type';
 
 	private $post_types_info = null;
 
@@ -14,10 +14,10 @@ class acpt_admin
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'acf/init', array( $this, 'acf_init' ) );
+		add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
-		add_action( 'delete_post', array( $this, 'delete_post' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
 		add_filter( 'acf/load_field/name=acpt_taxonomies', array( $this, 'acf_load_field_name_acpt_taxonomies' ) );
@@ -30,18 +30,40 @@ class acpt_admin
 
 	public function admin_head()
 	{
-		echo '<style>';
+		?>
+		<style>
+			/* dashboard_right_now */
 
-		foreach ( $this->post_types_info as $post_type_info )
+			<?php foreach ( $this->post_types_info as $post_type_info )
+			{
+				if ( $post_type_info['args']['public'] )
+				{
+			?>
+			#dashboard_right_now .<?php echo $post_type_info['post_type'] ;?>-count a:before {
+				content: "\f<?php echo $post_type_info['menu_icon_unicode_number']; ?>";
+			}
+
+			<?php
+				}
+			}
+			?>
+		</style>
+		<?php
+	}
+
+	function admin_footer()
+	{
+		global $wpdb;
+
+		$post_type_rows = $wpdb->get_results( "SELECT" . " * FROM $wpdb->options WHERE option_name LIKE
+			'acpt_post_type_%'" );
+
+		foreach ( $post_type_rows as $post_type_row )
 		{
-			print_r( $post_type_info, 1 );
-
-			echo '#dashboard_right_now .' . $post_type_info['post_type'] . '-count a:before {
-                    content: "\f' . $post_type_info['menu_icon_unicode_number'] . '";
-				}';
+			echo '<pre style="margin-left: 160px; padding: 0 0 0 20px;">';
+			echo json_encode( json_decode( $post_type_row->option_value ), JSON_PRETTY_PRINT );
+			echo '</pre><hr>';
 		}
-
-		echo '</style>';
 
 	}
 
@@ -49,22 +71,17 @@ class acpt_admin
 	{
 		foreach ( $this->post_types_info as $post_type_info )
 		{
-			$type = $post_type_info['post_type'];
-
-			if ( ! post_type_exists( $type ) )
+			if ( $post_type_info['args']['public'] )
 			{
-				continue;
-			}
-			$num_posts = wp_count_posts( $type );
+				$type = $post_type_info['post_type'];
 
-			if ( $num_posts )
-			{
+				$num_posts = wp_count_posts( $type );
+
 				$published = intval( $num_posts->publish );
 
 				$post_type = get_post_type_object( $type );
 
-				$text =
-					_n( '%s ' . $post_type->labels->singular_name, '%s ' . $post_type->labels->name, $published );
+				$text = _n( '%s ' . $post_type->labels->singular_name, '%s ' . $post_type->labels->name, $published );
 
 				$text = sprintf( $text, number_format_i18n( $published ) );
 
@@ -88,7 +105,7 @@ class acpt_admin
 	{
 		$cap = acf_get_setting( 'capability' );
 
-		register_post_type( $this->post_type, array(
+		register_post_type( self::ACPT_POST_TYPE, array(
 			'labels'          => array(
 				'name'               => __( 'Content Types', 'acpt' ),
 				'singular_name'      => __( 'Content Type', 'acpt' ),
@@ -111,7 +128,7 @@ class acpt_admin
 				'edit_posts'   => $cap,
 				'delete_posts' => $cap,
 			),
-			'hierarchical'    => true,
+			'hierarchical'    => false,
 			'rewrite'         => false,
 			'query_var'       => false,
 			'supports'        => array( 'title' ),
@@ -129,7 +146,7 @@ class acpt_admin
 	{
 		global $post;
 
-		$messages[ $this->post_type ] = array(
+		$messages[ self::ACPT_POST_TYPE ] = array(
 			0  => '', // Unused. Messages start at index 1.
 			1  => __( 'Content Type updated.' ),
 			2  => __( 'Custom field updated.' ),
@@ -151,7 +168,7 @@ class acpt_admin
 
 	public function admin_enqueue_scripts( $hook )
 	{
-		if ( $this->post_type !== get_post_type() )
+		if ( self::ACPT_POST_TYPE !== get_post_type() )
 		{
 			return;
 		}
@@ -166,40 +183,67 @@ class acpt_admin
 
 	public function admin_menu()
 	{
+		if ( apply_filters( 'acpt/settings/show_admin', true ) )
+		{
+			$slug = 'edit.php?post_type=' . self::ACPT_POST_TYPE;
 
-		$slug = 'edit.php?post_type=' . $this->post_type;
-		$cap  = acf_get_setting( 'capability' );
+			$cap = acf_get_setting( 'capability' );
 
+			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+			add_menu_page( __( "Custom Types", 'acpt' ), __( "Custom Types", 'acpt' ), $cap, $slug, false,
+				'dashicons-feedback',
+				'81.026' );
 
-		add_menu_page( __( "Custom Types", 'acpt' ), __( "Custom Types", 'acpt' ), $cap, $slug, false,
-			'dashicons-feedback',
-			'81.026' );
+			add_submenu_page( $slug, __( 'Content Types', 'acpt' ), __( 'Content Types', 'acpt' ), $cap, $slug );
 
-		add_submenu_page( $slug, __( 'Content Types', 'acpt' ), __( 'Content Types', 'acpt' ), $cap, $slug );
+			add_submenu_page( $slug, __( 'Add New', 'acpt' ), __( 'Add New', 'acpt' ), $cap,
+				'post-new.php?post_type=' . self::ACPT_POST_TYPE );
 
-		add_submenu_page( $slug, __( 'Add New', 'acpt' ), __( 'Add New', 'acpt' ), $cap, 'post-new.php?post_type=' . $this->post_type );
-
+		}
 	}
 
-	public function save_post()
+	public static function set_post_data_cache( $post_name, $data = null )
+	{
+		update_option( $post_name, json_encode( $data ) );
+	}
+
+	public static function delete_post_data_cache( $post_name )
+	{
+		delete_option( $post_name );
+	}
+
+	public static function get_post_data_cache( $post_name )
+	{
+		get_option( $post_name );
+	}
+
+	public function save_post( $post_id )
 	{
 		global $post;
 
-		if (
-			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
-			|| ! $post
-			|| $this->post_type !== $post->post_type
-			|| 'trash' == $post->post_status
-		)
+		$doing_autosave     = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
+		$not_acpt_post_type = get_post_type( $post_id ) !== self::ACPT_POST_TYPE;
+
+		log_acpt( 'save_post attempt', array(
+			compact( 'doing_autosave', 'not_acpt_post_type' )
+		) );
+
+		if ( $doing_autosave || $not_acpt_post_type )
 		{
 			log_acpt( 'save_post skipped', $post );
 
 			return;
 		}
 
-		$post_data = $this->get_post_data( $post );
+		if ( 'trash' == get_post_status( $post_id ) )
+		{
+			delete_option( $post->post_name );
+
+			return;
+		}
+
+		$post_data = $this->get_content_type_data( $post );
 
 		remove_action( 'save_post', array( $this, 'save_post' ) );
 
@@ -212,37 +256,16 @@ class acpt_admin
 
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
-		if ( $post_data->args['labels'] && is_array( $post_data->args['labels'] ) )
-		{
-			foreach ( $post_data->args['labels'] as $name => $value )
-			{
-				update_post_meta( $post->ID, 'acpt_label_' . $name, $value );
-			}
-		}
-
 		if ( ! $post_data->error )
 		{
 			log_acpt( '$post_data saved', $post_data );
-			update_option( $post_data->post_name, json_encode( $post_data ) );
+			self::set_post_data_cache( $post_data->post_name, $post_data );
 		}
 		else
 		{
 			log_acpt( '$post_data not saved', $post_data->error );
 			$this->add_notice( $post_data->error, 'error', false );
 		}
-
-	}
-
-	public function delete_post()
-	{
-		global $post;
-
-		if ( ! $post || $this->post_type !== $post->post_type )
-		{
-			return;
-		}
-
-		pre( $post );
 
 	}
 
@@ -298,12 +321,17 @@ class acpt_admin
 		return $field;
 	}
 
+	public function sanitize_post_type( $singular_name )
+	{
+		return str_replace( '-', '_', sanitize_title( $singular_name ) );
+	}
+
 	/**
 	 * @param $post
 	 *
 	 * @return object
 	 */
-	public function get_post_data( $post )
+	public function get_content_type_data( $post )
 	{
 		global $wpdb;
 
@@ -320,6 +348,8 @@ class acpt_admin
 			'publicly_queryable',
 			'can_export',
 			'show_in_rest',
+			'rest_base_slug',
+			'rest_controller_class',
 			'show_in_ui',
 			'show_in_menu',
 			'show_in_admin_menu_under_parent',
@@ -390,16 +420,17 @@ class acpt_admin
 
 		$post_data->plural_name   = $post_meta['plural_name'];
 		$post_data->singular_name = $post_meta['singular_name'];
-		$post_data->post_type     = str_replace( '-', '_', sanitize_title( $post_meta['singular_name'] ) );
+		$post_data->post_type     = $this->sanitize_post_type( $post_meta['singular_name'] );
 		$post_data->post_name     = 'acpt_post_type_' . $post_data->post_type;
 		$post_data->error         = '';
 
-		$unique_metas = array(
-			'singular_name' => 'singular name',
-			'plural_name'   => 'plural name'
-		);
-
-		foreach ( $unique_metas as $meta_key => $meta_title )
+		// validate unique
+		foreach (
+			array(
+				'singular_name' => 'singular name',
+				'plural_name'   => 'plural name'
+			) as $meta_key => $meta_title
+		)
 		{
 			$count = $wpdb->get_var( $wpdb->prepare(
 				"SELECT" . " COUNT(*) 
@@ -409,7 +440,7 @@ class acpt_admin
 				WHERE 1 = 1
 				AND posts.post_type = 'acpt_content_type'
 				AND posts.post_status = 'publish'
-				AND postmeta.meta_value = %s;", $post_data->$meta_key ) );
+				AND postmeta.meta_value = %s; ", $post_data->$meta_key ) );
 
 			if ( $count > 1 )
 			{
@@ -421,6 +452,7 @@ class acpt_admin
 			}
 		}
 
+
 		$post_meta['label']    = $post_meta['plural_name'];
 		$post_meta['supports'] = unserialize( $post_meta['supports'] );
 
@@ -429,12 +461,19 @@ class acpt_admin
 			'singular_name' => ucwords( $post_meta['singular_name'] )
 		);
 
+		// build out label data
 		if ( $post_meta['auto_generate_labels'] )
 		{
 			$post_meta['labels'] = $this->generate_labels(
 				$post_meta['labels']['name'],
 				$post_meta['labels']['singular_name'],
 				$post_meta['labels'] );
+
+			// update post_meta for auto generated labels
+			foreach ( $post_meta['labels'] as $meta_key => $meta_value )
+			{
+				update_post_meta( $post->ID, 'acpt_label_' . $meta_key, $meta_value );
+			}
 		}
 		else
 		{
@@ -443,10 +482,31 @@ class acpt_admin
 				if ( 'label_' === substr( $field_name, 0, 6 ) )
 				{
 					$post_meta['labels'][ substr( $field_name, 6 ) ] = $field_value;
+
 					unset( $post_meta[ $field_name ] );
 				}
 			}
+		}
 
+		// set meta to true or false
+		foreach (
+			array(
+				'public',
+				'exclude_from_search',
+				'publicly_queryable',
+				'show_ui',
+				'show_in_nav_menus',
+				'show_in_admin_bar',
+				'hierarchical',
+				'can_export',
+				'show_in_rest'
+			) as $bool_meta
+		)
+		{
+			if ( isset( $post_meta[ $bool_meta ] ) )
+			{
+				$post_meta[ $bool_meta ] = $post_meta[ $bool_meta ] == "1";
+			}
 		}
 
 		if ( $post_meta['show_in_admin_menu_under_parent'] )
@@ -459,6 +519,14 @@ class acpt_admin
 			$post_meta['show_in_menu'] = (bool) $post_meta['show_in_menu'];
 		}
 
+		$post_meta['rest_base'] = trim( $post_meta['rest_base_slug'] );
+
+		if ( ! $post_meta['rest_base'] )
+		{
+			$post_meta['rest_base'] = $post_data->post_type;
+			update_post_meta( $post->ID, 'acpt_rest_base_slug', $post_meta['rest_base'] );
+		}
+
 		$post_data->taxonomies = unserialize( $post_meta['taxonomies'] );
 
 		unset(
@@ -467,27 +535,27 @@ class acpt_admin
 			$post_meta['singular_name'],
 			$post_meta['auto_generate_labels'],
 			$post_meta['taxonomies'],
-			$post_meta['show_in_admin_menu_under_parent']
+			$post_meta['show_in_admin_menu_under_parent'],
+			$post_meta['rest_base_slug']
 		);
 
-		$post_meta['menu_position'] = intval( $post_meta['menu_position'] ) . '.17574474777';
+		$post_meta['menu_position'] = intval( $post_meta['menu_position'] );
+		//floatval( intval( $post_meta['menu_position'] ) . '.17574474777' );
 
 		$dashicons = $this->get_dashicons();
 
-		if ( 10 <= strlen( $post_meta['menu_icon'] )
-		     || ! isset( $dashicons[ substr( $post_meta['menu_icon'], 10 ) ] )
-		)
+		$menu_icon = $post_meta['menu_icon'];
+
+		if ( strlen( $menu_icon ) < 11 || ! isset( $dashicons[ substr( $menu_icon, 10 ) ] ) )
 		{
-			$post_meta['menu_icon'] = 'dashicons-admin-page';
+			$menu_icon = 'dashicons-admin-page';
 		}
 
 		$post_data->args = $post_meta;
 
-		$post_data->menu_icon_unicode_number = $dashicons[ substr( $post_meta['menu_icon'], 10 ) ];
+		$post_data->menu_icon_unicode_number = $dashicons[ substr( $menu_icon, 10 ) ];
 
 		$post_data->saved = time();
-
-		// echo '<pre>'; print_r( $post_data );
 
 		return $post_data;
 	}
@@ -599,25 +667,4 @@ class acpt_admin
 			$this->set_notices( false );
 		}
 	}
-}
-
-function log_acpt( $message = '', $data = null )
-{
-	global $wpdb;
-
-	$debug_backtrace = debug_backtrace();
-
-	$caller = array_shift( $debug_backtrace );
-
-	$wpdb->insert(
-		'log_acpt',
-		array(
-			'message' => $message . "\r\n" . print_r( $data, 1 ),
-			'file'    => $caller['file'] . ' on line ' . $caller['line']
-		),
-		array(
-			'%s',
-			'%s'
-		)
-	);
 }

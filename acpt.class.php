@@ -2,7 +2,7 @@
 
 class acpt
 {
-	private $post_type = 'acpt_content_type';
+	const ACPT_POST_TYPE = 'acpt_content_type';
 
 	private $acf_activated = false;
 
@@ -32,7 +32,6 @@ class acpt
 			require_once dirname( __FILE__ ) . '/admin.class.php';
 
 			new acpt_admin( $this->get_post_types_info() );
-
 		}
 
 		add_action( 'init', array( $this, 'init' ) );
@@ -73,16 +72,6 @@ class acpt
 
 		register_post_type( 'test', array( 'supports' => array( 'hierarchical' => 1 ) ) );
 
-		if ( isset( $_GET['get_post_type_object'] ) )
-		{
-			foreach ( get_post_types( null, 'objects' ) as $post_type_object )
-			{
-				echo '<pre>';
-
-				print_r( $post_type_object );
-			}
-			exit;
-		}
 	}
 
 	private $post_types_info = null;

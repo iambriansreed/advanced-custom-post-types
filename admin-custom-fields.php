@@ -268,15 +268,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 				'type'              => 'true_false',
 				'instructions'      => '',
 				'required'          => 0,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field'    => 'field_576f06fc83060',
-							'operator' => '==',
-							'value'    => '1',
-						),
-					),
-				),
+				'conditional_logic' => 0,
 				'wrapper'           => array(
 					'width' => '',
 					'class' => '',
@@ -362,6 +354,9 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 				'readonly'          => 0,
 				'disabled'          => 0,
 			),
+			/*
+			 * ToDo: optional custom controller to use instead of WP_REST_Posts_Controller
+			 *
 			array(
 				'key'               => 'field_576f06fc830e4',
 				'label'             => 'Controller Class',
@@ -391,6 +386,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 				'readonly'          => 0,
 				'disabled'          => 0,
 			),
+			*/
 			array(
 				'key'               => 'field_576f06fc83106',
 				'label'             => 'Admin',

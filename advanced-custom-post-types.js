@@ -14,7 +14,8 @@
 
         singular_name_input.on('keyup', generate_titles);
 
-        auto_generate_checkbox.on('change', function(){
+        auto_generate_checkbox.on('change', function ()
+        {
 
             generate_titles();
 
