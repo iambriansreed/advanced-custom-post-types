@@ -1,13 +1,11 @@
 <?php
 
-class acpt_admin
-{
+class acpt_admin {
 	const ACPT_POST_TYPE = 'acpt_content_type';
 
 	private $post_types_info = null;
 
-	public function __construct( $post_types_info )
-	{
+	public function __construct( $post_types_info ) {
 		$this->post_types_info = $post_types_info;
 
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -27,8 +25,7 @@ class acpt_admin
 		add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
 	}
 
-	public function admin_head()
-	{
+	public function admin_head() {
 		?>
 		<style>
 			/* dashboard_right_now */
@@ -50,17 +47,13 @@ class acpt_admin
 		<?php
 	}
 
-	function admin_footer()
-	{
+	function admin_footer() {
 
 	}
 
-	public function dashboard_glance_items( $items )
-	{
-		foreach ( $this->post_types_info as $post_type_info )
-		{
-			if ( $post_type_info['args']['public'] )
-			{
+	public function dashboard_glance_items( $items ) {
+		foreach ( $this->post_types_info as $post_type_info ) {
+			if ( $post_type_info['args']['public'] ) {
 				$type = $post_type_info['post_type'];
 
 				$num_posts = wp_count_posts( $type );
@@ -73,12 +66,9 @@ class acpt_admin
 
 				$text = sprintf( $text, number_format_i18n( $published ) );
 
-				if ( current_user_can( $post_type->cap->edit_posts ) )
-				{
+				if ( current_user_can( $post_type->cap->edit_posts ) ) {
 					echo '<li class="post-count ' . $post_type->name . '-count">' . '<a href="edit.php?post_type=' . $post_type->name . '">' . $text . '</a>' . '</li>';
-				}
-				else
-				{
+				} else {
 					echo '<li class="post-count ' . $post_type->name . '-count">' . '<span>' . $text . '</span>' . '</li>';
 				}
 			}
@@ -89,8 +79,7 @@ class acpt_admin
 		return $items;
 	}
 
-	public function admin_init()
-	{
+	public function admin_init() {
 		$cap = acf_get_setting( 'capability' );
 
 		register_post_type( self::ACPT_POST_TYPE, array(
@@ -125,13 +114,11 @@ class acpt_admin
 
 	}
 
-	public function acf_init()
-	{
+	public function acf_init() {
 		require_once dirname( __FILE__ ) . '/inc/fields.php';
 	}
 
-	public function post_updated_messages( $messages )
-	{
+	public function post_updated_messages( $messages ) {
 		global $post;
 
 		$messages[ self::ACPT_POST_TYPE ] = array(
@@ -154,15 +141,12 @@ class acpt_admin
 		);
 	}
 
-	public function admin_enqueue_scripts( $hook )
-	{
-		if ( self::ACPT_POST_TYPE !== get_post_type() )
-		{
+	public function admin_enqueue_scripts( $hook ) {
+		if ( self::ACPT_POST_TYPE !== get_post_type() ) {
 			return;
 		}
 
-		if ( 'post-new.php' === $hook || 'post.php' === $hook )
-		{
+		if ( 'post-new.php' === $hook || 'post.php' === $hook ) {
 			wp_enqueue_script( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) .
 			                                                 'inc/advanced-custom-post-types.js', array( 'jquery' ) );
 			wp_enqueue_style( 'advanced_custom_post_types', plugin_dir_url( __FILE__ ) .
@@ -170,10 +154,8 @@ class acpt_admin
 		}
 	}
 
-	public function admin_menu()
-	{
-		if ( apply_filters( 'acpt/settings/show_admin', true ) )
-		{
+	public function admin_menu() {
+		if ( apply_filters( 'acpt/settings/show_admin', true ) ) {
 			$slug = 'edit.php?post_type=' . self::ACPT_POST_TYPE;
 
 			$cap = acf_get_setting( 'capability' );
@@ -192,35 +174,29 @@ class acpt_admin
 		}
 	}
 
-	public static function set_post_data_cache( $post_name, $data = null )
-	{
+	public static function set_post_data_cache( $post_name, $data = null ) {
 		update_option( $post_name, json_encode( $data ) );
 	}
 
-	public static function delete_post_data_cache( $post_name )
-	{
+	public static function delete_post_data_cache( $post_name ) {
 		delete_option( $post_name );
 	}
 
-	public static function get_post_data_cache( $post_name )
-	{
+	public static function get_post_data_cache( $post_name ) {
 		get_option( $post_name );
 	}
 
-	public function save_post( $post_id )
-	{
+	public function save_post( $post_id ) {
 		global $post;
 
 		$doing_autosave     = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
 		$not_acpt_post_type = get_post_type( $post_id ) !== self::ACPT_POST_TYPE;
 
-		if ( $doing_autosave || $not_acpt_post_type )
-		{
+		if ( $doing_autosave || $not_acpt_post_type ) {
 			return;
 		}
 
-		if ( 'trash' == get_post_status( $post_id ) )
-		{
+		if ( 'trash' == get_post_status( $post_id ) ) {
 			delete_option( $post->post_name );
 
 			return;
@@ -239,24 +215,19 @@ class acpt_admin
 
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
-		if ( ! $post_data->error )
-		{
+		if ( ! $post_data->error ) {
 			self::set_post_data_cache( $post_data->post_name, $post_data );
-		}
-		else
-		{
+		} else {
 			$this->add_notice( $post_data->error, 'error', false );
 		}
 	}
 
-	public function acf_load_field_name_acpt_taxonomies( $field )
-	{
+	public function acf_load_field_name_acpt_taxonomies( $field ) {
 		$field['choices'] = array();
 
 		$taxonomies = get_taxonomies( array( 'public' => true ), 'objects' );
 
-		foreach ( $taxonomies as $value => $taxonomy )
-		{
+		foreach ( $taxonomies as $value => $taxonomy ) {
 			$field['choices'][ $value ] = $taxonomy->labels->name;
 		}
 
@@ -268,17 +239,14 @@ class acpt_admin
 
 	private $dashicons = false;
 
-	public function get_dashicons()
-	{
-		if ( ! $this->dashicons )
-		{
+	public function get_dashicons() {
+		if ( ! $this->dashicons ) {
 			$dashicons =
 				(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/inc/dashicons.json' ) );
 
 			$this->dashicons = array();
 
-			foreach ( $dashicons as $dashicon )
-			{
+			foreach ( $dashicons as $dashicon ) {
 				$this->dashicons[ $dashicon->class ] = $dashicon->content;
 			}
 		}
@@ -287,22 +255,19 @@ class acpt_admin
 
 	}
 
-	public function acf_load_field_name_acpt_menu_icon( $field )
-	{
+	public function acf_load_field_name_acpt_menu_icon( $field ) {
 		$field['choices'] = array(
 			'' => 'Select Icon'
 		);
 
-		foreach ( $this->get_dashicons() as $class => $unicode )
-		{
+		foreach ( $this->get_dashicons() as $class => $unicode ) {
 			$field['choices'][ 'dashicons-' . $class ] = $class;
 		}
 
 		return $field;
 	}
 
-	public function sanitize_post_type( $singular_name )
-	{
+	public function sanitize_post_type( $singular_name ) {
 		return str_replace( '-', '_', sanitize_title( $singular_name ) );
 	}
 
@@ -311,8 +276,7 @@ class acpt_admin
 	 *
 	 * @return object
 	 */
-	public function get_content_type_data( $post )
-	{
+	public function get_content_type_data( $post ) {
 		global $wpdb;
 
 		$acpt_fields = array(
@@ -373,19 +337,16 @@ class acpt_admin
 
 		$post_meta = array();
 
-		if ( 'get post_meta' )
-		{
+		if ( 'get post_meta' ) {
 			$sql = 'SELECT ';
 
-			foreach ( $acpt_fields as $field )
-			{
+			foreach ( $acpt_fields as $field ) {
 				$sql .= "\r\nmeta_$field.meta_value AS $field,";
 			}
 
 			$sql .= "\r\n$wpdb->posts.ID FROM $wpdb->posts";
 
-			foreach ( $acpt_fields as $field )
-			{
+			foreach ( $acpt_fields as $field ) {
 				$sql .= "\r\nLEFT JOIN $wpdb->postmeta AS meta_$field 
 	ON meta_$field.post_id = $wpdb->posts.ID AND meta_$field.meta_key = 'acpt_$field'";
 			}
@@ -410,8 +371,7 @@ class acpt_admin
 				'singular_name' => 'singular name',
 				'plural_name'   => 'plural name'
 			) as $meta_key => $meta_title
-		)
-		{
+		) {
 			$count = $wpdb->get_var( $wpdb->prepare(
 				"SELECT" . " COUNT(*) 
 				FROM $wpdb->posts as posts
@@ -422,8 +382,7 @@ class acpt_admin
 				AND posts.post_status = 'publish'
 				AND postmeta.meta_value = %s; ", $post_data->$meta_key ) );
 
-			if ( $count > 1 )
-			{
+			if ( $count > 1 ) {
 				$post_data->error =
 					"Another post type has the same label '{$post_data->$meta_key}'. Please change the 
 					$meta_title and save again.";
@@ -442,25 +401,19 @@ class acpt_admin
 		);
 
 		// build out label data
-		if ( $post_meta['auto_generate_labels'] )
-		{
+		if ( $post_meta['auto_generate_labels'] ) {
 			$post_meta['labels'] = $this->generate_labels(
 				$post_meta['labels']['name'],
 				$post_meta['labels']['singular_name'],
 				$post_meta['labels'] );
 
 			// update post_meta for auto generated labels
-			foreach ( $post_meta['labels'] as $meta_key => $meta_value )
-			{
+			foreach ( $post_meta['labels'] as $meta_key => $meta_value ) {
 				update_post_meta( $post->ID, 'acpt_label_' . $meta_key, $meta_value );
 			}
-		}
-		else
-		{
-			foreach ( $post_meta as $field_name => $field_value )
-			{
-				if ( 'label_' === substr( $field_name, 0, 6 ) )
-				{
+		} else {
+			foreach ( $post_meta as $field_name => $field_value ) {
+				if ( 'label_' === substr( $field_name, 0, 6 ) ) {
 					$post_meta['labels'][ substr( $field_name, 6 ) ] = $field_value;
 
 					unset( $post_meta[ $field_name ] );
@@ -481,28 +434,22 @@ class acpt_admin
 				'can_export',
 				'show_in_rest'
 			) as $bool_meta
-		)
-		{
-			if ( isset( $post_meta[ $bool_meta ] ) )
-			{
+		) {
+			if ( isset( $post_meta[ $bool_meta ] ) ) {
 				$post_meta[ $bool_meta ] = $post_meta[ $bool_meta ] == "1";
 			}
 		}
 
-		if ( $post_meta['show_in_admin_menu_under_parent'] )
-		{
+		if ( $post_meta['show_in_admin_menu_under_parent'] ) {
 			$post_meta['show_in_menu'] = $post_meta['show_in_admin_menu_under_parent'];
-		}
-		else
-		{
+		} else {
 			// could be a string so cast to bool if 1 or 0
 			$post_meta['show_in_menu'] = (bool) $post_meta['show_in_menu'];
 		}
 
 		$post_meta['rest_base'] = trim( $post_meta['rest_base_slug'] );
 
-		if ( ! $post_meta['rest_base'] )
-		{
+		if ( ! $post_meta['rest_base'] ) {
 			$post_meta['rest_base'] = $post_data->post_type;
 			update_post_meta( $post->ID, 'acpt_rest_base_slug', $post_meta['rest_base'] );
 		}
@@ -526,8 +473,7 @@ class acpt_admin
 
 		$menu_icon = $post_meta['menu_icon'];
 
-		if ( strlen( $menu_icon ) < 11 || ! isset( $dashicons[ substr( $menu_icon, 10 ) ] ) )
-		{
+		if ( strlen( $menu_icon ) < 11 || ! isset( $dashicons[ substr( $menu_icon, 10 ) ] ) ) {
 			$menu_icon = 'dashicons-admin-page';
 		}
 
@@ -549,8 +495,7 @@ class acpt_admin
 	 *
 	 * @return array
 	 */
-	public static function generate_labels( $plural_name, $singular_name, $labels = array() )
-	{
+	public static function generate_labels( $plural_name, $singular_name, $labels = array() ) {
 		return array_merge(
 			(array) $labels,
 			array(
@@ -587,8 +532,7 @@ class acpt_admin
 	 * @param string $type
 	 * @param bool $is_dismissible
 	 */
-	function add_notice( $message, $type = 'info', $is_dismissible = true )
-	{
+	function add_notice( $message, $type = 'info', $is_dismissible = true ) {
 		$notices = $this->get_notices();
 
 		$notices[] = (object) compact( 'message', 'type', 'is_dismissible' );
@@ -600,8 +544,7 @@ class acpt_admin
 	 * gets saved notices
 	 * @return array
 	 */
-	function get_notices()
-	{
+	function get_notices() {
 		$notices = (array) json_decode( get_option( 'acpt_admin_notices_' . get_current_user_id() ) );
 
 		return $notices;
@@ -612,14 +555,10 @@ class acpt_admin
 	 *
 	 * @param $notices
 	 */
-	function set_notices( $notices )
-	{
-		if ( $notices === false )
-		{
+	function set_notices( $notices ) {
+		if ( $notices === false ) {
 			delete_option( 'acpt_admin_notices_' . get_current_user_id() );
-		}
-		else
-		{
+		} else {
 			update_option( 'acpt_admin_notices_' . get_current_user_id(), json_encode( $notices ) );
 		}
 
@@ -629,14 +568,11 @@ class acpt_admin
 	/**
 	 * Displays admin notices
 	 */
-	function admin_notices()
-	{
+	function admin_notices() {
 		$notices = $this->get_notices();
 
-		if ( count( $notices ) )
-		{
-			foreach ( $notices as $notice )
-			{
+		if ( count( $notices ) ) {
+			foreach ( $notices as $notice ) {
 				printf(
 					'<div class="%1$s"><p>%2$s</p></div>',
 					'notice notice-' . $notice->type . ( $notice->is_dismissible ? ' is-dismissible' : '' ),

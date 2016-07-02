@@ -8,10 +8,13 @@ Author URI: http://iambrian.com/
 */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) )
-{
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __FILE__ ) . '/class.acpt.php';
-new acpt();
+add_action( 'init', 'acpt_init', 0 );
+
+function acpt_init() {
+	require_once dirname( __FILE__ ) . '/class.acpt.php';
+	new acpt();
+}
