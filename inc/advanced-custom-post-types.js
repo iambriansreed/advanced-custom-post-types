@@ -1,8 +1,6 @@
-(function ($)
-{
+(function ($) {
 
-    $(document).ready(function ()
-    {
+    $(document).ready(function () {
 
         var
             plural_name_input = $('[data-name="acpt_plural_name"] :input'),
@@ -14,8 +12,7 @@
 
         singular_name_input.on('keyup', generate_titles);
 
-        auto_generate_checkbox.on('change', function ()
-        {
+        auto_generate_checkbox.on('change', function () {
 
             generate_titles();
 
@@ -23,8 +20,7 @@
 
         }).trigger('change');
 
-        function generate_titles()
-        {
+        function generate_titles() {
             if (!auto_generate_checkbox[0].checked) return;
 
             var names_values = label_patterns(singular_name_input.val(), plural_name_input.val());
@@ -35,8 +31,7 @@
             });
         }
 
-        function label_patterns(_singular_name, _plural_name)
-        {
+        function label_patterns(_singular_name, _plural_name) {
             var
                 singular_name_lowercase = _singular_name.toLowerCase(),
                 plural_name_lowercase = _plural_name.toLowerCase(),
@@ -72,20 +67,17 @@
 
     });
 
-    function toTitleCase(str)
-    {
+    function toTitleCase(str) {
         return str.replace(/\w\S*/g, function (txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     }
 
-    function format(data)
-    {
+    function format(data) {
         if (!data.id) return data.text;
 
         return '<i style="vertical-align: middle;" class="dashicons ' + data.id.toLowerCase() + '"></i> ' + data.text;
     }
 
-    acf.add_action('ready append', function ($el)
-    {
+    acf.add_action('ready append', function ($el) {
         $('[data-name="acpt_menu_icon"] select').select2({
             width: '100%',
             formatResult: format,
