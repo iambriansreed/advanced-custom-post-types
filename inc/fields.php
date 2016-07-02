@@ -248,7 +248,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 			array(
 				'key'               => 'field_576f06fc83119',
 				'label'             => 'Show in Admin UI',
-				'name'              => 'acpt_show_in_ui',
+				'name'              => 'acpt_show_ui',
 				'type'              => 'true_false',
 				'instructions'      => '',
 				'required'          => 0,
@@ -513,7 +513,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ):
 			array(
 				'key'               => 'field_576f06fc8315f',
 				'label'             => 'Custom Position',
-				'name'              => 'acpt_custom_position',
+				'name'              => 'acpt_menu_position_custom',
 				'type'              => 'number',
 				'instructions'      => '',
 				'required'          => 0,

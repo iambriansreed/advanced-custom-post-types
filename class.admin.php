@@ -6,6 +6,7 @@ class acpt_admin {
 	private $post_types_info = null;
 
 	public function __construct( $post_types_info ) {
+
 		$this->post_types_info = $post_types_info;
 
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -294,11 +295,12 @@ class acpt_admin {
 			'show_in_rest',
 			'rest_base_slug',
 			'rest_controller_class',
-			'show_in_ui',
+			'show_ui',
 			'show_in_menu',
 			'show_in_admin_menu_under_parent',
 			'show_in_admin_bar',
 			'menu_position',
+			'menu_position_custom',
 			'menu_icon',
 			'label_add_new',
 			'label_add_new_item',
@@ -467,7 +469,11 @@ class acpt_admin {
 		);
 
 		$post_meta['menu_position'] = intval( $post_meta['menu_position'] );
-		//floatval( intval( $post_meta['menu_position'] ) . '.17574474777' );
+
+		if ( $post_meta['menu_position'] === - 1 ) {
+			$post_meta['menu_position'] = intval( $post_meta['menu_position_custom'] );
+		}
+
 
 		$dashicons = $this->get_dashicons();
 
