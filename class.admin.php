@@ -21,6 +21,7 @@ class acpt_admin {
 
 		add_filter( 'acf/load_field/name=acpt_taxonomies', array( $this, 'acf_load_field_name_acpt_taxonomies' ) );
 		add_filter( 'acf/load_field/name=acpt_menu_icon', array( $this, 'acf_load_field_name_acpt_menu_icon' ) );
+		add_filter( 'acf/load_field/name=acpt_rewrite_slug', array( $this, 'acf_load_field_name_acpt_rewrite_slug' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
@@ -188,22 +189,28 @@ class acpt_admin {
 	}
 
 	public function save_post( $post_id ) {
+
 		global $post;
 
-		$doing_autosave     = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
-		$not_acpt_post_type = get_post_type( $post_id ) !== self::ACPT_POST_TYPE;
+		$is_doing_autosave = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
+		$is_acpt_post_type = self::ACPT_POST_TYPE === (string) get_post_type( $post_id );
+		$is_published      = 'publish' === (string) get_post_status( $post_id );
 
-		if ( $doing_autosave || $not_acpt_post_type ) {
+		// not an post type to edit
+		if ( ! $is_acpt_post_type ) {
+			return;
+		} // is a post type to edit but it's an autosave or not published
+		else if ( $is_doing_autosave || ! $is_published ) {
+
+			// post has been saved before
+			if ( is_a( $post, 'WP_Post' ) ) {
+				delete_option( $post->post_name );
+			}
+
 			return;
 		}
 
-		if ( 'trash' == get_post_status( $post_id ) ) {
-			delete_option( $post->post_name );
-
-			return;
-		}
-
-		$post_data = $this->get_content_type_data( $post );
+		$post_data = $this->set_content_type_data( $post );
 
 		remove_action( 'save_post', array( $this, 'save_post' ) );
 
@@ -223,6 +230,148 @@ class acpt_admin {
 		}
 	}
 
+	/**
+	 * @param $post
+	 *
+	 * @return object
+	 */
+	public function set_content_type_data( $post ) {
+
+		$content_type_data = (object) array(
+			'post_type'                => '',
+			'plural_name'              => '',
+			'singular_name'            => '',
+			'args'                     => array(),
+			'taxonomies'               => array(),
+			'menu_icon_unicode_number' => 0,
+			'error'                    => null,
+			'saved'                    => time()
+		);
+
+		$args = $this->get_content_type_post_meta( $post->ID );
+
+		$content_type_data->plural_name   = $args['plural_name'];
+		$content_type_data->singular_name = $args['singular_name'];
+		$content_type_data->post_type     = $this->sanitize_post_type( $args['singular_name'] );
+		$content_type_data->post_name     = 'acpt_post_type_' . $content_type_data->post_type;
+
+		$unique_fields = array(
+			'singular_name' => 'singular name',
+			'plural_name'   => 'plural name'
+		);
+
+		$unique_errors = array();
+
+		foreach ( $unique_fields as $key => $title ) {
+			$value = $args[ $key ];
+			if ( ! $this->is_unique( $key, $value ) ) {
+				$unique_errors[] = "Another post type has the same label '$value'. " .
+				                   "Please change the $title and save again.";
+			}
+		}
+
+		if ( count( $unique_errors ) ) {
+			$content_type_data->error = implode( '<br>', $unique_errors );
+
+			return $content_type_data;
+		}
+
+		$args['plural_name']   = ucwords( $args['plural_name'] );
+		$args['singular_name'] = ucwords( $args['singular_name'] );
+		$args['label']         = $args['plural_name'];
+
+		// update ucwords names
+		update_post_meta( $post->ID, 'acpt_plural_name', $args['plural_name'] );
+		update_post_meta( $post->ID, 'acpt_singular_name', $args['singular_name'] );
+
+		// build out label data
+		if ( $args['auto_generate_labels'] ) {
+
+			$args['labels'] = $this->generate_labels(
+				$args['plural_name'],
+				$args['singular_name']
+			);
+
+			// update post_meta for auto generated labels
+			foreach ( $args['labels'] as $meta_key => $meta_value ) {
+				update_post_meta( $post->ID, 'acpt_label_' . $meta_key, $meta_value );
+				unset( $args[ 'label_' . $meta_key ] );
+			}
+
+		} else {
+
+			foreach ( $args as $field_name => $field_value ) {
+				if ( 'label_' === substr( $field_name, 0, 6 ) ) {
+					$args['labels'][ substr( $field_name, 6 ) ] = $field_value;
+					unset( $args[ $field_name ] );
+				}
+			}
+		}
+
+		// set values to true or false
+		$args['public']              = $args['public'] == "1";
+		$args['has_archive']         = $args['has_archive'] == "1";
+		$args['exclude_from_search'] = $args['exclude_from_search'] == "1";
+		$args['publicly_queryable']  = $args['publicly_queryable'] == "1";
+		$args['show_ui']             = $args['show_ui'] == "1";
+		$args['show_in_nav_menus']   = $args['show_in_nav_menus'] == "1";
+		$args['show_in_admin_bar']   = $args['show_in_admin_bar'] == "1";
+		$args['hierarchical']        = $args['hierarchical'] == "1";
+		$args['can_export']          = $args['can_export'] == "1";
+		$args['show_in_rest']        = $args['show_in_rest'] == "1";
+
+		// set show_in_menu to bool or to parent if set
+		if ( $args['show_in_admin_menu_under_parent'] ) {
+			$args['show_in_menu'] = $args['show_in_admin_menu_under_parent'];
+		} else {
+			// could be a string so cast to bool if 1 or 0
+			$args['show_in_menu'] = (bool) $args['show_in_menu'];
+		}
+
+		// set rest_base to default id empty
+		$args['rest_base'] = trim( $args['rest_base_slug'] );
+
+		if ( ! $args['rest_base'] ) {
+			$args['rest_base'] = $content_type_data->post_type;
+			update_post_meta( $post->ID, 'acpt_rest_base_slug', $args['rest_base'] );
+		}
+
+		$content_type_data->taxonomies = unserialize( $args['taxonomies'] );
+		$args['supports']              = unserialize( $args['supports'] );
+
+		// set menu position from select or custom input
+		$args['menu_position'] = intval( $args['menu_position'] );
+
+		if ( $args['menu_position'] === - 1 ) {
+			$args['menu_position'] = intval( $args['menu_position_custom'] );
+		}
+
+		// validate and set dashicon
+		$dashicon                                    = $this->get_dashicon( $args['menu_icon'] );
+		$args['menu_icon']                           = $dashicon->class_name;
+		$content_type_data->menu_icon_unicode_number = $dashicon->unicode_number;
+		update_post_meta( $post->ID, 'acpt_menu_icon', $args['menu_icon'] );
+
+		// clear unused args
+		unset(
+			$args['ID'],
+			$args['plural_name'],
+			$args['singular_name'],
+			$args['auto_generate_labels'],
+			$args['taxonomies'],
+			$args['show_in_admin_menu_under_parent'],
+			$args['rest_base_slug'],
+			$args['menu_position_custom']
+		);
+
+		// set args
+		$content_type_data->args = $args;
+
+		$content_type_data->saved = time();
+
+		return $content_type_data;
+	}
+
 	public function acf_load_field_name_acpt_taxonomies( $field ) {
 		$field['choices'] = array();
 
@@ -240,10 +389,30 @@ class acpt_admin {
 
 	private $dashicons = false;
 
+	public function get_dashicon( $class_name ) {
+
+		$dashicons = $this->get_dashicons();
+
+		$dashicon = (object) array(
+			'class_name'     => '',
+			'unicode_number' => ''
+		);
+
+		$dashicon->class_name = trim( (string) $class_name );
+
+		if ( strlen( $dashicon->class_name ) < 11 || ! isset( $dashicons[ substr( $dashicon->class_name, 10 ) ] ) ) {
+			$dashicon->class_name = 'dashicons-admin-post';
+		}
+
+		$dashicon->unicode_number = $dashicons[ substr( $dashicon->class_name, 10 ) ];
+
+		return $dashicon;
+	}
+
 	public function get_dashicons() {
+
 		if ( ! $this->dashicons ) {
-			$dashicons =
-				(array) json_decode( file_get_contents( dirname( __FILE__ ) . '/inc/dashicons.json' ) );
+			$dashicons = (array) json_decode( file_get_contents( dirname( __FILE__ ) . '/inc/dashicons.json' ) );
 
 			$this->dashicons = array();
 
@@ -268,16 +437,44 @@ class acpt_admin {
 		return $field;
 	}
 
+	public function acf_load_field_name_acpt_rewrite_slug( $field ) {
+
+		global $post;
+
+		if ( $post ) {
+			$field['default_value'] = esc_url( get_post_meta( $post->ID, 'singular_name', 1 ) );
+		}
+
+		return $field;
+	}
+
 	public function sanitize_post_type( $singular_name ) {
 		return str_replace( '-', '_', sanitize_title( $singular_name ) );
 	}
 
 	/**
-	 * @param $post
+	 * @param $key
+	 * @param $value
 	 *
-	 * @return object
+	 * @return bool
 	 */
-	public function get_content_type_data( $post ) {
+	public function is_unique( $key, $value ) {
+
+		global $wpdb;
+
+		return 1 == $wpdb->get_var( $wpdb->prepare(
+			"SELECT" . " COUNT(*) 
+			FROM $wpdb->posts as posts
+			LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
+			AND postmeta.meta_key = 'acpt_$key'
+			WHERE 1 = 1
+			AND posts.post_type = 'acpt_content_type'
+			AND posts.post_status = 'publish'
+			AND postmeta.meta_value = %s; ", $value ) );
+	}
+
+	public function get_content_type_post_meta( $post_id ) {
+
 		global $wpdb;
 
 		$acpt_fields = array(
@@ -289,6 +486,8 @@ class acpt_admin {
 			'hierarchical',
 			'auto_generate_labels',
 			'public',
+			'has_archive',
+			'show_in_nav_menus',
 			'exclude_from_search',
 			'publicly_queryable',
 			'can_export',
@@ -326,170 +525,26 @@ class acpt_admin {
 			'label_name_admin_bar'
 		);
 
-		$post_data = (object) array(
-			'post_type'                => '',
-			'plural_name'              => '',
-			'singular_name'            => '',
-			'args'                     => array(),
-			'taxonomies'               => array(),
-			'menu_icon_unicode_number' => 0,
-			'valid'                    => null,
-			'saved'                    => time()
-		);
+		$sql = 'SELECT ';
 
-		$post_meta = array();
+		foreach ( $acpt_fields as $field ) {
+			$sql .= "\r\nmeta_$field.meta_value AS $field,";
+		}
 
-		if ( 'get post_meta' ) {
-			$sql = 'SELECT ';
+		$sql .= "\r\n$wpdb->posts.ID FROM $wpdb->posts";
 
-			foreach ( $acpt_fields as $field ) {
-				$sql .= "\r\nmeta_$field.meta_value AS $field,";
-			}
-
-			$sql .= "\r\n$wpdb->posts.ID FROM $wpdb->posts";
-
-			foreach ( $acpt_fields as $field ) {
-				$sql .= "\r\nLEFT JOIN $wpdb->postmeta AS meta_$field 
+		foreach ( $acpt_fields as $field ) {
+			$sql .= "\r\nLEFT JOIN $wpdb->postmeta AS meta_$field 
 	ON meta_$field.post_id = $wpdb->posts.ID AND meta_$field.meta_key = 'acpt_$field'";
-			}
+		}
 
-			$sql .= "
-		WHERE $wpdb->posts.ID = $post->ID
+		$sql .= "
+		WHERE $wpdb->posts.ID = $post_id
 		AND $wpdb->posts.post_type = 'acpt_content_type' 
 		AND $wpdb->posts.post_status = 'publish';";
 
-			$post_meta = $wpdb->get_row( $sql, ARRAY_A );
-		}
+		return $wpdb->get_row( $sql, ARRAY_A );
 
-		$post_data->plural_name   = $post_meta['plural_name'];
-		$post_data->singular_name = $post_meta['singular_name'];
-		$post_data->post_type     = $this->sanitize_post_type( $post_meta['singular_name'] );
-		$post_data->post_name     = 'acpt_post_type_' . $post_data->post_type;
-		$post_data->error         = '';
-
-		// validate unique
-		foreach (
-			array(
-				'singular_name' => 'singular name',
-				'plural_name'   => 'plural name'
-			) as $meta_key => $meta_title
-		) {
-			$count = $wpdb->get_var( $wpdb->prepare(
-				"SELECT" . " COUNT(*) 
-				FROM $wpdb->posts as posts
-				LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
-				AND postmeta.meta_key = 'acpt_$meta_key'
-				WHERE 1 = 1
-				AND posts.post_type = 'acpt_content_type'
-				AND posts.post_status = 'publish'
-				AND postmeta.meta_value = %s; ", $post_data->$meta_key ) );
-
-			if ( $count > 1 ) {
-				$post_data->error =
-					"Another post type has the same label '{$post_data->$meta_key}'. Please change the 
-					$meta_title and save again.";
-
-				return $post_data;
-			}
-		}
-
-
-		$post_meta['label']    = $post_meta['plural_name'];
-		$post_meta['supports'] = unserialize( $post_meta['supports'] );
-
-		$post_meta['labels'] = array(
-			'name'          => ucwords( $post_meta['plural_name'] ),
-			'singular_name' => ucwords( $post_meta['singular_name'] )
-		);
-
-		// build out label data
-		if ( $post_meta['auto_generate_labels'] ) {
-			$post_meta['labels'] = $this->generate_labels(
-				$post_meta['labels']['name'],
-				$post_meta['labels']['singular_name'],
-				$post_meta['labels'] );
-
-			// update post_meta for auto generated labels
-			foreach ( $post_meta['labels'] as $meta_key => $meta_value ) {
-				update_post_meta( $post->ID, 'acpt_label_' . $meta_key, $meta_value );
-			}
-		} else {
-			foreach ( $post_meta as $field_name => $field_value ) {
-				if ( 'label_' === substr( $field_name, 0, 6 ) ) {
-					$post_meta['labels'][ substr( $field_name, 6 ) ] = $field_value;
-
-					unset( $post_meta[ $field_name ] );
-				}
-			}
-		}
-
-		// set meta to true or false
-		foreach (
-			array(
-				'public',
-				'exclude_from_search',
-				'publicly_queryable',
-				'show_ui',
-				'show_in_nav_menus',
-				'show_in_admin_bar',
-				'hierarchical',
-				'can_export',
-				'show_in_rest'
-			) as $bool_meta
-		) {
-			if ( isset( $post_meta[ $bool_meta ] ) ) {
-				$post_meta[ $bool_meta ] = $post_meta[ $bool_meta ] == "1";
-			}
-		}
-
-		if ( $post_meta['show_in_admin_menu_under_parent'] ) {
-			$post_meta['show_in_menu'] = $post_meta['show_in_admin_menu_under_parent'];
-		} else {
-			// could be a string so cast to bool if 1 or 0
-			$post_meta['show_in_menu'] = (bool) $post_meta['show_in_menu'];
-		}
-
-		$post_meta['rest_base'] = trim( $post_meta['rest_base_slug'] );
-
-		if ( ! $post_meta['rest_base'] ) {
-			$post_meta['rest_base'] = $post_data->post_type;
-			update_post_meta( $post->ID, 'acpt_rest_base_slug', $post_meta['rest_base'] );
-		}
-
-		$post_data->taxonomies = unserialize( $post_meta['taxonomies'] );
-
-		unset(
-			$post_meta['ID'],
-			$post_meta['plural_name'],
-			$post_meta['singular_name'],
-			$post_meta['auto_generate_labels'],
-			$post_meta['taxonomies'],
-			$post_meta['show_in_admin_menu_under_parent'],
-			$post_meta['rest_base_slug']
-		);
-
-		$post_meta['menu_position'] = intval( $post_meta['menu_position'] );
-
-		if ( $post_meta['menu_position'] === - 1 ) {
-			$post_meta['menu_position'] = intval( $post_meta['menu_position_custom'] );
-		}
-
-
-		$dashicons = $this->get_dashicons();
-
-		$menu_icon = $post_meta['menu_icon'];
-
-		if ( strlen( $menu_icon ) < 11 || ! isset( $dashicons[ substr( $menu_icon, 10 ) ] ) ) {
-			$menu_icon = 'dashicons-admin-page';
-		}
-
-		$post_data->args = $post_meta;
-
-		$post_data->menu_icon_unicode_number = $dashicons[ substr( $menu_icon, 10 ) ];
-
-		$post_data->saved = time();
-
-		return $post_data;
 	}
 
 	/**
@@ -501,9 +556,8 @@ class acpt_admin {
 	 *
 	 * @return array
 	 */
-	public static function generate_labels( $plural_name, $singular_name, $labels = array() ) {
+	public static function generate_labels( $plural_name, $singular_name ) {
 		return array_merge(
-			(array) $labels,
 			array(
 				'add_new'               => 'Add New',
 				'add_new_item'          => 'Add New ' . $singular_name,
