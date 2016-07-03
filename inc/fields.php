@@ -148,38 +148,6 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 				'default_value'     => 1,
 			),
 			array(
-				'key'               => 'field_576f06fc22742',
-				'label'             => 'Has Archive',
-				'name'              => 'acpt_has_archive',
-				'type'              => 'true_false',
-				'instructions'      => '',
-				'required'          => 0,
-				'conditional_logic' => 0,
-				'wrapper'           => array(
-					'width' => '',
-					'class' => '',
-					'id'    => '',
-				),
-				'message'           => 'Whether post type archives are enabled.',
-				'default_value'     => 1,
-			),
-			array(
-				'key'               => 'field_576f06fc32742',
-				'label'             => 'Show in Navigation Menus',
-				'name'              => 'acpt_show_in_nav_menus',
-				'type'              => 'true_false',
-				'instructions'      => '',
-				'required'          => 0,
-				'conditional_logic' => 0,
-				'wrapper'           => array(
-					'width' => '',
-					'class' => '',
-					'id'    => '',
-				),
-				'message'           => 'Whether post type is available for selection in navigation menus..',
-				'default_value'     => 1,
-			),
-			array(
 				'key'               => 'field_576f06fc83119',
 				'label'             => 'Show in Admin UI',
 				'name'              => 'acpt_show_ui',
@@ -209,6 +177,38 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 					'id'    => '',
 				),
 				'message'           => 'Whether to trigger the handling of rewrites for this post type.',
+				'default_value'     => 1,
+			),
+			array(
+				'key'               => 'field_576f06fc22742',
+				'label'             => 'Has Archive',
+				'name'              => 'acpt_has_archive',
+				'type'              => 'true_false',
+				'instructions'      => '',
+				'required'          => 0,
+				'conditional_logic' => 0,
+				'wrapper'           => array(
+					'width' => '',
+					'class' => '',
+					'id'    => '',
+				),
+				'message'           => 'Whether post type archives are enabled.',
+				'default_value'     => 1,
+			),
+			array(
+				'key'               => 'field_576f06fc32742',
+				'label'             => 'Show in Navigation Menus',
+				'name'              => 'acpt_show_in_nav_menus',
+				'type'              => 'true_false',
+				'instructions'      => '',
+				'required'          => 0,
+				'conditional_logic' => 0,
+				'wrapper'           => array(
+					'width' => '',
+					'class' => '',
+					'id'    => '',
+				),
+				'message'           => 'Whether post type is available for selection in navigation menus..',
 				'default_value'     => 1,
 			),
 			array(
@@ -275,68 +275,6 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 				'message'           => 'Whether to expose this post type in the REST API.',
 				'default_value'     => 0,
 			),
-			array(
-				'key'               => 'field_576f06fc830d6',
-				'label'             => 'Base Slug',
-				'name'              => 'acpt_rest_base_slug',
-				'type'              => 'text',
-				'instructions'      => 'The base slug that this post type will use when accessed using the REST API.',
-				'required'          => 0,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field'    => 'field_576f06fc830c9',
-							'operator' => '==',
-							'value'    => '1',
-						),
-					),
-				),
-				'wrapper'           => array(
-					'width' => '',
-					'class' => 'child-field',
-					'id'    => '',
-				),
-				'default_value'     => '',
-				'placeholder'       => '',
-				'prepend'           => '',
-				'append'            => '',
-				'maxlength'         => '',
-				'readonly'          => 0,
-				'disabled'          => 0,
-			),
-			/*
-			 * ToDo: optional custom controller to use instead of WP_REST_Posts_Controller
-			 *
-			array(
-				'key'               => 'field_576f06fc830e4',
-				'label'             => 'Controller Class',
-				'name'              => 'acpt_rest_controller_class',
-				'type'              => 'text',
-				'instructions'      => 'An optional custom controller to use instead of WP_REST_Posts_Controller. Must be a subclass of WP_REST_Controller.',
-				'required'          => 0,
-				'conditional_logic' => array(
-					array(
-						array(
-							'field'    => 'field_576f06fc830c9',
-							'operator' => '==',
-							'value'    => '1',
-						),
-					),
-				),
-				'wrapper'           => array(
-					'width' => '',
-					'class' => 'child-field',
-					'id'    => '',
-				),
-				'default_value'     => '',
-				'placeholder'       => '',
-				'prepend'           => '',
-				'append'            => '',
-				'maxlength'         => '',
-				'readonly'          => 0,
-				'disabled'          => 0,
-			),
-			*/
 			array(
 				'key'               => 'field_576f06fc83106',
 				'label'             => 'Admin',
@@ -576,7 +514,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 			),
 			array(
 				'key'               => 'field_5774abc0a9dfc',
-				'label'             => 'Auto Generate',
+				'label'             => 'Create Labels Automatically',
 				'name'              => 'acpt_auto_generate_labels',
 				'type'              => 'true_false',
 				'instructions'      => '',
@@ -587,7 +525,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 					'class' => '',
 					'id'    => '',
 				),
-				'message'           => 'Generate the text below automatically from the plural and singular names.',
+				'message'           => 'Whether to automatically create the labels.',
 				'default_value'     => 1,
 			),
 			array(
@@ -827,7 +765,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 			),
 			array(
 				'key'               => 'field_576f06fc8321b',
-				'label'             => 'Insert into Item',
+				'label'             => /** @lang text */'Insert into Item',
 				'name'              => 'acpt_label_insert_into_item',
 				'type'              => 'text',
 				'instructions'      => 'Text for the media frame button. Default is Insert into post/Insert into page.
@@ -1071,7 +1009,15 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 				'type'              => 'tab',
 				'instructions'      => '',
 				'required'          => 0,
-				'conditional_logic' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field'    => 'field_576f06fc59164',
+							'operator' => '==',
+							'value'    => '1',
+						),
+					),
+				),
 				'wrapper'           => array(
 					'width' => '',
 					'class' => '',
@@ -1148,6 +1094,80 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 				),
 				'message'           => 'Whether the permalink structure should provide for pagination.',
 				'default_value'     => 1,
+			),
+			array(
+				'key'               => 'field_576f06fc73106',
+				'label'             => 'REST API',
+				'name'              => '',
+				'type'              => 'tab',
+				'instructions'      => '',
+				'required'          => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field'    => 'field_576f06fc830c9',
+							'operator' => '==',
+							'value'    => '1',
+						),
+					),
+				),
+				'wrapper'           => array(
+					'width' => '',
+					'class' => '',
+					'id'    => '',
+				),
+				'placement'         => 'top',
+				'endpoint'          => 0,
+			),
+			array(
+				'key'               => 'field_576f06fc830d6',
+				'label'             => 'Base Slug',
+				'name'              => 'acpt_rest_base_slug',
+				'type'              => 'text',
+				'instructions'      => 'The base slug that this post type will use when accessed using the REST API.',
+				'required'          => 0,
+				'conditional_logic' => 0,
+				'wrapper'           => array(
+					'width' => '',
+					'class' => 'child-field',
+					'id'    => '',
+				),
+				'default_value'     => '',
+				'placeholder'       => '',
+				'prepend'           => '',
+				'append'            => '',
+				'maxlength'         => '',
+				'readonly'          => 0,
+				'disabled'          => 0,
+			),
+			array(
+				'key'               => 'field_576f06fc830e4',
+				'label'             => 'Controller Class',
+				'name'              => 'acpt_rest_controller_class',
+				'type'              => 'text',
+				'instructions'      => 'An optional custom controller to use instead of WP_REST_Posts_Controller. Must be a subclass of WP_REST_Controller.',
+				'required'          => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field'    => 'field_576f06fc830c9',
+							'operator' => '==',
+							'value'    => '1',
+						),
+					),
+				),
+				'wrapper'           => array(
+					'width' => '',
+					'class' => 'child-field',
+					'id'    => '',
+				),
+				'default_value'     => '',
+				'placeholder'       => '',
+				'prepend'           => '',
+				'append'            => '',
+				'maxlength'         => '',
+				'readonly'          => 0,
+				'disabled'          => 0,
 			),
 		) ),
 		'location'              => array(

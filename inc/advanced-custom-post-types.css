@@ -3,10 +3,11 @@
 .acf-field.hide-title .acf-label,
 #minor-publishing,
 #submitdiv > button.handlediv,
+fieldset.metabox-prefs,
 #post-body-content {
     display: none !important;
-
 }
+
 
 .acf-fields > .acf-field.child-field {
     padding-top: 0;
