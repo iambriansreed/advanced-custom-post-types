@@ -386,7 +386,7 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 				'required'          => 0,
 				'wrapper'           => array(
 					'width' => '',
-					'class' => '',
+					'class' => 'child-field',
 					'id'    => '',
 				),
 				'message'           => 'Whether to show the post type under a parent.',
@@ -404,9 +404,9 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 			array(
 				'key'               => 'field_576f06fc83135',
 				'label'             => 'Under Parent',
-				'name'              => 'acpt_show_in_admin_menu_under_parent',
-				'type'              => 'text',
-				'instructions'      => 'If an existing top level page such as \'tools.php\' or \'edit.php?post_type=page\', the post type will be placed as a sub menu of that.',
+				'name'              => 'acpt_show_under_parent',
+				'type'              => 'select',
+				'instructions'      => 'The post type will be placed as a sub menu of the selected page.',
 				'required'          => 0,
 				'wrapper'           => array(
 					'width' => '',
@@ -414,12 +414,6 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 					'id'    => '',
 				),
 				'default_value'     => '',
-				'placeholder'       => '',
-				'prepend'           => '',
-				'append'            => '',
-				'maxlength'         => '',
-				'readonly'          => 0,
-				'disabled'          => 0,
 				'conditional_logic' => array(
 					array(
 						array(
@@ -444,7 +438,12 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 							'operator' => '!=',
 							'value'    => '1',
 						),
-					),
+						array(
+							'field'    => 'field_576f06fc83127',
+							'operator' => '==',
+							'value'    => '1',
+						),
+					)
 				),
 				'wrapper'           => array(
 					'width' => '',
@@ -521,7 +520,12 @@ if ( function_exists( 'acf_add_local_field_group' ) ) {
 							'operator' => '!=',
 							'value'    => '1',
 						),
-					),
+						array(
+							'field'    => 'field_576f06fc83127',
+							'operator' => '==',
+							'value'    => '1',
+						),
+					)
 				),
 				'wrapper'           => array(
 					'width' => '',

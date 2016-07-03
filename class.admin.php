@@ -14,17 +14,80 @@ class acpt_admin {
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'acf/init', array( $this, 'acf_init' ) );
 		add_action( 'admin_footer', array( $this, 'admin_footer' ) );
-
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
-		add_filter( 'acf/load_field/name=acpt_taxonomies', array( $this, 'acf_load_field_name_acpt_taxonomies' ) );
-		add_filter( 'acf/load_field/name=acpt_menu_icon', array( $this, 'acf_load_field_name_acpt_menu_icon' ) );
-		add_filter( 'acf/load_field/name=acpt_rewrite_slug', array( $this, 'acf_load_field_name_acpt_rewrite_slug' ) );
+		$this->acf_load_field_filters(
+			'acpt_taxonomies',
+			'acpt_menu_icon',
+			'acpt_rewrite_slug',
+			'acpt_show_under_parent'
+		);
 
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
+	}
+
+	private function acf_load_field_filters() {
+		foreach ( func_get_args() as $field_name ) {
+			add_filter( 'acf/load_field/name=' . $field_name,
+				array( $this, 'acf_load_field_name_' . $field_name ) );
+		}
+	}
+
+	public function acf_load_field_name_acpt_menu_icon( $field ) {
+		$field['choices'] = array(
+			'' => 'Select Icon'
+		);
+
+		foreach ( $this->get_dashicons() as $class => $unicode ) {
+			$field['choices'][ 'dashicons-' . $class ] = $class;
+		}
+
+		return $field;
+	}
+
+	public function acf_load_field_name_acpt_rewrite_slug( $field ) {
+
+		global $post;
+
+		if ( $post ) {
+			$field['default_value'] = esc_url( get_post_meta( $post->ID, 'singular_name', 1 ) );
+		}
+
+		return $field;
+	}
+
+	public function acf_load_field_name_acpt_taxonomies( $field ) {
+
+		$field['choices'] = array();
+
+		$taxonomies = get_taxonomies( array( 'public' => true ), 'objects' );
+
+		foreach ( $taxonomies as $value => $taxonomy ) {
+			$field['choices'][ $value ] = $taxonomy->labels->name;
+		}
+
+		unset( $field['choices']['post_format'] );
+
+		// return the field
+		return $field;
+	}
+
+	public function acf_load_field_name_acpt_show_under_parent( $field ) {
+
+		$field['choices'] = array();
+
+		foreach ( $GLOBALS['menu'] as $menu_item ) {
+			if ( $menu_item[0] && $menu_item[2] != 'edit.php?post_type=acpt_content_type' ) {
+				// strip html counts
+				$field['choices'][ $menu_item[2] ] = preg_replace( "/ <.*$/", "", $menu_item[0] );
+			}
+		}
+
+		// return the field
+		return $field;
 	}
 
 	public function admin_head() {
@@ -319,18 +382,31 @@ class acpt_admin {
 		$args['hierarchical']        = $args['hierarchical'] == "1";
 		$args['can_export']          = $args['can_export'] == "1";
 		$args['show_in_rest']        = $args['show_in_rest'] == "1";
+		$args['rewrite_with_front']  = $args['rewrite_with_front'] == "1";
+		$args['rewrite_feeds']       = $args['rewrite_feeds'] == "1";
+		$args['rewrite_pages']       = $args['rewrite_pages'] == "1";
 
 		// set show_in_menu to bool or to parent if set
-		if ( $args['show_in_admin_menu_under_parent'] ) {
-			$args['show_in_menu'] = $args['show_in_admin_menu_under_parent'];
+		if ( $args['show_under_a_parent'] && $args['show_under_a_parent'] ) {
+			$args['show_in_menu'] = $args['show_under_parent'];
 		} else {
 			// could be a string so cast to bool if 1 or 0
 			$args['show_in_menu'] = (bool) $args['show_in_menu'];
 		}
 
+		// set rewrite information
+		$rewrite_slug = trim( $args['rewrite_slug'] );
+		$rewrite_slug = $rewrite_slug ? $rewrite_slug : str_replace( '_', '-', $content_type_data->post_type );
+		$args['rewrite'] = array(
+			'slug'       => $rewrite_slug,
+			'with_front' => $args['rewrite_with_front'],
+			'feeds'      => $args['rewrite_feeds'],
+			'pages'      => $args['rewrite_pages']
+		);
+		update_post_meta( $post->ID, 'acpt_rewrite_slug', $rewrite_slug );
+
 		// set rest_base to default id empty
 		$args['rest_base'] = trim( $args['rest_base_slug'] );
-
 		if ( ! $args['rest_base'] ) {
 			$args['rest_base'] = $content_type_data->post_type;
 			update_post_meta( $post->ID, 'acpt_rest_base_slug', $args['rest_base'] );
@@ -359,9 +435,13 @@ class acpt_admin {
 			$args['singular_name'],
 			$args['auto_generate_labels'],
 			$args['taxonomies'],
-			$args['show_in_admin_menu_under_parent'],
+			$args['show_under_parent'],
 			$args['rest_base_slug'],
-			$args['menu_position_custom']
+			$args['menu_position_custom'],
+			$args['rewrite_slug'],
+			$args['rewrite_with_front'],
+			$args['rewrite_feeds'],
+			$args['rewrite_pages']
 		);
 
 		// set args
@@ -370,21 +450,6 @@ class acpt_admin {
 		$content_type_data->saved = time();
 
 		return $content_type_data;
-	}
-
-	public function acf_load_field_name_acpt_taxonomies( $field ) {
-		$field['choices'] = array();
-
-		$taxonomies = get_taxonomies( array( 'public' => true ), 'objects' );
-
-		foreach ( $taxonomies as $value => $taxonomy ) {
-			$field['choices'][ $value ] = $taxonomy->labels->name;
-		}
-
-		unset( $field['choices']['post_format'] );
-
-		// return the field
-		return $field;
 	}
 
 	private $dashicons = false;
@@ -423,29 +488,6 @@ class acpt_admin {
 
 		return $this->dashicons;
 
-	}
-
-	public function acf_load_field_name_acpt_menu_icon( $field ) {
-		$field['choices'] = array(
-			'' => 'Select Icon'
-		);
-
-		foreach ( $this->get_dashicons() as $class => $unicode ) {
-			$field['choices'][ 'dashicons-' . $class ] = $class;
-		}
-
-		return $field;
-	}
-
-	public function acf_load_field_name_acpt_rewrite_slug( $field ) {
-
-		global $post;
-
-		if ( $post ) {
-			$field['default_value'] = esc_url( get_post_meta( $post->ID, 'singular_name', 1 ) );
-		}
-
-		return $field;
 	}
 
 	public function sanitize_post_type( $singular_name ) {
@@ -496,11 +538,16 @@ class acpt_admin {
 			'rest_controller_class',
 			'show_ui',
 			'show_in_menu',
-			'show_in_admin_menu_under_parent',
+			'show_under_a_parent',
+			'show_under_parent',
 			'show_in_admin_bar',
 			'menu_position',
 			'menu_position_custom',
 			'menu_icon',
+			'rewrite_with_front',
+			'rewrite_slug',
+			'rewrite_feeds',
+			'rewrite_pages',
 			'label_add_new',
 			'label_add_new_item',
 			'label_edit_item',
