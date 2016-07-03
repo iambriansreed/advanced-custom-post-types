@@ -220,14 +220,16 @@ class acpt_admin {
 	}
 
 	public function admin_menu() {
+
 		if ( apply_filters( 'acpt/settings/show_admin', true ) ) {
+
 			$slug = 'edit.php?post_type=' . self::ACPT_POST_TYPE;
 
 			$cap = acf_get_setting( 'capability' );
 
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
-			add_menu_page( __( "Custom Types", 'acpt' ), __( "Custom Types", 'acpt' ), $cap, $slug, false,
+			add_menu_page( __( "Content Types", 'acpt' ), __( "Content Types", 'acpt' ), $cap, $slug, false,
 				'dashicons-feedback',
 				'81.026' );
 
@@ -395,8 +397,8 @@ class acpt_admin {
 		}
 
 		// set rewrite information
-		$rewrite_slug = trim( $args['rewrite_slug'] );
-		$rewrite_slug = $rewrite_slug ? $rewrite_slug : str_replace( '_', '-', $content_type_data->post_type );
+		$rewrite_slug    = trim( $args['rewrite_slug'] );
+		$rewrite_slug    = $rewrite_slug ? $rewrite_slug : str_replace( '_', '-', $content_type_data->post_type );
 		$args['rewrite'] = array(
 			'slug'       => $rewrite_slug,
 			'with_front' => $args['rewrite_with_front'],
