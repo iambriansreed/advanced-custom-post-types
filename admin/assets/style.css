@@ -1,0 +1,127 @@
+.acpt-postbox > button.handlediv,
+.acpt-postbox > h2.hndle,
+.acpt-postbox .field.hide-title label,
+#minor-publishing,
+#submitdiv > button.handlediv,
+fieldset.metabox-prefs,
+#post-body-content {
+    display: none !important;
+}
+
+.acpt-postbox .tabs {
+    overflow: hidden;
+    padding: 16px 12px 0 12px;
+    position: relative;
+    margin: -6px -12px 0 -12px;
+    background: #f9f9f9;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.acpt-postbox .tabs > .border {
+    height: 1px;
+    background: #ddd;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.acpt-postbox .tabs > .tab {
+    position: relative;
+    z-index: 2;
+    float: left;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border: 1px solid #ccc;
+    border-bottom-color: #ddd;
+    margin-left: 5px;
+    padding: 10px 12px 6px 12px;
+    font-weight: bold;
+    font-size: 110%;
+    background: #f1f1f1;
+    cursor: pointer;
+    xbox-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.acpt-postbox .tabs > .tab.selected {
+    background: #fff;
+    border-bottom-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.acpt-postbox .tabs > .tab:first-child {
+    margin-left: 0;
+}
+
+.acpt-postbox .tab-contents {
+    position: relative;
+    padding: 5px 5px 0 5px;
+}
+
+.acpt-postbox .tab-contents .tab-content {
+    display: none;
+}
+
+.acpt-postbox .tab-contents .tab-content.selected {
+    display: block;
+}
+
+.acpt-postbox .field {
+    border-top: #ddd solid 1px;
+    padding: 15px 0 15px 0;
+}
+
+.acpt-postbox .field.hidden,
+.acpt-postbox .field.conditionally-hidden,
+.acpt-postbox .field.parent-conditionally-hidden,
+.acpt-postbox .tab.conditionally-hidden,
+.acpt-postbox .tab.parent-conditionally-hidden{
+    display: none;
+}
+
+.acpt-postbox .field:first-child {
+    border-top: 0;
+    padding-top: 10px;
+}
+
+.acpt-postbox .field:last-child {
+    padding-bottom: 5px;
+}
+
+.acpt-postbox .field > label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.acpt-postbox .field > label span {
+    color: red;
+    display: inline-block;
+    margin-left: 0.25em;
+}
+
+.acpt-postbox .field .input textarea {
+    width: 100%;
+}
+
+.acpt-postbox .field .input label.checkbox {
+    display: block;
+    padding: 10px 0 0;
+}
+
+.acpt-postbox .field p.instructions {
+    font-style: italic;
+    margin: 5px 0 0 0;
+}
+
+.acf-fields > .acf-field.child-field {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.acf-fields > .acf-field.child-field .acf-label {
+    font-style: italic;
+}
+
+#acpt_menu_icon {
+    width: 100%;
+}
