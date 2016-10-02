@@ -16,26 +16,27 @@ class Meta_Boxes {
 		foreach ( $fields->groups() as $name => $field_group ) {
 
 			add_filter(
-				'postbox_classes_' . ACPT_POST_TYPE . '_' . $field_group['key'],
+				'postbox_classes_' . ACPT_POST_TYPE . '_' . $field_group->key,
 				array( $this, 'postbox_classes' )
 			);
 
 			$meta_box = (object) array(
-				'id'       => $field_group['key'],
-				'title'    => $field_group['title'],
-				'context'  => $field_group['position'],
-				'priority' => $field_group['style']
+				'id'       => $field_group->key,
+				'title'    => $field_group->title,
+				'context'  => $field_group->position,
+				'priority' => $field_group->style
 			);
 
 			add_meta_box(
 				$meta_box->id,
 				$meta_box->title,
-				array( $this, 'meta_box_output' ),
+				array( $this, 'meta_box_html' ),
 				'acpt_content_type',
 				$meta_box->context,
 				$meta_box->priority,
-				$field_group['fields']
+				$field_group->fields
 			);
+
 		}
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
@@ -96,33 +97,33 @@ class Meta_Boxes {
 	 * @param $post
 	 * @param $metabox
 	 */
-	public function meta_box_output( $post, $metabox ) {
+	public function meta_box_html( $post, $metabox ) {
 
 		$group = $this->group_fields_by_tab( $metabox['args'] );
 
-		// grouped fields by tab
-
-		foreach ( $group['fields'] as $field ) {
-			$this->meta_box_create_field( $post, $field );
+		foreach ( $group->fields as $field ) {
+			if ( ! property_exists( $field, 'hidden' ) || ! $field->hidden ) {
+				$this->field_html( $post, $field );
+			}
 		}
 
-		if ( ! count( $group['tabs'] ) ) {
+		if ( ! count( $group->tabs ) ) {
 			return;
 		}
 
 		echo '<div class="tabs">';
 
 		$selected = ' selected';
-		foreach ( $group['tabs'] as $tab_id => $tab ) {
+		foreach ( $group->tabs as $tab_id => $tab ) {
 
 			echo "<div class=\"tab{$selected}\"
-		     data-field-key=\"{$tab['field']['key']}\">{$tab['label']}";
+		     data-field-key=\"{$tab->field->key}\">{$tab->label}";
 
-			if ( $tab['field']['conditional_logic'] ): ?>
+			if ( $tab->field->conditional_logic ): ?>
 				<script>
 					acpt.conditional_logic.Add({
-						key: '<?php echo $tab['field']['key']; ?>',
-						args: <?php echo json_encode( $tab['field']['conditional_logic'] ); ?> });
+						key: '<?php echo $tab->field->key; ?>',
+						args: <?php echo json_encode( $tab->field->conditional_logic ); ?> });
 				</script>
 				<?php
 
@@ -130,7 +131,6 @@ class Meta_Boxes {
 
 			echo "</div>";
 			$selected = '';
-
 		}
 
 		echo '<div class="border"></div></div>';
@@ -138,33 +138,28 @@ class Meta_Boxes {
 		echo '<div class="tab-contents">';
 
 		$selected = ' selected';
-		foreach ( $group['tabs'] as $tab_id => $tab ) {
-
+		foreach ( $group->tabs as $tab_id => $tab ) {
 
 			echo "<div class=\"tab-content{$selected}\">";
+
 			$selected = '';
-
-			foreach ( $tab['fields'] as $field ) {
-
-				$this->meta_box_create_field( $post, $field );
+			foreach ( $tab->fields as $field ) {
+				$this->field_html( $post, $field );
 			}
 
 			echo '</div>';
-
 		}
-
 		echo '</div>';
-
 	}
 
 	/**
 	 * @param $fields
 	 *
-	 * @return array
+	 * @return object
 	 */
 	public function group_fields_by_tab( $fields ) {
 
-		$output = array(
+		$output = (object) array(
 			'tabs'   => array(),
 			'fields' => array()
 		);
@@ -173,14 +168,14 @@ class Meta_Boxes {
 
 		foreach ( $fields as $field ) {
 
-			if ( $field['type'] == 'tab' ) {
+			if ( $field->type === 'tab' ) {
 
 				$tab_counter ++;
 
-				$output['tabs'][ $tab_counter ] = array(
+				$output->tabs[ $tab_counter ] = (object) array(
 					'field'  => $field,
 					'fields' => array(),
-					'label'  => $field['label']
+					'label'  => $field->label
 				);
 
 				continue;
@@ -188,10 +183,10 @@ class Meta_Boxes {
 
 			if ( $tab_counter ) {
 
-				$output['tabs'][ $tab_counter ]['fields'][] = $field;
+				$output->tabs[ $tab_counter ]->fields[] = $field;
 			} else {
 
-				$output['fields'][] = $field;
+				$output->fields[] = $field;
 			}
 
 		}
@@ -227,22 +222,22 @@ class Meta_Boxes {
 	 *
 	 * @internal param $post_id
 	 */
-	public function meta_box_create_field( $post, $field ) {
+	public function field_html( $post, $field ) {
 
-		$parent_type = $field['type'];
+		$parent_type = $field->type;
 
-		$value = $this->get_field_value( $post, $field['name'] );
+		$value = $this->get_field_value( $post, $field->name );
 
 		$options = array();
 
-		$multiple = ( isset( $field['multiple'] ) && $field['multiple'] ) || $field['type'] === 'checkbox';
+		$multiple = ( property_exists( $field, 'multiple' ) && $field->multiple ) || $field->type === 'checkbox';
 
-		if ( $field['type'] === 'true_false' ) {
+		if ( $field->type === 'true_false' ) {
 
 			$parent_type = 'true_false';
 
 			$options[] = array(
-				'text'    => $field['message'],
+				'text'    => $field->message,
 				'value'   => 1,
 				'checked' => $value
 			);
@@ -251,11 +246,11 @@ class Meta_Boxes {
 
 			$multiple = false;
 
-			$field['type'] = 'checkbox';
+			$field->type = 'checkbox';
 
-		} elseif ( $field['type'] === 'checkbox' || $field['type'] === 'select' ) {
+		} elseif ( $field->type === 'checkbox' || $field->type === 'select' ) {
 
-			foreach ( $field['choices'] as $option_value => $text ) {
+			foreach ( $field->choices as $option_value => $text ) {
 
 				$options[] = array(
 					'text'    => $text,
@@ -265,47 +260,47 @@ class Meta_Boxes {
 			}
 		}
 
-		$attr_name = esc_attr( $field['name'] );
+		$attr_name = esc_attr( $field->name );
 
 		?>
-		<div class="field <?php echo $field['wrapper']['class']; ?>"
-		     data-field-key="<?php echo $field['key']; ?>"
+		<div class="field <?php echo $field->wrapper->class; ?>"
+		     data-field-key="<?php echo $field->key; ?>"
 		     data-field-type="<?php echo $parent_type; ?>">
 
 			<label for="<?php echo $attr_name; ?>"><?php
-				echo $field['label'];
-				if ( $field['required'] ):
+				echo $field->label;
+				if ( $field->required ):
 					?><span>*</span><?php
 				endif; ?></label>
 
 			<div class="input">
 				<?php
-				if ( $field['type'] === 'text' || $field['type'] === 'number' ): ?>
+				if ( $field->type === 'text' || $field->type === 'number' ): ?>
 					<input class="widefat" id="<?php echo $attr_name; ?>" name="<?php echo $attr_name; ?>"
-					       type="<?php echo esc_attr( $field['type'] ); ?>" value="<?php echo esc_attr( $value ); ?>">
+					       type="<?php echo esc_attr( $field->type ); ?>" value="<?php echo esc_attr( $value ); ?>">
 					<?php
-				elseif ( $field['type'] === 'textarea' ):
+				elseif ( $field->type === 'textarea' ):
 					?>
 					<textarea id="<?php echo $attr_name; ?>"
 					          name="<?php echo $attr_name; ?>"><?php echo $value; ?></textarea>
 					<?php
-				elseif ( $field['type'] === 'checkbox' ):
+				elseif ( $field->type === 'checkbox' ):
 
 					foreach ( $options as $option ): ?>
 						<label class="checkbox">
 							<input type="checkbox"
-							       name="<?php echo esc_attr( $field['name'] . ( $multiple ? '[]' : '' ) ); ?>"
+							       name="<?php echo esc_attr( $field->name . ( $multiple ? '[]' : '' ) ); ?>"
 								<?php if ( ! $multiple ): ?>
-									id="<?php echo esc_attr( $field['name'] ); ?>"
+									id="<?php echo esc_attr( $field->name ); ?>"
 								<?php endif; ?>
 								   value="<?php echo esc_attr( $option['value'] ); ?>"
 								<?php echo $option['checked'] ? 'checked="checked"' : '' ?>/><?php echo $option['text']; ?>
 						</label>
 						<?php
 					endforeach;
-				elseif ( $field['type'] === 'select' ):
+				elseif ( $field->type === 'select' ):
 
-					?><select name="<?php echo esc_attr( $field['name'] . ( $multiple ? '[]' : '' ) ); ?>"
+					?><select name="<?php echo esc_attr( $field->name . ( $multiple ? '[]' : '' ) ); ?>"
 					          id="<?php echo $attr_name; ?>" title=""><?php
 					foreach ( $options as $option ): ?>
 						<option value="<?php echo esc_attr( $option['value'] ); ?>"
@@ -316,25 +311,25 @@ class Meta_Boxes {
 					?></select><?php
 				endif; ?>
 			</div>
-			<?php if ( $field['instructions'] ): ?>
-				<p class="instructions"><?php echo $field['instructions']; ?></p>
+			<?php if ( $field->instructions ): ?>
+				<p class="instructions"><?php echo $field->instructions; ?></p>
 			<?php endif; ?>
 
 		</div>
 		<?php
 
-		if ( $field['conditional_logic'] ): ?>
+		if ( $field->conditional_logic ): ?>
 			<script>
 				acpt.conditional_logic.Add({
-					key: '<?php echo $field['key']; ?>',
-					args: <?php echo json_encode( $field['conditional_logic'] ); ?> });
+					key: '<?php echo $field->key; ?>',
+					args: <?php echo json_encode( $field->conditional_logic ); ?> });
 			</script>
 			<?php
 
 		endif;
 	}
 
-	public static function create_html_attributes( $attributes ) {
+	public static function attribute_html( $attributes ) {
 
 		$attributes_output = '';
 

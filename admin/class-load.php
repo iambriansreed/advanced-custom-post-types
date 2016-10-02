@@ -11,21 +11,18 @@ namespace Advanced_Custom_Post_Types\Admin {
 		private $settings;
 		private $post_types;
 		private $fields;
-		private $field_groups;
 		private $post_type_manage;
 
 		public function __construct(
 			Settings $settings,
 			Post_Types $post_types,
 			Fields $fields,
-			Field_Groups $field_groups,
-			Post_Type_Manage $post_type_manage
+			Post_Type $post_type_manage
 		) {
 
 			$this->settings     = $settings;
 			$this->post_types   = $post_types;
 			$this->fields       = $fields;
-			$this->field_groups = $field_groups;
 			$this->post_type_manage = $post_type_manage;
 
 			$cap = $settings->get( 'capability' );
@@ -56,11 +53,11 @@ namespace Advanced_Custom_Post_Types\Admin {
 				'hierarchical'    => false,
 				'rewrite'         => false,
 				'query_var'       => false,
-				'supports'        => array(),
+				'supports'        => false,
 				'show_in_menu'    => false
 			) );
 
-			$this->add_actions( array( 'admin_notices', 'admin_head', 'admin_footer', 'save_post', 'add_meta_boxes' ) );
+			$this->add_actions( array( 'admin_notices', 'admin_head', 'save_post', 'add_meta_boxes' ) );
 
 			add_action( 'admin_menu', array( $this, 'admin_menu' ), 999 );
 
@@ -68,16 +65,26 @@ namespace Advanced_Custom_Post_Types\Admin {
 			add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
 		}
 
+
 		/**
-		 * action callback
+		 * action callback: display all user's notices
 		 */
-		public function add_meta_boxes() {
+		public function admin_notices() {
 
-			if ( ACPT_POST_TYPE !== get_post_type() ) {
-				return;
+			$notices = Notices::get_all();
+
+			if ( count( $notices ) ) {
+
+				foreach ( $notices as $notice ) {
+					printf(
+						'<div class="%1$s"><p>%2$s</p></div>',
+						'notice notice-' . $notice->type . ( $notice->is_dismissible ? ' is-dismissible' : '' ),
+						$notice->message
+					);
+				}
+
+				Notices::set( false );
 			}
-
-			new Meta_Boxes( $this->fields );
 		}
 
 		/**
@@ -127,9 +134,48 @@ namespace Advanced_Custom_Post_Types\Admin {
 		}
 
 		/**
-		 *
+		 * action callback
+		 * @param $post_id
 		 */
-		public function admin_footer() {
+		public function save_post( $post_id ) {
+
+			global $post;
+
+			$is_doing_autosave = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
+			$is_acpt_post_type = ACPT_POST_TYPE === (string) get_post_type( $post_id );
+			$is_published      = 'publish' === (string) get_post_status( $post_id );
+
+			if ( ! $is_acpt_post_type ) {
+				// not an post type to edit
+
+				return;
+			} else if ( $is_doing_autosave || ! $is_published ) {
+				// is a post type to edit but it's an autosave or not published
+
+				// post has been saved before
+				if ( is_a( $post, 'WP_Post' ) ) {
+					delete_option( $post->post_name );
+				}
+
+				return;
+			}
+
+			remove_action( 'save_post', array( $this, 'save_post' ) );
+			$this->post_type_manage->save( $post );
+			add_action( 'save_post', array( $this, 'save_post' ) );
+
+		}
+
+		/**
+		 * action callback
+		 */
+		public function add_meta_boxes() {
+
+			if ( ACPT_POST_TYPE !== get_post_type() ) {
+				return;
+			}
+
+			new Meta_Boxes( $this->fields );
 		}
 
 		/**
@@ -225,132 +271,5 @@ namespace Advanced_Custom_Post_Types\Admin {
 			}
 		}
 
-		/**
-		 * @param $post_id
-		 */
-		public function save_post( $post_id ) {
-
-			global $post;
-
-			$is_doing_autosave = defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE;
-			$is_acpt_post_type = ACPT_POST_TYPE === (string) get_post_type( $post_id );
-			$is_published      = 'publish' === (string) get_post_status( $post_id );
-
-			if ( ! $is_acpt_post_type ) {
-				// not an post type to edit
-
-				return;
-			} else if ( $is_doing_autosave || ! $is_published ) {
-				// is a post type to edit but it's an autosave or not published
-
-				// post has been saved before
-				if ( is_a( $post, 'WP_Post' ) ) {
-					delete_option( $post->post_name );
-				}
-
-				return;
-			}
-
-			remove_action( 'save_post', array( $this, 'save_post' ) );
-			$this->post_type_manage->save( $post );
-			add_action( 'save_post', array( $this, 'save_post' ) );
-
-		}
-
-		/**
-		 * @param $singular_name
-		 *
-		 * @return mixed
-		 */
-		public static function sanitize_post_type( $singular_name ) {
-			return str_replace( '-', '_', sanitize_title( $singular_name ) );
-		}
-
-		/**
-		 * is meta value meta key combination unique
-		 *
-		 * @param $post_id
-		 * @param $field_name
-		 * @param $value
-		 *
-		 * @return bool
-		 * @internal param $key
-		 */
-		public static function is_unique( $post_id, $field_name, $value ) {
-
-			global $wpdb;
-
-			$sql = $wpdb->prepare(
-				"SELECT" . " COUNT(*) 
-			FROM $wpdb->posts as posts
-			LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
-			AND postmeta.meta_key = %s
-			WHERE 1 = 1
-			AND posts.ID != %d
-			AND posts.post_type = 'acpt_content_type'
-			AND posts.post_status = 'publish'
-			AND postmeta.meta_value = %s; ", "acpt_$field_name", $post_id, $value );
-
-			return 0 === intval( $wpdb->get_var( $sql ) );
-		}
-
-		/**
-		 * generate all labels based on the plural and singular names
-		 *
-		 * @param $plural_name
-		 * @param $singular_name
-		 *
-		 * @return array
-		 * @internal param $labels
-		 *
-		 */
-		public static function generate_labels( $plural_name, $singular_name ) {
-
-			return array(
-				'add_new'               => 'Add New',
-				'add_new_item'          => 'Add New ' . $singular_name,
-				'edit_item'             => 'Edit ' . $singular_name,
-				'new_item'              => 'New ' . $singular_name,
-				'view_item'             => 'View ' . $singular_name,
-				'search_items'          => 'Search ' . $plural_name,
-				'not_found'             => 'No ' . strtolower( $plural_name ) . ' found',
-				'not_found_in_trash'    => 'No ' . strtolower( $plural_name ) . ' found in Trash',
-				'parent_item_colon'     => 'Parent ' . $singular_name,
-				'all_items'             => 'All ' . $plural_name,
-				'archives'              => $plural_name . ' Archives',
-				'insert_into_item'      => 'I' . 'nsert into ' . strtolower( $singular_name ),
-				'uploaded_to_this_item' => 'Uploaded to this ' . strtolower( $singular_name ),
-				'featured_image'        => 'Featured Image',
-				'set_featured_image'    => 'Set featured image',
-				'remove_featured_image' => 'Remove featured image',
-				'use_featured_image'    => 'Use as featured image',
-				'menu_name'             => $plural_name,
-				'filter_items_list'     => $plural_name,
-				'items_list_navigation' => $plural_name,
-				'items_list'            => $plural_name,
-				'name_admin_bar'        => $singular_name
-			);
-		}
-
-		/**
-		 * action callback: display all user's notices
-		 */
-		public function admin_notices() {
-
-			$notices = Notices::get_all();
-
-			if ( count( $notices ) ) {
-
-				foreach ( $notices as $notice ) {
-					printf(
-						'<div class="%1$s"><p>%2$s</p></div>',
-						'notice notice-' . $notice->type . ( $notice->is_dismissible ? ' is-dismissible' : '' ),
-						$notice->message
-					);
-				}
-
-				Notices::set( false );
-			}
-		}
 	}
 }

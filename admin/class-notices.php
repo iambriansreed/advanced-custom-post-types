@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: iambriansreed
- * Date: 9/28/16
- * Time: 10:43 PM
- */
 
 namespace Advanced_Custom_Post_Types\Admin;
 

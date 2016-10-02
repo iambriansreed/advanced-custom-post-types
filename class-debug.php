@@ -1,9 +1,4 @@
 <?php
-/**
- * User: iambriansreed
- * Date: 9/28/16
- * Time: 11:26 PM
- */
 
 namespace Advanced_Custom_Post_Types;
 
@@ -30,21 +25,36 @@ class Debug {
 		);
 	}
 
-	static function pre( $var, $exit = 0 ) {
+	static function json( $data, $backtrace = false ) {
 
-		echo '<pre>';
-		print_r( $var );
-		echo '</pre>';
-		if ( $exit ) {
-			exit;
+		if ( count( ob_get_status() ) ) {
+			ob_clean();
 		}
+
+		$output_data = $backtrace ? array(
+			'data'  => $data,
+			'trace' => debug_backtrace()
+		) : $data;
+
+		echo json_encode( $output_data, JSON_PRETTY_PRINT );
+
+		exit;
 	}
 
-	static function pre2( $var ) {
+	static function print_r( $data, $backtrace = false ) {
 
-		echo '<!--';
-		print_r( $var );
-		echo '-->';
+		if ( count( ob_get_status() ) ) {
+			ob_clean();
+		}
 
+		$output_data = $backtrace ? array(
+			'data'  => $data,
+			'trace' => debug_backtrace()
+		) : $data;
+
+		echo '<pre>' . print_r( $output_data, 1 ) . '</pre>';
+
+		exit;
 	}
+
 }

@@ -1,13 +1,8 @@
 <?php
-/**
- * User: iambriansreed
- * Date: 9/29/16
- * Time: 1:00 AM
- */
 
 namespace Advanced_Custom_Post_Types\Admin;
 
-class Post_Type_Manage {
+class Post_Type {
 
 	private $fields;
 	private $dashicons;
@@ -26,6 +21,8 @@ class Post_Type_Manage {
 			Notices::add( $post_data['error'], 'error', false );
 			unset( $post_data['error'] );
 		}
+
+		// $this->test( $post_data );
 
 		wp_update_post( $post_data );
 	}
@@ -78,14 +75,6 @@ class Post_Type_Manage {
 			$fields[ $name ] = is_string( $value ) ? trim( $value ) : $value;
 		}
 
-		if ( $fields['public'] ) {
-
-			$fields['exclude_from_search'] = false;
-			$fields['publicly_queryable']  = true;
-			$fields['show_ui']             = true;
-			$fields['show_in_nav_menus']   = true;
-		}
-
 		if ( $fields['show_in_rest'] ) {
 
 			$fields['rest_base']             =
@@ -98,7 +87,7 @@ class Post_Type_Manage {
 			$fields['rest_controller_class'] = null;
 		}
 
-		$post_type = Load::sanitize_post_type( $fields['singular_name'] );
+		$post_type = $this->sanitize_post_type( $fields['singular_name'] );
 
 		// default rewrite_slug
 		if ( $fields['rewrite'] ) {
@@ -140,7 +129,7 @@ class Post_Type_Manage {
 
 			update_post_meta( $post_id, 'acpt_' . $key, $value );
 
-			if ( ! Load::is_unique( $post_id, $key, $value ) ) {
+			if ( ! $this->is_unique( $post_id, $key, $value ) ) {
 
 				$unique_errors[] = "Another post type has the same value '$value'. " .
 				                   "Please change the $title and save again.";
@@ -156,7 +145,7 @@ class Post_Type_Manage {
 		// build out label data
 		if ( $args['auto_generate_labels'] ) {
 
-			$args['labels'] = Load::generate_labels(
+			$args['labels'] = $this->generate_labels(
 				$args['plural_name'],
 				$args['singular_name']
 			);
@@ -209,12 +198,88 @@ class Post_Type_Manage {
 		$content->saved = time();
 
 		return array(
-			'ID'           => $post_id,
-			'post_title'   => $args['plural_name'],
-			'post_name'    => 'acpt_post_type_' . $post_type,
-			'post_status'  => $content->error ? 'draft' : 'publish',
-			'post_content' => json_encode( $content ),
-			'error'        => $content->error
+			'ID'                => $post_id,
+			'post_title'        => $args['plural_name'],
+			'post_name'         => 'acpt_post_type_' . $post_type,
+			'post_status'       => $content->error ? 'draft' : 'publish',
+			'post_content'      => json_encode( $content ),
+			'post_content_data' => $content,
+			'error'             => $content->error
+		);
+	}
+
+	/**
+	 * @param $singular_name
+	 *
+	 * @return mixed
+	 */
+	public static function sanitize_post_type( $singular_name ) {
+		return str_replace( '-', '_', sanitize_title( $singular_name ) );
+	}
+
+	/**
+	 * is meta value meta key combination unique
+	 *
+	 * @param $post_id
+	 * @param $field_name
+	 * @param $value
+	 *
+	 * @return bool
+	 * @internal param $key
+	 */
+	public static function is_unique( $post_id, $field_name, $value ) {
+
+		global $wpdb;
+
+		$sql = $wpdb->prepare(
+			"SELECT" . " COUNT(*) 
+			FROM $wpdb->posts as posts
+			LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
+			AND postmeta.meta_key = %s
+			WHERE 1 = 1
+			AND posts.ID != %d
+			AND posts.post_type = 'acpt_content_type'
+			AND posts.post_status = 'publish'
+			AND postmeta.meta_value = %s; ", "acpt_$field_name", $post_id, $value );
+
+		return 0 === intval( $wpdb->get_var( $sql ) );
+	}
+
+	/**
+	 * generate all labels based on the plural and singular names
+	 *
+	 * @param $plural_name
+	 * @param $singular_name
+	 *
+	 * @return array
+	 * @internal param $labels
+	 *
+	 */
+	public static function generate_labels( $plural_name, $singular_name ) {
+
+		return array(
+			'add_new'               => 'Add New',
+			'add_new_item'          => 'Add New ' . $singular_name,
+			'edit_item'             => 'Edit ' . $singular_name,
+			'new_item'              => 'New ' . $singular_name,
+			'view_item'             => 'View ' . $singular_name,
+			'search_items'          => 'Search ' . $plural_name,
+			'not_found'             => 'No ' . strtolower( $plural_name ) . ' found',
+			'not_found_in_trash'    => 'No ' . strtolower( $plural_name ) . ' found in Trash',
+			'parent_item_colon'     => 'Parent ' . $singular_name,
+			'all_items'             => 'All ' . $plural_name,
+			'archives'              => $plural_name . ' Archives',
+			'insert_into_item'      => 'I' . 'nsert into ' . strtolower( $singular_name ),
+			'uploaded_to_this_item' => 'Uploaded to this ' . strtolower( $singular_name ),
+			'featured_image'        => 'Featured Image',
+			'set_featured_image'    => 'Set featured image',
+			'remove_featured_image' => 'Remove featured image',
+			'use_featured_image'    => 'Use as featured image',
+			'menu_name'             => $plural_name,
+			'filter_items_list'     => $plural_name,
+			'items_list_navigation' => $plural_name,
+			'items_list'            => $plural_name,
+			'name_admin_bar'        => $singular_name
 		);
 	}
 }

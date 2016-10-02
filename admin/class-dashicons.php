@@ -2,8 +2,6 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
-use Advanced_Custom_Post_Types\Debug;
-
 class Dashicons {
 
 	private $dashicons = null;

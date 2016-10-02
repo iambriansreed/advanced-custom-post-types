@@ -10,13 +10,8 @@ class Settings {
 
 		$this->defaults = array(
 			'show_admin'   => true,
-			'admin_fields' => array(),
 			'capability'   => 'manage_options'
 		);
-
-		$this->dir_url = plugin_dir_url( __FILE__ );
-
-		$this->dir_path = plugin_dir_path( __FILE__ );
 	}
 
 	public function get( $name ) {
