@@ -58,4 +58,4 @@ Coming soon!
 * Fixed advanced tabs toggling, fixed rewrite url, fixed API url, removed redundant taxonomies
 
 = 0.2.0 =
-* Massive refactoring and cleanup
+* Massive refactoring and cleanup, added export

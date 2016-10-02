@@ -11,19 +11,19 @@ namespace Advanced_Custom_Post_Types\Admin {
 		private $settings;
 		private $post_types;
 		private $fields;
-		private $post_type_manage;
+		private $post_type;
 
 		public function __construct(
 			Settings $settings,
 			Post_Types $post_types,
 			Fields $fields,
-			Post_Type $post_type_manage
+			Post_Type $post_type
 		) {
 
-			$this->settings     = $settings;
-			$this->post_types   = $post_types;
-			$this->fields       = $fields;
-			$this->post_type_manage = $post_type_manage;
+			$this->settings   = $settings;
+			$this->post_types = $post_types;
+			$this->fields     = $fields;
+			$this->post_type  = $post_type;
 
 			$cap = $settings->get( 'capability' );
 
@@ -57,12 +57,18 @@ namespace Advanced_Custom_Post_Types\Admin {
 				'show_in_menu'    => false
 			) );
 
-			$this->add_actions( array( 'admin_notices', 'admin_head', 'save_post', 'add_meta_boxes' ) );
-
-			add_action( 'admin_menu', array( $this, 'admin_menu' ), 999 );
+			$this->add_actions( array(
+				'admin_notices',
+				'admin_head',
+				'save_post',
+				'add_meta_boxes',
+				'admin_menu',
+				'wp_ajax_advanced_custom_post_types'
+			) );
 
 			add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 			add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
+			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
 		}
 
 
@@ -135,6 +141,7 @@ namespace Advanced_Custom_Post_Types\Admin {
 
 		/**
 		 * action callback
+		 *
 		 * @param $post_id
 		 */
 		public function save_post( $post_id ) {
@@ -161,7 +168,7 @@ namespace Advanced_Custom_Post_Types\Admin {
 			}
 
 			remove_action( 'save_post', array( $this, 'save_post' ) );
-			$this->post_type_manage->save( $post );
+			$this->post_type->save( $post );
 			add_action( 'save_post', array( $this, 'save_post' ) );
 
 		}
@@ -176,6 +183,90 @@ namespace Advanced_Custom_Post_Types\Admin {
 			}
 
 			new Meta_Boxes( $this->fields );
+		}
+
+		/**
+		 * action callback
+		 */
+		public function admin_menu() {
+
+			if ( $this->settings->get( 'show_admin' ) ) {
+
+				$slug = 'edit.php?post_type=' . ACPT_POST_TYPE;
+
+				$capability = $this->settings->get( 'capability' );
+
+				add_menu_page( __( "Content Types", 'acpt' ), __( "Content Types", 'acpt' ),
+					$capability, $slug, '',
+					'dashicons-feedback',
+					'81.026' );
+
+				add_submenu_page( $slug, __( 'Content Types', 'acpt' ), __( 'Content Types', 'acpt' ),
+					$capability,
+					$slug );
+
+				add_submenu_page( $slug,
+					__( 'Add New', 'acpt' ),
+					__( 'Add New', 'acpt' ),
+					$capability,
+					'post-new.php?post_type=' . ACPT_POST_TYPE
+				);
+			}
+		}
+
+		public function wp_ajax_advanced_custom_post_types() {
+
+			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'advanced_custom_post_types' ) ) {
+				exit( "No naughty business please" );
+			}
+
+			if ( isset( $_REQUEST['export'] ) ) {
+				$this->export( $_REQUEST['export'] );
+			}
+		}
+
+		public function export( $post_id ) {
+
+			header( "Content-Type: text/plain" );
+
+			$export_post = get_post( $post_id );
+
+			$post_data = json_decode( $export_post->post_content, true );
+
+			$args = var_export( $post_data['args'], 1 );
+
+			$function_name = "init_register_post_type_{$post_data['post_type']}";
+
+			echo "/* Exported from Advanced_Custom_Post_Types */
+			
+add_action( 'init', '$function_name' );
+
+function $function_name(){
+
+register_post_type( '{$post_data['post_type']}', {$args});
+
+}";
+			exit;
+
+		}
+
+		/**
+		 * @param $actions
+		 * @param $post
+		 *
+		 * @return mixed
+		 */
+		public function post_row_actions( $actions, $post ) {
+
+			if ( $post->post_type === ACPT_POST_TYPE ) {
+
+				$nonce = wp_create_nonce( 'advanced_custom_post_types' );
+				$url   = admin_url( "admin-ajax.php?action=advanced_custom_post_types&nonce=$nonce&export={$post->ID}" );
+
+				$actions['export_php'] = "<a href=\"$url\" target=\"_blank\">Export</a>";
+			}
+
+			return $actions;
 		}
 
 		/**
@@ -240,35 +331,6 @@ namespace Advanced_Custom_Post_Types\Admin {
 				),
 				10 => __( 'Content Type draft updated.' )
 			);
-		}
-
-		/**
-		 * action callback
-		 */
-		public function admin_menu() {
-
-			if ( $this->settings->get( 'show_admin' ) ) {
-
-				$slug = 'edit.php?post_type=' . ACPT_POST_TYPE;
-
-				$capability = $this->settings->get( 'capability' );
-
-				add_menu_page( __( "Content Types", 'acpt' ), __( "Content Types", 'acpt' ),
-					$capability, $slug, '',
-					'dashicons-feedback',
-					'81.026' );
-
-				add_submenu_page( $slug, __( 'Content Types', 'acpt' ), __( 'Content Types', 'acpt' ),
-					$capability,
-					$slug );
-
-				add_submenu_page( $slug,
-					__( 'Add New', 'acpt' ),
-					__( 'Add New', 'acpt' ),
-					$capability,
-					'post-new.php?post_type=' . ACPT_POST_TYPE
-				);
-			}
 		}
 
 	}
