@@ -16,11 +16,9 @@ Advanced Custom Post Types is the perfect solution for any WordPress website whi
 
 **acpt/settings/show_admin** - Determines whether or not the admin menu is shown.
 
-**acpt/settings/admin_fields** - Determines which field groups may appear in the post type editor.
-
 **acpt/settings/capability** - Determines capability is needed to manage custom post types.
 
-**acpt/post_types** - Alter the post types created
+**acpt/settings/save_json** - The path to save post types locally. 
 
 == Actions ==
 
@@ -59,3 +57,8 @@ Coming soon!
 
 = 0.2.0 =
 * Massive refactoring and cleanup, added export
+
+= 0.3.0 =
+* Added the Local JSON feature which saves post type settings to files within your theme. The idea is similar to caching and both dramatically speeds up ACPT and allows for version control over your post type settings. Removed unused filters and added the save_json filter to determine where post type setting files are saved.
+
+ 
