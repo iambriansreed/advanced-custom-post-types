@@ -2,35 +2,73 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
+use Advanced_Custom_Post_Types\Settings;
+
 class Post_Type {
 
 	private $fields;
 	private $dashicons;
+	private $settings;
 
-	function __construct( Fields $fields, Dashicons $dashicons ) {
+	function __construct( Settings $settings, Fields $fields, Dashicons $dashicons ) {
 		$this->fields    = $fields;
 		$this->dashicons = $dashicons;
+		$this->settings  = $settings;
 	}
 
 	public function save( $post ) {
 
-		$post_data = $this->get_post_data( $post->ID );
-
-		if ( $post_data['error'] ) {
-
-			Notices::add( $post_data['error'], 'error', false );
-			unset( $post_data['error'] );
+		if ( ! is_object( $post ) ) {
+			return;
 		}
 
-		// $this->test( $post_data );
+		$post_data = $this->get_post_data( $post->ID );
 
-		wp_update_post( $post_data );
+		if ( $post_data->errors ) {
+			Notices::add( $post_data->errors, 'error', false );
+		}
+
+		wp_update_post( $post_data->post );
+
+		$save_json = $this->save_json( $post_data );
+
+		if ( $save_json->errors ) {
+
+			Notices::add( $save_json->errors, 'error', false );
+		}
+	}
+
+	public function save_json( $post_data ) {
+
+		// vars
+		$path      = $this->settings->get( 'save_json' );
+		$file_name = $post_data->post_type . '.json';
+		$output    = (object) array( 'errors' => false );
+
+		// remove trailing slash
+		$path = untrailingslashit( $path );
+
+		// bail early if dir does not exist
+		if ( ! is_writable( $path ) ) {
+			$output->errors = "The ACPT JSON save path '$path' is not writable.";
+
+			return $output;
+		}
+
+		// write file
+		$f = fopen( "{$path}/{$file_name}", 'w' );
+		fwrite( $f, $this->json_encode( $post_data->data ) );
+		fclose( $f );
+
+		// return
+		return $output;
+
 	}
 
 	/**
 	 * @param $post_id
 	 *
-	 * @return array
+	 * @return object
 	 * @throws \Exception
 	 */
 	public function get_post_data( $post_id ) {
@@ -197,15 +235,34 @@ class Post_Type {
 
 		$content->saved = time();
 
-		return array(
-			'ID'                => $post_id,
-			'post_title'        => $args['plural_name'],
-			'post_name'         => 'acpt_post_type_' . $post_type,
-			'post_status'       => $content->error ? 'draft' : 'publish',
-			'post_content'      => json_encode( $content ),
-			'post_content_data' => $content,
-			'error'             => $content->error
+		return (object) array(
+			'errors'    => $content->error,
+			'post_type' => $post_type,
+			'data'      => $content,
+			'post'      => array(
+				'ID'                => $post_id,
+				'post_type'         => $post_type,
+				'post_title'        => $args['plural_name'],
+				'post_type'         => ACPT_POST_TYPE,
+				'post_name'         => 'acpt_post_type_' . $post_type,
+				'post_status'       => $content->error ? 'draft' : 'publish',
+				'post_content'      => $this->json_encode( $content ),
+				'post_content_data' => $content
+			)
 		);
+	}
+
+	function json_encode( $data ) {
+
+		// create json string
+		if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) ) {
+			// PHP at least 5.4
+			return json_encode( $data, JSON_PRETTY_PRINT );
+
+		} else {
+			// PHP less than 5.4
+			return json_encode( $data );
+		}
 	}
 
 	/**
