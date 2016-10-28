@@ -50,6 +50,8 @@ class Post_Type {
 		if ( count( $this->errors ) ) {
 			Notices::add( implode( '<br>', $this->errors ), 'error', false );
 		}
+
+		flush_rewrite_rules();
 	}
 
 	private function save_wp_post( $post_id ) {
@@ -237,6 +239,8 @@ class Post_Type {
 		$dashicon = $this->dashicons->get( $args['menu_icon'] );
 
 		$args['menu_icon'] = $dashicon->class_name;
+
+		$args['dashicon_unicode_number'] = $dashicon->unicode_number;
 
 		return $args;
 	}
