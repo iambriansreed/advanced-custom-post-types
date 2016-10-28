@@ -2,67 +2,25 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
-use Advanced_Custom_Post_Types\Settings;
-
 class Post_Type {
 
 	private $fields;
 	private $dashicons;
-	private $settings;
 
-	function __construct( Settings $settings, Fields $fields, Dashicons $dashicons ) {
+	function __construct( Fields $fields, Dashicons $dashicons ) {
 		$this->fields    = $fields;
 		$this->dashicons = $dashicons;
-		$this->settings  = $settings;
 	}
 
 	public function save( $post ) {
 
-		if ( ! is_object( $post ) ) {
-			return;
+		$response = $this->get_post_data( $post->ID );
+
+		if ( count( $response->errors ) ) {
+			Notices::add( $response->errors, 'error', false );
 		}
 
-		$post_data = $this->get_post_data( $post->ID );
-
-		if ( $post_data->errors ) {
-			Notices::add( $post_data->errors, 'error', false );
-		}
-
-		wp_update_post( $post_data->post );
-
-		$save_json = $this->save_json( $post_data );
-
-		if ( $save_json->errors ) {
-
-			Notices::add( $save_json->errors, 'error', false );
-		}
-	}
-
-	public function save_json( $post_data ) {
-
-		// vars
-		$path      = $this->settings->get( 'save_json' );
-		$file_name = $post_data->post_type . '.json';
-		$output    = (object) array( 'errors' => false );
-
-		// remove trailing slash
-		$path = untrailingslashit( $path );
-
-		// bail early if dir does not exist
-		if ( ! is_writable( $path ) ) {
-			$output->errors = "The ACPT JSON save path '$path' is not writable.";
-
-			return $output;
-		}
-
-		// write file
-		$f = fopen( "{$path}/{$file_name}", 'w' );
-		fwrite( $f, $this->json_encode( $post_data->data ) );
-		fclose( $f );
-
-		// return
-		return $output;
-
+		wp_update_post( $response->post );
 	}
 
 	/**
@@ -79,6 +37,7 @@ class Post_Type {
 		}
 
 		$fields = array();
+		$errors = array();
 
 		$filters = array(
 			'plural_name'         => 'ucwords',
@@ -115,10 +74,12 @@ class Post_Type {
 
 		if ( $fields['show_in_rest'] ) {
 
-			$fields['rest_base']             =
+			$fields['rest_base'] =
 				$fields['rest_base'] ? $fields['rest_base'] : sanitize_title( $fields['plural_name'] );
+
 			$fields['rest_controller_class'] =
 				$fields['rest_controller_class'] ? $fields['rest_controller_class'] : null;
+
 		} else {
 
 			$fields['rest_base']             = null;
@@ -127,9 +88,15 @@ class Post_Type {
 
 		$post_type = $this->sanitize_post_type( $fields['singular_name'] );
 
+		if ( strlen( $post_type ) > 20 ) {
+			$post_type = substr( $post_type, 0, 20 );
+			$errors[]  = 'Post type names must be 20 characters or less. The name has been trimmed.';
+		}
+
+		$fields['post_type_name'] = $post_type;
+
 		// default rewrite_slug
 		if ( $fields['rewrite'] ) {
-
 			$fields['rewrite_slug'] = $fields['rewrite_slug'] ? $fields['rewrite_slug'] : sanitize_title( $fields['singular_name'] );
 		}
 
@@ -144,7 +111,6 @@ class Post_Type {
 			'fields'                  => $acpt_fields,
 			'args'                    => array(),
 			'dashicon_unicode_number' => 0,
-			'error'                   => null,
 			'saved'                   => null,
 		);
 
@@ -159,8 +125,6 @@ class Post_Type {
 			'plural_name'   => 'plural name'
 		);
 
-		$unique_errors = array();
-
 		foreach ( $unique_fields as $key => $title ) {
 
 			$value = $args[ $key ];
@@ -169,13 +133,9 @@ class Post_Type {
 
 			if ( ! $this->is_unique( $post_id, $key, $value ) ) {
 
-				$unique_errors[] = "Another post type has the same value '$value'. " .
-				                   "Please change the $title and save again.";
+				$errors[] = "Another post type has the same value '$value'. " .
+				            "Please change the $title and save again.";
 			}
-		}
-
-		if ( count( $unique_errors ) ) {
-			$content->error = implode( '<br>', $unique_errors );
 		}
 
 		$args['label'] = $args['plural_name'];
@@ -236,33 +196,16 @@ class Post_Type {
 		$content->saved = time();
 
 		return (object) array(
-			'errors'    => $content->error,
-			'post_type' => $post_type,
-			'data'      => $content,
-			'post'      => array(
+			'post' => array(
 				'ID'                => $post_id,
-				'post_type'         => $post_type,
 				'post_title'        => $args['plural_name'],
-				'post_type'         => ACPT_POST_TYPE,
 				'post_name'         => 'acpt_post_type_' . $post_type,
-				'post_status'       => $content->error ? 'draft' : 'publish',
-				'post_content'      => $this->json_encode( $content ),
+				'post_status'       => count( $errors ) ? 'draft' : 'publish',
+				'post_content'      => json_encode( $content ),
 				'post_content_data' => $content
-			)
+			),
+			'errors' => $errors
 		);
-	}
-
-	function json_encode( $data ) {
-
-		// create json string
-		if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) ) {
-			// PHP at least 5.4
-			return json_encode( $data, JSON_PRETTY_PRINT );
-
-		} else {
-			// PHP less than 5.4
-			return json_encode( $data );
-		}
 	}
 
 	/**

@@ -4,13 +4,6 @@ namespace Advanced_Custom_Post_Types;
 
 class Post_Types {
 
-	private $json_path = '';
-
-	function __construct( Settings $settings ) {
-
-		$this->json_path = $settings->get( 'save_json' );
-	}
-
 	private function get_saved_data() {
 		return get_posts( array( 'post_type' => ACPT_POST_TYPE ) );
 	}
@@ -31,35 +24,12 @@ class Post_Types {
 		$post_types = array();
 
 		foreach ( $posts as $post ) {
-
-			$post_data = json_decode( $post->post_content, true );
-
-			$post_types[ $post_data['post_type'] ] = $post_data;
+			$post_types[] = json_decode( $post->post_content, true );
 		}
 
-		if ( $this->json_path ) {
-
-			$files = scandir( $this->json_path );
-
-			foreach ( $files as $file ) {
-
-				if ( substr( $file, - 5 ) === '.json' ) {
-
-					$post_type_json = file_get_contents( "$this->json_path/$file" );
-
-					$post_data = json_decode( $post_type_json, true );
-
-					$post_types[ $post_data['post_type'] ] = $post_data;
-				}
-			}
-		}
+		$post_types = apply_filters( 'acpt/post_types', $post_types );
 
 		return $post_types;
-
-	}
-
-	public function valid_post_type( $post_type ) {
-		return is_string( $post_type ) && strlen( $post_type ) > 0 && strlen( $post_type ) < 21;
 	}
 
 	public function register() {
@@ -72,7 +42,7 @@ class Post_Types {
 
 		foreach ( $post_types as $post_type ) {
 
-			if ( ! isset( $post_type['post_type'] ) || ! $this->valid_post_type( $post_type['post_type'] ) || ! isset( $post_type['args'] ) ) {
+			if ( ! isset( $post_type['post_type'] ) || ! isset( $post_type['args'] ) ) {
 				continue;
 			}
 

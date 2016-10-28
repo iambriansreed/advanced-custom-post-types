@@ -9,9 +9,8 @@ class Settings {
 	function __construct() {
 
 		$this->defaults = array(
-			'show_admin' => true,
-			'capability' => 'manage_options',
-			'save_json'  => null
+			'show_admin'   => true,
+			'capability'   => 'manage_options'
 		);
 	}
 

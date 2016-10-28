@@ -15,18 +15,17 @@ class Load extends Load_Base {
 	}
 
 	function init() {
-		
-		$settings = new Settings();
 
-		$post_types = new Post_Types( $settings );
+		$post_types = new Post_Types();
 
 		$post_types->register();
 
 		if ( is_admin() ) {
 
-			$dashicons = new Dashicons();
-			$fields    = new Fields( $settings, $dashicons );
-			$post_type = new Post_Type( $settings, $fields, $dashicons );
+			$settings     = new Settings();
+			$dashicons    = new Dashicons();
+			$fields       = new Fields( $settings, $dashicons );
+			$post_type    = new Post_Type( $fields, $dashicons );
 
 			new Admin\Load( $settings, $post_types, $fields, $post_type );
 		}
