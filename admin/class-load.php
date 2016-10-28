@@ -2,6 +2,7 @@
 
 namespace Advanced_Custom_Post_Types\Admin {
 
+	use Advanced_Custom_Post_Types\Debug;
 	use Advanced_Custom_Post_Types\Load_Main;
 	use Advanced_Custom_Post_Types\Load_Base;
 	use Advanced_Custom_Post_Types\Settings;
@@ -108,8 +109,8 @@ namespace Advanced_Custom_Post_Types\Admin {
 					if ( $post_type['args']['public'] )
 					{
 				?>
-				#dashboard_right_now .<?php echo $post_type['post_type'] ;?>-count a:before {
-					content: "\f<?php echo $post_type['dashicon_unicode_number']; ?>";
+				#dashboard_right_now .<?php echo $post_type['post_type']; ?>-count a:before {
+					content: "\f<?php echo $post_type['args']['dashicon_unicode_number']; ?>";
 				}
 
 				<?php
@@ -296,28 +297,34 @@ register_post_type( '{$post_data['post_type']}', {$args});
 		 */
 		public function dashboard_glance_items( $items ) {
 
-			foreach ( $this->loader->get_post_types() as $post_type ) {
+			foreach ( $this->loader->get_post_types() as $post_data ) {
 
-				if ( $post_type['args']['public'] ) {
+				if ( $post_data['args']['public'] ) {
 
-					$type = $post_type['post_type'];
-
-					$num_posts = wp_count_posts( $type );
+					$num_posts = wp_count_posts( $post_data['post_type'] );
 
 					$published = intval( $num_posts->publish );
 
-					$post_type = get_post_type_object( $type );
-
-					$text = _n( '%s ' . $post_type->args->labels->singular_name, '%s ' . $post_type->args->labels->name, $published );
+					$text = _n( '%s ' . $post_data['args']['singular_name'], '%s ' .
+					                                                         $post_data['args']['plural_name'], $published );
 
 					$text = sprintf( $text, number_format_i18n( $published ) );
 
-					if ( current_user_can( $post_type->args->cap->edit_posts ) ) {
+					$can_view = current_user_can( $this->settings->get( 'capability' ) );
 
-						echo '<li class="post-count ' . $post_type->args->labels->name . '-count">' . '<a href="edit.php?post_type=' . $post_type->name . '">' . $text . '</a>' . '</li>';
-					} else {
-						echo '<li class="post-count ' . $post_type->args->labels->name . '-count">' . '<span>' . $text . '</span>' . '</li>';
+					echo '<li class="post-count ' . $post_data['post_type'] . '-count">';
+
+					if ( $can_view ) {
+						echo '<a href="edit.php?post_type=' . $post_data['post_type'] . '">';
 					}
+
+					echo $text;
+
+					if ( $can_view ) {
+						echo '</a>';
+					}
+
+					echo '</li>';
 				}
 
 				//$items[] = $output;
