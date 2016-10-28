@@ -10,7 +10,8 @@ class Settings {
 
 		$this->defaults = array(
 			'show_admin'   => true,
-			'capability'   => 'manage_options'
+			'capability'   => 'manage_options',
+			'save_json'  => null
 		);
 	}
 

@@ -2,62 +2,121 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
+use Advanced_Custom_Post_Types\Debug;
+use Advanced_Custom_Post_Types\Load_Main;
+use Advanced_Custom_Post_Types\Settings;
+
 class Post_Type {
 
+	private $loader;
+	private $settings;
 	private $fields;
 	private $dashicons;
 
-	function __construct( Fields $fields, Dashicons $dashicons ) {
+	private $post_data;
+	private $errors = array();
+	private $field_values;
+
+	public function __construct( Load_Main $loader, Settings $settings, Fields $fields, Dashicons $dashicons ) {
+
+		$this->loader    = $loader;
+		$this->settings  = $settings;
 		$this->fields    = $fields;
 		$this->dashicons = $dashicons;
 	}
 
 	public function save( $post ) {
 
-		$response = $this->get_post_data( $post->ID );
-
-		if ( count( $response->errors ) ) {
-			Notices::add( $response->errors, 'error', false );
-		}
-
-		wp_update_post( $response->post );
-	}
-
-	/**
-	 * @param $post_id
-	 *
-	 * @return object
-	 * @throws \Exception
-	 */
-	public function get_post_data( $post_id ) {
+		$existing_post = get_post( $post->ID );
 
 		// get fields and pre process the data
 		if ( ! isset( $_POST ) || ! is_array( $_POST ) ) {
-			throw new \Exception( 'No POST data to get acpt field data from.' );
+			throw new \Exception( 'No POST data to create custom post type with.' );
 		}
 
-		$fields = array();
-		$errors = array();
+		$this->set_field_values( $post->ID );
 
-		$filters = array(
-			'plural_name'         => 'ucwords',
-			'singular_name'       => 'ucwords',
-			'public'              => 'boolval',
-			'has_archive'         => 'boolval',
-			'exclude_from_search' => 'boolval',
-			'publicly_queryable'  => 'boolval',
-			'show_ui'             => 'boolval',
-			'show_in_menu'        => 'boolval',
-			'show_in_nav_menus'   => 'boolval',
-			'show_in_admin_bar'   => 'boolval',
-			'hierarchical'        => 'boolval',
-			'can_export'          => 'boolval',
-			'show_in_rest'        => 'boolval',
-			'rewrite'             => 'boolval',
-			'rewrite_with_front'  => 'boolval',
-			'rewrite_feeds'       => 'boolval',
-			'rewrite_pages'       => 'boolval'
+		$this->post_data = (object) array(
+			'post_type' => $this->field_values['post_type_name'],
+			'args'      => $this->get_args()
 		);
+
+		$this->save_wp_post( $post->ID );
+
+		$this->save_wp_post_meta( $post->ID );
+
+		$this->save_json();
+
+		if ( count( $this->errors ) ) {
+			Notices::add( implode( '<br>', $this->errors ), 'error', false );
+		}
+	}
+
+	private function save_wp_post( $post_id ) {
+
+		wp_update_post( array(
+			'ID'           => $post_id,
+			'post_title'   => $this->field_values['plural_name'],
+			'post_type'    => ACPT_POST_TYPE,
+			'post_name'    => 'acpt_post_type_' . $this->field_values['post_type_name'],
+			'post_status'  => count( $this->errors ) ? 'draft' : 'publish',
+			'post_content' => $this->json_encode( $this->post_data )
+		) );
+	}
+
+	private function save_wp_post_meta( $post_id ) {
+
+		$unique_fields = $this->get_unique_fields();
+
+		$field_names = array_keys( $unique_fields );
+
+		foreach ( $field_names as $field_name ) {
+
+			update_post_meta( $post_id, 'acpt_' . $field_name, $this->field_values[ $field_name ] );
+		}
+	}
+
+	private function save_json() {
+
+		// vars
+		$path = $this->settings->get( 'save_json' );
+
+		// bail early if $path isn't set
+		if ( ! $path ) {
+			return false;
+		}
+
+		$file_name = $this->post_data->post_type . '.json';
+
+		// remove trailing slash
+		$path = untrailingslashit( $path );
+
+		// bail early if dir does not exist
+		if ( ! is_writable( $path ) ) {
+			$this->errors[] = "The ACPT JSON save path '$path' is not writable.";
+
+			return false;
+		}
+
+		// write file
+		$f = fopen( "{$path}/{$file_name}", 'w' );
+		fwrite( $f, $this->json_encode( $this->post_data ) );
+
+		return fclose( $f );
+	}
+
+	/**
+	 * Cleans up the acpt field values
+	 *
+	 * @param $post_id
+	 *
+	 * @return array
+	 */
+	private function set_field_values( $post_id ) {
+
+		$this->field_values = array();
+
+		$filters = $this->get_field_filters();
 
 		foreach ( $this->fields->names() as $acpt_field_name ) {
 
@@ -69,79 +128,70 @@ class Post_Type {
 				$value = call_user_func( $filters[ $name ], $value );
 			}
 
-			$fields[ $name ] = is_string( $value ) ? trim( $value ) : $value;
+			$this->field_values[ $name ] = is_string( $value ) ? trim( $value ) : $value;
 		}
 
-		if ( $fields['show_in_rest'] ) {
+		if ( $this->field_values['show_in_rest'] ) {
 
-			$fields['rest_base'] =
-				$fields['rest_base'] ? $fields['rest_base'] : sanitize_title( $fields['plural_name'] );
+			$this->field_values['rest_base'] =
+				$this->field_values['rest_base'] ? $this->field_values['rest_base'] : sanitize_title( $this->field_values['plural_name'] );
 
-			$fields['rest_controller_class'] =
-				$fields['rest_controller_class'] ? $fields['rest_controller_class'] : null;
+			$this->field_values['rest_controller_class'] =
+				$this->field_values['rest_controller_class'] ? $this->field_values['rest_controller_class'] : null;
 
 		} else {
-
-			$fields['rest_base']             = null;
-			$fields['rest_controller_class'] = null;
+			$this->field_values['rest_base']             = null;
+			$this->field_values['rest_controller_class'] = null;
 		}
 
-		$post_type = $this->sanitize_post_type( $fields['singular_name'] );
+		$this->field_values['post_type_name'] = $this->field_values['post_type_name'] ?
+			$this->field_values['post_type_name'] : $this->sanitize_post_type( $this->field_values['singular_name'] );
 
-		if ( strlen( $post_type ) > 20 ) {
-			$post_type = substr( $post_type, 0, 20 );
-			$errors[]  = 'Post type names must be 20 characters or less. The name has been trimmed.';
+		$invalid_post_type_name_reason = $this->loader->is_invalid_post_type_name( $this->field_values['post_type_name'] );
+
+		if ( $invalid_post_type_name_reason ) {
+			$this->errors[] = $invalid_post_type_name_reason;
 		}
-
-		$fields['post_type_name'] = $post_type;
 
 		// default rewrite_slug
-		if ( $fields['rewrite'] ) {
-			$fields['rewrite_slug'] = $fields['rewrite_slug'] ? $fields['rewrite_slug'] : sanitize_title( $fields['singular_name'] );
+		if ( $this->field_values['rewrite'] ) {
+			$this->field_values['rewrite_slug'] = $this->field_values['rewrite_slug'] ? $this->field_values['rewrite_slug'] :
+				sanitize_title( $this->field_values['singular_name'] );
 		}
 
-		$acpt_fields = array_combine(
-			array_map( create_function( '$name', 'return "acpt_".$name;' ), array_keys( $fields ) ),
-			$fields
-		);
+		foreach ( $this->get_unique_fields() as $key => $title ) {
 
-		// build initial content object
-		$content = (object) array(
-			'post_type'               => $post_type,
-			'fields'                  => $acpt_fields,
-			'args'                    => array(),
-			'dashicon_unicode_number' => 0,
-			'saved'                   => null,
-		);
-
-		$args = array();
-
-		foreach ( $fields as $name => $value ) {
-			$args[ $name ] = $value;
-		}
-
-		$unique_fields = array(
-			'singular_name' => 'singular name',
-			'plural_name'   => 'plural name'
-		);
-
-		foreach ( $unique_fields as $key => $title ) {
-
-			$value = $args[ $key ];
-
-			update_post_meta( $post_id, 'acpt_' . $key, $value );
+			$value = $this->field_values[ $key ];
 
 			if ( ! $this->is_unique( $post_id, $key, $value ) ) {
-
 				$errors[] = "Another post type has the same value '$value'. " .
 				            "Please change the $title and save again.";
 			}
+		}
+	}
+
+
+	/**
+	 * creates the register_post_type arguments from the acpt fields values
+	 *
+	 * @param $this ->field_values
+	 *
+	 * @return array
+	 */
+	private function get_args() {
+
+		$args = array();
+
+		foreach ( $this->field_values as $name => $value ) {
+			$args[ $name ] = $value;
 		}
 
 		$args['label'] = $args['plural_name'];
 
 		// build out label data
 		if ( $args['auto_generate_labels'] ) {
+
+			$args['title_placeholder'] = "Enter " . strtolower( $args['singular_name'] ) . " name";
 
 			$args['labels'] = $this->generate_labels(
 				$args['plural_name'],
@@ -152,7 +202,6 @@ class Post_Type {
 
 			foreach ( $args as $field_name => $field_value ) {
 				if ( 'label_' === substr( $field_name, 0, 6 ) ) {
-					unset( $args[ $field_name ] );
 					$args['labels'][ substr( $field_name, 6 ) ] = $field_value;
 				}
 			}
@@ -162,7 +211,7 @@ class Post_Type {
 		if ( $args['rewrite'] ) {
 
 			$args['rewrite'] = array(
-				'slug'       => $fields['rewrite_slug'],
+				'slug'       => $this->field_values['rewrite_slug'],
 				'with_front' => $args['rewrite_with_front'],
 				'feeds'      => $args['rewrite_feeds'],
 				'pages'      => $args['rewrite_pages']
@@ -189,23 +238,49 @@ class Post_Type {
 
 		$args['menu_icon'] = $dashicon->class_name;
 
-		$content->dashicon_unicode_number = $dashicon->unicode_number;
+		return $args;
+	}
 
-		$content->args = $args;
-
-		$content->saved = time();
-
-		return (object) array(
-			'post' => array(
-				'ID'                => $post_id,
-				'post_title'        => $args['plural_name'],
-				'post_name'         => 'acpt_post_type_' . $post_type,
-				'post_status'       => count( $errors ) ? 'draft' : 'publish',
-				'post_content'      => json_encode( $content ),
-				'post_content_data' => $content
-			),
-			'errors' => $errors
+	private function get_field_filters() {
+		return array(
+			'plural_name'         => 'ucwords',
+			'singular_name'       => 'ucwords',
+			'public'              => 'boolval',
+			'has_archive'         => 'boolval',
+			'exclude_from_search' => 'boolval',
+			'publicly_queryable'  => 'boolval',
+			'show_ui'             => 'boolval',
+			'show_in_menu'        => 'boolval',
+			'show_in_nav_menus'   => 'boolval',
+			'show_in_admin_bar'   => 'boolval',
+			'hierarchical'        => 'boolval',
+			'can_export'          => 'boolval',
+			'show_in_rest'        => 'boolval',
+			'rewrite'             => 'boolval',
+			'rewrite_with_front'  => 'boolval',
+			'rewrite_feeds'       => 'boolval',
+			'rewrite_pages'       => 'boolval'
 		);
+	}
+
+	private function get_unique_fields() {
+		return array(
+			'singular_name' => 'singular name',
+			'plural_name'   => 'plural name'
+		);
+	}
+
+	private function json_encode( $data ) {
+
+		if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) ) {
+
+			// PHP at least 5.4
+			return json_encode( $data, JSON_PRETTY_PRINT );
+		} else {
+
+			// PHP less than 5.4
+			return json_encode( $data );
+		}
 	}
 
 	/**
@@ -233,14 +308,14 @@ class Post_Type {
 
 		$sql = $wpdb->prepare(
 			"SELECT" . " COUNT(*) 
-			FROM $wpdb->posts as posts
-			LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
-			AND postmeta.meta_key = %s
-			WHERE 1 = 1
-			AND posts.ID != %d
-			AND posts.post_type = 'acpt_content_type'
-			AND posts.post_status = 'publish'
-			AND postmeta.meta_value = %s; ", "acpt_$field_name", $post_id, $value );
+					FROM $wpdb->posts as posts
+					LEFT JOIN $wpdb->postmeta as postmeta ON postmeta.post_id = posts.ID
+					AND postmeta.meta_key = %s
+					WHERE 1 = 1
+					AND posts.ID != %d
+					AND posts.post_type = 'acpt_content_type'
+					AND posts.post_status = 'publish'
+					AND postmeta.meta_value = %s; ", "acpt_$field_name", $post_id, $value );
 
 		return 0 === intval( $wpdb->get_var( $sql ) );
 	}

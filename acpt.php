@@ -2,7 +2,7 @@
 /*
 Plugin Name: Advanced Custom Post Types
 Description: Customise WordPress with custom post types
-Version: 0.3.0
+Version: 0.4.0
 Author: iambriansreed
 Author URI: http://iambrian.com/
 */
@@ -45,6 +45,6 @@ if ( ! defined( 'ACPT_POST_TYPE' ) ) {
 
 	spl_autoload_register( 'acpt_spl_autoload_register' );
 
-	new \Advanced_Custom_Post_Types\Load();
+	new \Advanced_Custom_Post_Types\Load_Main();
 
 }

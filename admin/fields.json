@@ -1,1513 +1,1534 @@
 {
-  "basic": {
-    "key": "group_576c917f2166e",
-    "title": "acpt-basic",
-    "fields": [
-      {
-        "key": "field_576c9220dcc28",
-        "label": "Plural Name",
-        "name": "acpt_plural_name",
-        "type": "text",
-        "instructions": "General name for the post type. Default is Posts\/Pages",
-        "required": 1,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576c92a8dcc29",
-        "label": "Singular Name",
-        "name": "acpt_singular_name",
-        "type": "text",
-        "instructions": "Name for one object of this post type. Default is Post\/Page",
-        "required": 1,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576ca22e38fa5",
-        "label": "Description",
-        "name": "acpt_description",
-        "type": "textarea",
-        "instructions": "A short descriptive summary of what the post type is.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "maxlength": "",
-        "rows": 3,
-        "new_lines": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576caf4c3f8e8",
-        "label": "Hierarchical",
-        "name": "acpt_hierarchical",
-        "type": "true_false",
-        "instructions": "Page attributes must be included in supported functionality to show the parent select box on the editor page.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether the post type allows a parent to be specified.",
-        "default_value": false
-      }
-    ],
-    "location": [
-      [
-        {
-          "param": "post_type",
-          "operator": "==",
-          "value": "acpt_content_type"
-        }
-      ]
-    ],
-    "menu_order": 0,
-    "position": "normal",
-    "style": "default",
-    "label_placement": "top",
-    "instruction_placement": "field",
-    "hide_on_screen": "",
-    "active": 1,
-    "description": ""
-  },
-  "advanced": {
-    "key": "group_576f06fc7f2f2",
-    "title": "acpt-advanced",
-    "fields": [
-      {
-        "key": "field_576f06fc8303d",
-        "label": "Advanced",
-        "name": "",
-        "type": "tab",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "placement": "top",
-        "endpoint": 1
-      },
-      {
-        "key": "field_576f06fc83060",
-        "label": "Public",
-        "name": "acpt_public",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Controls how the type is visible to authors and readers.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc83119",
-        "label": "Show in Admin UI",
-        "name": "acpt_show_ui",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to generate a default UI for managing this post type in the admin.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc59164",
-        "label": "Rewrite URL",
-        "name": "acpt_rewrite",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to trigger the handling of rewrites for this post type.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc830c9",
-        "label": "Show in REST API",
-        "name": "acpt_show_in_rest",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to expose this post type in the REST API.",
-        "default_value": false
-      },
-      {
-        "key": "field_576f06fc22742",
-        "label": "Has Archive",
-        "name": "acpt_has_archive",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether post type archives are enabled.",
-        "default_value": false
-      },
-      {
-        "key": "field_576f06fc32742",
-        "label": "Show in Navigation Menus",
-        "name": "acpt_show_in_nav_menus",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether post type is available for selection in navigation menus..",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc83082",
-        "label": "Exclude from Search",
-        "name": "acpt_exclude_from_search",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to exclude posts with this post type from front end search results.",
-        "default_value": false
-      },
-      {
-        "key": "field_576f06fc830ae",
-        "label": "Publicly Queryable",
-        "name": "acpt_publicly_queryable",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether queries can be performed on the front end.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc830bb",
-        "label": "Can Export",
-        "name": "acpt_can_export",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether this post type can be exported.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc83106",
-        "label": "Admin",
-        "name": "",
-        "type": "tab",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc83119",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "placement": "top",
-        "endpoint": 0
-      },
-      {
-        "key": "field_576f06fc83127",
-        "label": "Show in Admin Menu",
-        "name": "acpt_show_in_menu",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to show the post type in the admin menu.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc23127",
-        "label": "Show under a Parent",
-        "name": "acpt_show_under_a_parent",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "wrapper": {
-          "width": "",
-          "class": "child-field",
-          "id": ""
-        },
-        "message": "Whether to show the post type under a parent.",
-        "default_value": false,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc83127",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ]
-      },
-      {
-        "key": "field_576f06fc83135",
-        "label": "Under Parent",
-        "name": "acpt_show_under_parent",
-        "type": "select",
-        "instructions": "The post type will be placed as a sub menu of the selected page.",
-        "required": 0,
-        "wrapper": {
-          "width": "",
-          "class": "child-field",
-          "id": ""
-        },
-        "default_value": "",
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc23127",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "choices": []
-      },
-      {
-        "key": "field_576f06fc83150",
-        "label": "Menu Position",
-        "name": "acpt_menu_position",
-        "type": "select",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc23127",
-              "operator": "!=",
-              "value": "1"
-            },
-            {
-              "field": "field_576f06fc83127",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "choices": {
-          "-1": "Custom Position",
-          "5": "5 - below Posts",
-          "10": "10 - below Media",
-          "15": "15 - below Links",
-          "20": "20 - below Pages",
-          "25": "25 - below comments",
-          "60": "60 - below first separator",
-          "65": "65 - below Plugins",
-          "70": "70 - below Users",
-          "75": "75 - below Tools",
-          "80": "80 - below Settings",
-          "100": "100 - below second separator"
-        },
-        "default_value": 5,
-        "allow_null": 0,
-        "ui": 0,
-        "ajax": 0,
-        "placeholder": "",
-        "disabled": 0,
-        "readonly": 0
-      },
-      {
-        "key": "field_576f06fc8315f",
-        "label": "Custom Position",
-        "name": "acpt_menu_position_custom",
-        "type": "number",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc83150",
-              "operator": "==",
-              "value": "-1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "child-field hide-title",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "min": "",
-        "max": "",
-        "step": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc8316d",
-        "label": "Menu Icon",
-        "name": "acpt_menu_icon",
-        "type": "select",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc23127",
-              "operator": "!=",
-              "value": "1"
-            },
-            {
-              "field": "field_576f06fc83127",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "choices": {
-          "": "Select Icon",
-          "dashicons-menu": "menu",
-          "dashicons-admin-site": "admin-site",
-          "dashicons-dashboard": "dashboard",
-          "dashicons-admin-media": "admin-media",
-          "dashicons-admin-page": "admin-page",
-          "dashicons-admin-comments": "admin-comments",
-          "dashicons-admin-appearance": "admin-appearance",
-          "dashicons-admin-plugins": "admin-plugins",
-          "dashicons-admin-users": "admin-users",
-          "dashicons-admin-tools": "admin-tools",
-          "dashicons-admin-settings": "admin-settings",
-          "dashicons-admin-network": "admin-network",
-          "dashicons-admin-generic": "admin-generic",
-          "dashicons-admin-home": "admin-home",
-          "dashicons-admin-collapse": "admin-collapse",
-          "dashicons-filter": "filter",
-          "dashicons-admin-customizer": "admin-customizer",
-          "dashicons-admin-multisite": "admin-multisite",
-          "dashicons-admin-links": "admin-links",
-          "dashicons-format-links": "format-links",
-          "dashicons-admin-post": "admin-post",
-          "dashicons-format-standard": "format-standard",
-          "dashicons-format-image": "format-image",
-          "dashicons-format-gallery": "format-gallery",
-          "dashicons-format-audio": "format-audio",
-          "dashicons-format-video": "format-video",
-          "dashicons-format-chat": "format-chat",
-          "dashicons-format-status": "format-status",
-          "dashicons-format-aside": "format-aside",
-          "dashicons-format-quote": "format-quote",
-          "dashicons-welcome-write-blog": "welcome-write-blog",
-          "dashicons-welcome-edit-page": "welcome-edit-page",
-          "dashicons-welcome-add-page": "welcome-add-page",
-          "dashicons-welcome-view-site": "welcome-view-site",
-          "dashicons-welcome-widgets-menus": "welcome-widgets-menus",
-          "dashicons-welcome-comments": "welcome-comments",
-          "dashicons-welcome-learn-more": "welcome-learn-more",
-          "dashicons-image-crop": "image-crop",
-          "dashicons-image-rotate": "image-rotate",
-          "dashicons-image-rotate-left": "image-rotate-left",
-          "dashicons-image-rotate-right": "image-rotate-right",
-          "dashicons-image-flip-vertical": "image-flip-vertical",
-          "dashicons-image-flip-horizontal": "image-flip-horizontal",
-          "dashicons-image-filter": "image-filter",
-          "dashicons-undo": "undo",
-          "dashicons-redo": "redo",
-          "dashicons-editor-bold": "editor-bold",
-          "dashicons-editor-italic": "editor-italic",
-          "dashicons-editor-ul": "editor-ul",
-          "dashicons-editor-ol": "editor-ol",
-          "dashicons-editor-quote": "editor-quote",
-          "dashicons-editor-alignleft": "editor-alignleft",
-          "dashicons-editor-aligncenter": "editor-aligncenter",
-          "dashicons-editor-alignright": "editor-alignright",
-          "dashicons-editor-insertmore": "editor-insertmore",
-          "dashicons-editor-spellcheck": "editor-spellcheck",
-          "dashicons-editor-distractionfree": "editor-distractionfree",
-          "dashicons-editor-expand": "editor-expand",
-          "dashicons-editor-contract": "editor-contract",
-          "dashicons-editor-kitchensink": "editor-kitchensink",
-          "dashicons-editor-underline": "editor-underline",
-          "dashicons-editor-justify": "editor-justify",
-          "dashicons-editor-textcolor": "editor-textcolor",
-          "dashicons-editor-paste-word": "editor-paste-word",
-          "dashicons-editor-paste-text": "editor-paste-text",
-          "dashicons-editor-removeformatting": "editor-removeformatting",
-          "dashicons-editor-video": "editor-video",
-          "dashicons-editor-customchar": "editor-customchar",
-          "dashicons-editor-outdent": "editor-outdent",
-          "dashicons-editor-indent": "editor-indent",
-          "dashicons-editor-help": "editor-help",
-          "dashicons-editor-strikethrough": "editor-strikethrough",
-          "dashicons-editor-unlink": "editor-unlink",
-          "dashicons-editor-rtl": "editor-rtl",
-          "dashicons-editor-break": "editor-break",
-          "dashicons-editor-code": "editor-code",
-          "dashicons-editor-paragraph": "editor-paragraph",
-          "dashicons-editor-table": "editor-table",
-          "dashicons-align-left": "align-left",
-          "dashicons-align-right": "align-right",
-          "dashicons-align-center": "align-center",
-          "dashicons-align-none": "align-none",
-          "dashicons-lock": "lock",
-          "dashicons-unlock": "unlock",
-          "dashicons-calendar": "calendar",
-          "dashicons-calendar-alt": "calendar-alt",
-          "dashicons-visibility": "visibility",
-          "dashicons-hidden": "hidden",
-          "dashicons-post-status": "post-status",
-          "dashicons-edit": "edit",
-          "dashicons-post-trash": "post-trash",
-          "dashicons-trash": "trash",
-          "dashicons-sticky": "sticky",
-          "dashicons-external": "external",
-          "dashicons-arrow-up": "arrow-up",
-          "dashicons-arrow-down": "arrow-down",
-          "dashicons-arrow-left": "arrow-left",
-          "dashicons-arrow-right": "arrow-right",
-          "dashicons-arrow-up-alt": "arrow-up-alt",
-          "dashicons-arrow-down-alt": "arrow-down-alt",
-          "dashicons-arrow-left-alt": "arrow-left-alt",
-          "dashicons-arrow-right-alt": "arrow-right-alt",
-          "dashicons-arrow-up-alt2": "arrow-up-alt2",
-          "dashicons-arrow-down-alt2": "arrow-down-alt2",
-          "dashicons-arrow-left-alt2": "arrow-left-alt2",
-          "dashicons-arrow-right-alt2": "arrow-right-alt2",
-          "dashicons-leftright": "leftright",
-          "dashicons-sort": "sort",
-          "dashicons-randomize": "randomize",
-          "dashicons-list-view": "list-view",
-          "dashicons-exerpt-view": "exerpt-view",
-          "dashicons-excerpt-view": "excerpt-view",
-          "dashicons-grid-view": "grid-view",
-          "dashicons-move": "move",
-          "dashicons-hammer": "hammer",
-          "dashicons-art": "art",
-          "dashicons-migrate": "migrate",
-          "dashicons-performance": "performance",
-          "dashicons-universal-access": "universal-access",
-          "dashicons-universal-access-alt": "universal-access-alt",
-          "dashicons-tickets": "tickets",
-          "dashicons-nametag": "nametag",
-          "dashicons-clipboard": "clipboard",
-          "dashicons-heart": "heart",
-          "dashicons-megaphone": "megaphone",
-          "dashicons-schedule": "schedule",
-          "dashicons-wordpress": "wordpress",
-          "dashicons-wordpress-alt": "wordpress-alt",
-          "dashicons-pressthis": "pressthis",
-          "dashicons-update": "update",
-          "dashicons-screenoptions": "screenoptions",
-          "dashicons-cart": "cart",
-          "dashicons-feedback": "feedback",
-          "dashicons-cloud": "cloud",
-          "dashicons-translation": "translation",
-          "dashicons-tag": "tag",
-          "dashicons-category": "category",
-          "dashicons-archive": "archive",
-          "dashicons-tagcloud": "tagcloud",
-          "dashicons-text": "text",
-          "dashicons-media-archive": "media-archive",
-          "dashicons-media-audio": "media-audio",
-          "dashicons-media-code": "media-code",
-          "dashicons-media-default": "media-default",
-          "dashicons-media-document": "media-document",
-          "dashicons-media-interactive": "media-interactive",
-          "dashicons-media-spreadsheet": "media-spreadsheet",
-          "dashicons-media-text": "media-text",
-          "dashicons-media-video": "media-video",
-          "dashicons-playlist-audio": "playlist-audio",
-          "dashicons-playlist-video": "playlist-video",
-          "dashicons-controls-play": "controls-play",
-          "dashicons-controls-pause": "controls-pause",
-          "dashicons-controls-forward": "controls-forward",
-          "dashicons-controls-skipforward": "controls-skipforward",
-          "dashicons-controls-back": "controls-back",
-          "dashicons-controls-skipback": "controls-skipback",
-          "dashicons-controls-repeat": "controls-repeat",
-          "dashicons-controls-volumeon": "controls-volumeon",
-          "dashicons-controls-volumeoff": "controls-volumeoff",
-          "dashicons-yes": "yes",
-          "dashicons-no": "no",
-          "dashicons-no-alt": "no-alt",
-          "dashicons-plus": "plus",
-          "dashicons-plus-alt": "plus-alt",
-          "dashicons-plus-alt2": "plus-alt2",
-          "dashicons-minus": "minus",
-          "dashicons-dismiss": "dismiss",
-          "dashicons-marker": "marker",
-          "dashicons-star-filled": "star-filled",
-          "dashicons-star-half": "star-half",
-          "dashicons-star-empty": "star-empty",
-          "dashicons-flag": "flag",
-          "dashicons-info": "info",
-          "dashicons-warning": "warning",
-          "dashicons-share": "share",
-          "dashicons-share1": "share1",
-          "dashicons-share-alt": "share-alt",
-          "dashicons-share-alt2": "share-alt2",
-          "dashicons-twitter": "twitter",
-          "dashicons-rss": "rss",
-          "dashicons-email": "email",
-          "dashicons-email-alt": "email-alt",
-          "dashicons-facebook": "facebook",
-          "dashicons-facebook-alt": "facebook-alt",
-          "dashicons-networking": "networking",
-          "dashicons-googleplus": "googleplus",
-          "dashicons-location": "location",
-          "dashicons-location-alt": "location-alt",
-          "dashicons-camera": "camera",
-          "dashicons-images-alt": "images-alt",
-          "dashicons-images-alt2": "images-alt2",
-          "dashicons-video-alt": "video-alt",
-          "dashicons-video-alt2": "video-alt2",
-          "dashicons-video-alt3": "video-alt3",
-          "dashicons-vault": "vault",
-          "dashicons-shield": "shield",
-          "dashicons-shield-alt": "shield-alt",
-          "dashicons-sos": "sos",
-          "dashicons-search": "search",
-          "dashicons-slides": "slides",
-          "dashicons-analytics": "analytics",
-          "dashicons-chart-pie": "chart-pie",
-          "dashicons-chart-bar": "chart-bar",
-          "dashicons-chart-line": "chart-line",
-          "dashicons-chart-area": "chart-area",
-          "dashicons-groups": "groups",
-          "dashicons-businessman": "businessman",
-          "dashicons-id": "id",
-          "dashicons-id-alt": "id-alt",
-          "dashicons-products": "products",
-          "dashicons-awards": "awards",
-          "dashicons-forms": "forms",
-          "dashicons-testimonial": "testimonial",
-          "dashicons-portfolio": "portfolio",
-          "dashicons-book": "book",
-          "dashicons-book-alt": "book-alt",
-          "dashicons-download": "download",
-          "dashicons-upload": "upload",
-          "dashicons-backup": "backup",
-          "dashicons-clock": "clock",
-          "dashicons-lightbulb": "lightbulb",
-          "dashicons-microphone": "microphone",
-          "dashicons-desktop": "desktop",
-          "dashicons-laptop": "laptop",
-          "dashicons-tablet": "tablet",
-          "dashicons-smartphone": "smartphone",
-          "dashicons-phone": "phone",
-          "dashicons-smiley": "smiley",
-          "dashicons-index-card": "index-card",
-          "dashicons-carrot": "carrot",
-          "dashicons-building": "building",
-          "dashicons-store": "store",
-          "dashicons-album": "album",
-          "dashicons-palmtree": "palmtree",
-          "dashicons-tickets-alt": "tickets-alt",
-          "dashicons-money": "money",
-          "dashicons-thumbs-up": "thumbs-up",
-          "dashicons-thumbs-down": "thumbs-down",
-          "dashicons-layout": "layout",
-          "dashicons-paperclip": "paperclip"
-        },
-        "default_value": "",
-        "allow_null": 0,
-        "ui": 0,
-        "ajax": 0,
-        "placeholder": "",
-        "disabled": 0,
-        "readonly": 0
-      },
-      {
-        "key": "field_576f06fc83142",
-        "label": "Show in Admin Bar",
-        "name": "acpt_show_in_admin_bar",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to make this post type available in the WordPress admin bar.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc8317a",
-        "label": "Labels",
-        "name": "",
-        "type": "tab",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "placement": "top",
-        "endpoint": 0
-      },
-      {
-        "key": "field_5774abc0a9dfc",
-        "label": "Create Labels Automatically",
-        "name": "acpt_auto_generate_labels",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether to automatically create the labels from the plural and singular names.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc83188",
-        "label": "Add New",
-        "name": "acpt_label_add_new",
-        "type": "text",
-        "instructions": "the add new text. The default is \"Add New\" for both hierarchical and non-hierarchical post types.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "Add New",
-        "placeholder": "Add New",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83195",
-        "label": "Add New Item",
-        "name": "acpt_label_add_new_item",
-        "type": "text",
-        "instructions": "Default is Add New Post\/Add New Page.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831a3",
-        "label": "Edit Item",
-        "name": "acpt_label_edit_item",
-        "type": "text",
-        "instructions": "Default is Edit Post\/Edit Page.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831b0",
-        "label": "New Item",
-        "name": "acpt_label_new_item",
-        "type": "text",
-        "instructions": "Default is New Post\/New Page.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831be",
-        "label": "View Item",
-        "name": "acpt_label_view_item",
-        "type": "text",
-        "instructions": "Default is View Post\/View Page.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831cb",
-        "label": "Search Items",
-        "name": "acpt_label_search_items",
-        "type": "text",
-        "instructions": "Default is Search Posts\/Search Pages.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831d9",
-        "label": "Not Found",
-        "name": "acpt_label_not_found",
-        "type": "text",
-        "instructions": "Default is No posts found\/No pages found.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831e6",
-        "label": "Not Found in Trash",
-        "name": "acpt_label_not_found_in_trash",
-        "type": "text",
-        "instructions": "Default is No posts found in Trash\/No pages found in Trash.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc831f3",
-        "label": "Parent Item Colon",
-        "name": "acpt_label_parent_item_colon",
-        "type": "text",
-        "instructions": "This string isn't used on non-hierarchical types. In hierarchical ones the default is 'Parent Page:'.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83200",
-        "label": "All Items",
-        "name": "acpt_label_all_items",
-        "type": "text",
-        "instructions": "Text for the submenu. Default is All Posts\/All Pages.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc8320d",
-        "label": "Archives",
-        "name": "acpt_label_archives",
-        "type": "text",
-        "instructions": "Text for use with archives in nav menus. Default is Post Archives\/Page Archives.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc8321b",
-        "label": "Insert into Item",
-        "name": "acpt_label_insert_into_item",
-        "type": "text",
-        "instructions": "Text for the media frame button. Default is Insert into post\/Insert into page.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83228",
-        "label": "Uploaded to This Item",
-        "name": "acpt_label_uploaded_to_this_item",
-        "type": "text",
-        "instructions": "Text for the media frame filter. Default is Uploaded to this post\/Uploaded to this page.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83235",
-        "label": "Featured Image",
-        "name": "acpt_label_featured_image",
-        "type": "text",
-        "instructions": "Default is Featured Image.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "Featured Image",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83242",
-        "label": "Set Featured Image",
-        "name": "acpt_label_set_featured_image",
-        "type": "text",
-        "instructions": "Default is Set featured image.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "Set featured image.",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83250",
-        "label": "Remove Featured Image",
-        "name": "acpt_label_remove_featured_image",
-        "type": "text",
-        "instructions": "Default is Remove featured image.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "Remove featured image.",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc8325d",
-        "label": "Use Featured Image",
-        "name": "acpt_label_use_featured_image",
-        "type": "text",
-        "instructions": "Default is Use as featured image.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "Use as featured image.",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc8326a",
-        "label": "Menu Name",
-        "name": "acpt_label_menu_name",
-        "type": "text",
-        "instructions": "Default is the same as `Plural Name`.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83279",
-        "label": "Filter Items List",
-        "name": "acpt_label_filter_items_list",
-        "type": "text",
-        "instructions": "Text for the table views hidden heading.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83286",
-        "label": "Items List Navigation",
-        "name": "acpt_label_items_list_navigation",
-        "type": "text",
-        "instructions": "Text for the table pagination hidden heading.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc83293",
-        "label": "Items List",
-        "name": "acpt_label_items_list",
-        "type": "text",
-        "instructions": "Text for the table hidden heading.\n",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc832a0",
-        "label": "Name Admin Bar",
-        "name": "acpt_label_name_admin_bar",
-        "type": "text",
-        "instructions": "Text for use in New in Admin menu bar. Default is the same as `Singular Name`.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_577817c143802",
-        "label": "Rewrite",
-        "name": "",
-        "type": "tab",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc59164",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "placement": "top",
-        "endpoint": 0
-      },
-      {
-        "key": "field_57781a8d43805",
-        "label": "Slug",
-        "name": "acpt_rewrite_with_front",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Should the permalink structure be prepended with the front base.",
-        "default_value": false,
-        "hidden": true
-      },
-      {
-        "key": "field_577819f443804",
-        "label": "Slug",
-        "name": "acpt_rewrite_slug",
-        "type": "text",
-        "instructions": "Customize the permalink structure slug. Defaults to a URL friendly version of the singular name value. Should be translatable.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "\/",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_57781b3343807",
-        "label": "Feeds",
-        "name": "acpt_rewrite_feeds",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether a feed permalink structure should be built for this post type. Defaults to the 'Has Archive' value.",
-        "default_value": true
-      },
-      {
-        "key": "field_5778210043808",
-        "label": "Pages",
-        "name": "acpt_rewrite_pages",
-        "type": "true_false",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "message": "Whether the permalink structure should provide for pagination.",
-        "default_value": true
-      },
-      {
-        "key": "field_576f06fc73106",
-        "label": "REST API",
-        "name": "",
-        "type": "tab",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc830c9",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "placement": "top",
-        "endpoint": 0
-      },
-      {
-        "key": "field_576f06fc830d6",
-        "label": "Base Slug",
-        "name": "acpt_rest_base",
-        "type": "text",
-        "instructions": "The base slug that this post type will use when accessed using the REST API.",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      },
-      {
-        "key": "field_576f06fc830e4",
-        "label": "Controller Class",
-        "name": "acpt_rest_controller_class",
-        "type": "text",
-        "instructions": "An optional custom controller to use instead of WP_REST_Posts_Controller. Must be a subclass of WP_REST_Controller.",
-        "required": 0,
-        "conditional_logic": [
-          [
-            {
-              "field": "field_576f06fc830c9",
-              "operator": "==",
-              "value": "1"
-            }
-          ]
-        ],
-        "wrapper": {
-          "width": "",
-          "class": "child-field",
-          "id": ""
-        },
-        "default_value": "",
-        "placeholder": "",
-        "prepend": "",
-        "append": "",
-        "maxlength": "",
-        "readonly": 0,
-        "disabled": 0
-      }
-    ],
-    "location": [
-      [
-        {
-          "param": "post_type",
-          "operator": "==",
-          "value": "acpt_content_type"
-        }
-      ]
-    ],
-    "menu_order": 100,
-    "position": "normal",
-    "style": "default",
-    "label_placement": "top",
-    "instruction_placement": "field",
-    "hide_on_screen": "",
-    "active": 1,
-    "description": ""
-  },
-  "supports": {
-    "key": "group_576f06faa6677",
-    "title": "acpt-supports",
-    "fields": [
-      {
-        "key": "field_576f06faaa174",
-        "label": "Supported Functionality",
-        "name": "acpt_supports",
-        "type": "checkbox",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "choices": {
-          "title": "Title",
-          "editor": "Content Editor",
-          "author": "Author",
-          "thumbnail": "Thumbnail",
-          "excerpt": "Excerpt",
-          "trackbacks": "Trackbacks",
-          "custom-fields": "Custom Fields",
-          "comments": "Comments",
-          "revisions": "Revisions",
-          "page-attributes": "Page Attributes",
-          "post-formats": "Post Formats"
-        },
-        "default_value": [
-          "title",
-          "editor"
-        ],
-        "layout": "vertical",
-        "toggle": 0
-      }
-    ],
-    "location": [
-      [
-        {
-          "param": "post_type",
-          "operator": "==",
-          "value": "acpt_content_type"
-        }
-      ]
-    ],
-    "menu_order": 0,
-    "position": "side",
-    "style": "default",
-    "label_placement": "top",
-    "instruction_placement": "field",
-    "hide_on_screen": "",
-    "active": 1,
-    "description": "",
-    "local": "php"
-  },
-  "taxonomies": {
-    "key": "group_576f1c751aed7",
-    "title": "acpt-taxonomies",
-    "fields": [
-      {
-        "key": "field_576f1c751d202",
-        "label": "Taxonomies",
-        "name": "acpt_taxonomies",
-        "type": "checkbox",
-        "instructions": "",
-        "required": 0,
-        "conditional_logic": 0,
-        "wrapper": {
-          "width": "",
-          "class": "",
-          "id": ""
-        },
-        "choices": {
-          "category": "Categories",
-          "post_tag": "Tags"
-        },
-        "default_value": [],
-        "layout": "vertical",
-        "toggle": 0,
-        "multiple": true
-      }
-    ],
-    "location": [
-      [
-        {
-          "param": "post_type",
-          "operator": "==",
-          "value": "acpt_content_type"
-        }
-      ]
-    ],
-    "menu_order": 0,
-    "position": "side",
-    "style": "default",
-    "label_placement": "top",
-    "instruction_placement": "field",
-    "hide_on_screen": "",
-    "active": 1,
-    "description": "",
-    "local": "php"
-  }
+	"basic": {
+		"key": "group_576c917f2166e",
+		"title": "acpt-basic",
+		"fields": [
+			{
+				"key": "field_576c9220dcc28",
+				"label": "Plural Name",
+				"name": "acpt_plural_name",
+				"type": "text",
+				"instructions": "General name for the post type. Default is Posts\/Pages",
+				"required": 1,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576c92a8dcc29",
+				"label": "Singular Name",
+				"name": "acpt_singular_name",
+				"type": "text",
+				"instructions": "Name for one object of this post type. Default is Post\/Page",
+				"required": 1,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576c92a8dcc20",
+				"label": "Post Type Name",
+				"name": "acpt_post_type_name",
+				"type": "text",
+				"instructions": "Max. 20 characters, cannot contain capital letters or spaces. Generated from singular name.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": 20,
+				"readonly": 1,
+				"disabled": 0
+			},
+			{
+				"key": "field_576ca22e38fa5",
+				"label": "Description",
+				"name": "acpt_description",
+				"type": "textarea",
+				"instructions": "A short descriptive summary of what the post type is.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"maxlength": "",
+				"rows": 3,
+				"new_lines": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576caf4c3f8e8",
+				"label": "Hierarchical",
+				"name": "acpt_hierarchical",
+				"type": "true_false",
+				"instructions": "Page attributes must be included in supported functionality to show the parent select box on the editor page.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether the post type allows a parent to be specified.",
+				"default_value": false
+			}
+		],
+		"location": [
+			[
+				{
+					"param": "post_type",
+					"operator": "==",
+					"value": "acpt_content_type"
+				}
+			]
+		],
+		"menu_order": 0,
+		"position": "normal",
+		"style": "default",
+		"label_placement": "top",
+		"instruction_placement": "field",
+		"hide_on_screen": "",
+		"active": 1,
+		"description": ""
+	},
+	"advanced": {
+		"key": "group_576f06fc7f2f2",
+		"title": "acpt-advanced",
+		"fields": [
+			{
+				"key": "field_576f06fc8303d",
+				"label": "Advanced",
+				"name": "",
+				"type": "tab",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"placement": "top",
+				"endpoint": 1
+			},
+			{
+				"key": "field_576f06fc83060",
+				"label": "Public",
+				"name": "acpt_public",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Controls how the type is visible to authors and readers.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc83119",
+				"label": "Show in Admin UI",
+				"name": "acpt_show_ui",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to generate a default UI for managing this post type in the admin.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc59164",
+				"label": "Rewrite URL",
+				"name": "acpt_rewrite",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to trigger the handling of rewrites for this post type.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc830c9",
+				"label": "Show in REST API",
+				"name": "acpt_show_in_rest",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to expose this post type in the REST API.",
+				"default_value": false
+			},
+			{
+				"key": "field_576f06fc22742",
+				"label": "Has Archive",
+				"name": "acpt_has_archive",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether post type archives are enabled.",
+				"default_value": false
+			},
+			{
+				"key": "field_576f06fc32742",
+				"label": "Show in Navigation Menus",
+				"name": "acpt_show_in_nav_menus",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether post type is available for selection in navigation menus..",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc83082",
+				"label": "Exclude from Search",
+				"name": "acpt_exclude_from_search",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to exclude posts with this post type from front end search results.",
+				"default_value": false
+			},
+			{
+				"key": "field_576f06fc830ae",
+				"label": "Publicly Queryable",
+				"name": "acpt_publicly_queryable",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether queries can be performed on the front end.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc830bb",
+				"label": "Can Export",
+				"name": "acpt_can_export",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether this post type can be exported.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc83106",
+				"label": "Admin",
+				"name": "",
+				"type": "tab",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc83119",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"placement": "top",
+				"endpoint": 0
+			},
+			{
+				"key": "field_576f06fc83127",
+				"label": "Show in Admin Menu",
+				"name": "acpt_show_in_menu",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to show the post type in the admin menu.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc23127",
+				"label": "Show under a Parent",
+				"name": "acpt_show_under_a_parent",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"wrapper": {
+					"width": "",
+					"class": "child-field",
+					"id": ""
+				},
+				"message": "Whether to show the post type under a parent.",
+				"default_value": false,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc83127",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				]
+			},
+			{
+				"key": "field_576f06fc83135",
+				"label": "Under Parent",
+				"name": "acpt_show_under_parent",
+				"type": "select",
+				"instructions": "The post type will be placed as a sub menu of the selected page.",
+				"required": 0,
+				"wrapper": {
+					"width": "",
+					"class": "child-field",
+					"id": ""
+				},
+				"default_value": "",
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc23127",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"choices": []
+			},
+			{
+				"key": "field_576f06fc83150",
+				"label": "Menu Position",
+				"name": "acpt_menu_position",
+				"type": "select",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc23127",
+							"operator": "!=",
+							"value": "1"
+						},
+						{
+							"field": "field_576f06fc83127",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"choices": {
+					"-1": "Custom Position",
+					"5": "5 - below Posts",
+					"10": "10 - below Media",
+					"15": "15 - below Links",
+					"20": "20 - below Pages",
+					"25": "25 - below comments",
+					"60": "60 - below first separator",
+					"65": "65 - below Plugins",
+					"70": "70 - below Users",
+					"75": "75 - below Tools",
+					"80": "80 - below Settings",
+					"100": "100 - below second separator"
+				},
+				"default_value": 5,
+				"allow_null": 0,
+				"ui": 0,
+				"ajax": 0,
+				"placeholder": "",
+				"disabled": 0,
+				"readonly": 0
+			},
+			{
+				"key": "field_576f06fc8315f",
+				"label": "Custom Position",
+				"name": "acpt_menu_position_custom",
+				"type": "number",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc83150",
+							"operator": "==",
+							"value": "-1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "child-field hide-title",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"min": "",
+				"max": "",
+				"step": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc8316d",
+				"label": "Menu Icon",
+				"name": "acpt_menu_icon",
+				"type": "select",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc23127",
+							"operator": "!=",
+							"value": "1"
+						},
+						{
+							"field": "field_576f06fc83127",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"choices": {
+					"": "Select Icon",
+					"dashicons-menu": "menu",
+					"dashicons-admin-site": "admin-site",
+					"dashicons-dashboard": "dashboard",
+					"dashicons-admin-media": "admin-media",
+					"dashicons-admin-page": "admin-page",
+					"dashicons-admin-comments": "admin-comments",
+					"dashicons-admin-appearance": "admin-appearance",
+					"dashicons-admin-plugins": "admin-plugins",
+					"dashicons-admin-users": "admin-users",
+					"dashicons-admin-tools": "admin-tools",
+					"dashicons-admin-settings": "admin-settings",
+					"dashicons-admin-network": "admin-network",
+					"dashicons-admin-generic": "admin-generic",
+					"dashicons-admin-home": "admin-home",
+					"dashicons-admin-collapse": "admin-collapse",
+					"dashicons-filter": "filter",
+					"dashicons-admin-customizer": "admin-customizer",
+					"dashicons-admin-multisite": "admin-multisite",
+					"dashicons-admin-links": "admin-links",
+					"dashicons-format-links": "format-links",
+					"dashicons-admin-post": "admin-post",
+					"dashicons-format-standard": "format-standard",
+					"dashicons-format-image": "format-image",
+					"dashicons-format-gallery": "format-gallery",
+					"dashicons-format-audio": "format-audio",
+					"dashicons-format-video": "format-video",
+					"dashicons-format-chat": "format-chat",
+					"dashicons-format-status": "format-status",
+					"dashicons-format-aside": "format-aside",
+					"dashicons-format-quote": "format-quote",
+					"dashicons-welcome-write-blog": "welcome-write-blog",
+					"dashicons-welcome-edit-page": "welcome-edit-page",
+					"dashicons-welcome-add-page": "welcome-add-page",
+					"dashicons-welcome-view-site": "welcome-view-site",
+					"dashicons-welcome-widgets-menus": "welcome-widgets-menus",
+					"dashicons-welcome-comments": "welcome-comments",
+					"dashicons-welcome-learn-more": "welcome-learn-more",
+					"dashicons-image-crop": "image-crop",
+					"dashicons-image-rotate": "image-rotate",
+					"dashicons-image-rotate-left": "image-rotate-left",
+					"dashicons-image-rotate-right": "image-rotate-right",
+					"dashicons-image-flip-vertical": "image-flip-vertical",
+					"dashicons-image-flip-horizontal": "image-flip-horizontal",
+					"dashicons-image-filter": "image-filter",
+					"dashicons-undo": "undo",
+					"dashicons-redo": "redo",
+					"dashicons-editor-bold": "editor-bold",
+					"dashicons-editor-italic": "editor-italic",
+					"dashicons-editor-ul": "editor-ul",
+					"dashicons-editor-ol": "editor-ol",
+					"dashicons-editor-quote": "editor-quote",
+					"dashicons-editor-alignleft": "editor-alignleft",
+					"dashicons-editor-aligncenter": "editor-aligncenter",
+					"dashicons-editor-alignright": "editor-alignright",
+					"dashicons-editor-insertmore": "editor-insertmore",
+					"dashicons-editor-spellcheck": "editor-spellcheck",
+					"dashicons-editor-distractionfree": "editor-distractionfree",
+					"dashicons-editor-expand": "editor-expand",
+					"dashicons-editor-contract": "editor-contract",
+					"dashicons-editor-kitchensink": "editor-kitchensink",
+					"dashicons-editor-underline": "editor-underline",
+					"dashicons-editor-justify": "editor-justify",
+					"dashicons-editor-textcolor": "editor-textcolor",
+					"dashicons-editor-paste-word": "editor-paste-word",
+					"dashicons-editor-paste-text": "editor-paste-text",
+					"dashicons-editor-removeformatting": "editor-removeformatting",
+					"dashicons-editor-video": "editor-video",
+					"dashicons-editor-customchar": "editor-customchar",
+					"dashicons-editor-outdent": "editor-outdent",
+					"dashicons-editor-indent": "editor-indent",
+					"dashicons-editor-help": "editor-help",
+					"dashicons-editor-strikethrough": "editor-strikethrough",
+					"dashicons-editor-unlink": "editor-unlink",
+					"dashicons-editor-rtl": "editor-rtl",
+					"dashicons-editor-break": "editor-break",
+					"dashicons-editor-code": "editor-code",
+					"dashicons-editor-paragraph": "editor-paragraph",
+					"dashicons-editor-table": "editor-table",
+					"dashicons-align-left": "align-left",
+					"dashicons-align-right": "align-right",
+					"dashicons-align-center": "align-center",
+					"dashicons-align-none": "align-none",
+					"dashicons-lock": "lock",
+					"dashicons-unlock": "unlock",
+					"dashicons-calendar": "calendar",
+					"dashicons-calendar-alt": "calendar-alt",
+					"dashicons-visibility": "visibility",
+					"dashicons-hidden": "hidden",
+					"dashicons-post-status": "post-status",
+					"dashicons-edit": "edit",
+					"dashicons-post-trash": "post-trash",
+					"dashicons-trash": "trash",
+					"dashicons-sticky": "sticky",
+					"dashicons-external": "external",
+					"dashicons-arrow-up": "arrow-up",
+					"dashicons-arrow-down": "arrow-down",
+					"dashicons-arrow-left": "arrow-left",
+					"dashicons-arrow-right": "arrow-right",
+					"dashicons-arrow-up-alt": "arrow-up-alt",
+					"dashicons-arrow-down-alt": "arrow-down-alt",
+					"dashicons-arrow-left-alt": "arrow-left-alt",
+					"dashicons-arrow-right-alt": "arrow-right-alt",
+					"dashicons-arrow-up-alt2": "arrow-up-alt2",
+					"dashicons-arrow-down-alt2": "arrow-down-alt2",
+					"dashicons-arrow-left-alt2": "arrow-left-alt2",
+					"dashicons-arrow-right-alt2": "arrow-right-alt2",
+					"dashicons-leftright": "leftright",
+					"dashicons-sort": "sort",
+					"dashicons-randomize": "randomize",
+					"dashicons-list-view": "list-view",
+					"dashicons-exerpt-view": "exerpt-view",
+					"dashicons-excerpt-view": "excerpt-view",
+					"dashicons-grid-view": "grid-view",
+					"dashicons-move": "move",
+					"dashicons-hammer": "hammer",
+					"dashicons-art": "art",
+					"dashicons-migrate": "migrate",
+					"dashicons-performance": "performance",
+					"dashicons-universal-access": "universal-access",
+					"dashicons-universal-access-alt": "universal-access-alt",
+					"dashicons-tickets": "tickets",
+					"dashicons-nametag": "nametag",
+					"dashicons-clipboard": "clipboard",
+					"dashicons-heart": "heart",
+					"dashicons-megaphone": "megaphone",
+					"dashicons-schedule": "schedule",
+					"dashicons-wordpress": "wordpress",
+					"dashicons-wordpress-alt": "wordpress-alt",
+					"dashicons-pressthis": "pressthis",
+					"dashicons-update": "update",
+					"dashicons-screenoptions": "screenoptions",
+					"dashicons-cart": "cart",
+					"dashicons-feedback": "feedback",
+					"dashicons-cloud": "cloud",
+					"dashicons-translation": "translation",
+					"dashicons-tag": "tag",
+					"dashicons-category": "category",
+					"dashicons-archive": "archive",
+					"dashicons-tagcloud": "tagcloud",
+					"dashicons-text": "text",
+					"dashicons-media-archive": "media-archive",
+					"dashicons-media-audio": "media-audio",
+					"dashicons-media-code": "media-code",
+					"dashicons-media-default": "media-default",
+					"dashicons-media-document": "media-document",
+					"dashicons-media-interactive": "media-interactive",
+					"dashicons-media-spreadsheet": "media-spreadsheet",
+					"dashicons-media-text": "media-text",
+					"dashicons-media-video": "media-video",
+					"dashicons-playlist-audio": "playlist-audio",
+					"dashicons-playlist-video": "playlist-video",
+					"dashicons-controls-play": "controls-play",
+					"dashicons-controls-pause": "controls-pause",
+					"dashicons-controls-forward": "controls-forward",
+					"dashicons-controls-skipforward": "controls-skipforward",
+					"dashicons-controls-back": "controls-back",
+					"dashicons-controls-skipback": "controls-skipback",
+					"dashicons-controls-repeat": "controls-repeat",
+					"dashicons-controls-volumeon": "controls-volumeon",
+					"dashicons-controls-volumeoff": "controls-volumeoff",
+					"dashicons-yes": "yes",
+					"dashicons-no": "no",
+					"dashicons-no-alt": "no-alt",
+					"dashicons-plus": "plus",
+					"dashicons-plus-alt": "plus-alt",
+					"dashicons-plus-alt2": "plus-alt2",
+					"dashicons-minus": "minus",
+					"dashicons-dismiss": "dismiss",
+					"dashicons-marker": "marker",
+					"dashicons-star-filled": "star-filled",
+					"dashicons-star-half": "star-half",
+					"dashicons-star-empty": "star-empty",
+					"dashicons-flag": "flag",
+					"dashicons-info": "info",
+					"dashicons-warning": "warning",
+					"dashicons-share": "share",
+					"dashicons-share1": "share1",
+					"dashicons-share-alt": "share-alt",
+					"dashicons-share-alt2": "share-alt2",
+					"dashicons-twitter": "twitter",
+					"dashicons-rss": "rss",
+					"dashicons-email": "email",
+					"dashicons-email-alt": "email-alt",
+					"dashicons-facebook": "facebook",
+					"dashicons-facebook-alt": "facebook-alt",
+					"dashicons-networking": "networking",
+					"dashicons-googleplus": "googleplus",
+					"dashicons-location": "location",
+					"dashicons-location-alt": "location-alt",
+					"dashicons-camera": "camera",
+					"dashicons-images-alt": "images-alt",
+					"dashicons-images-alt2": "images-alt2",
+					"dashicons-video-alt": "video-alt",
+					"dashicons-video-alt2": "video-alt2",
+					"dashicons-video-alt3": "video-alt3",
+					"dashicons-vault": "vault",
+					"dashicons-shield": "shield",
+					"dashicons-shield-alt": "shield-alt",
+					"dashicons-sos": "sos",
+					"dashicons-search": "search",
+					"dashicons-slides": "slides",
+					"dashicons-analytics": "analytics",
+					"dashicons-chart-pie": "chart-pie",
+					"dashicons-chart-bar": "chart-bar",
+					"dashicons-chart-line": "chart-line",
+					"dashicons-chart-area": "chart-area",
+					"dashicons-groups": "groups",
+					"dashicons-businessman": "businessman",
+					"dashicons-id": "id",
+					"dashicons-id-alt": "id-alt",
+					"dashicons-products": "products",
+					"dashicons-awards": "awards",
+					"dashicons-forms": "forms",
+					"dashicons-testimonial": "testimonial",
+					"dashicons-portfolio": "portfolio",
+					"dashicons-book": "book",
+					"dashicons-book-alt": "book-alt",
+					"dashicons-download": "download",
+					"dashicons-upload": "upload",
+					"dashicons-backup": "backup",
+					"dashicons-clock": "clock",
+					"dashicons-lightbulb": "lightbulb",
+					"dashicons-microphone": "microphone",
+					"dashicons-desktop": "desktop",
+					"dashicons-laptop": "laptop",
+					"dashicons-tablet": "tablet",
+					"dashicons-smartphone": "smartphone",
+					"dashicons-phone": "phone",
+					"dashicons-smiley": "smiley",
+					"dashicons-index-card": "index-card",
+					"dashicons-carrot": "carrot",
+					"dashicons-building": "building",
+					"dashicons-store": "store",
+					"dashicons-album": "album",
+					"dashicons-palmtree": "palmtree",
+					"dashicons-tickets-alt": "tickets-alt",
+					"dashicons-money": "money",
+					"dashicons-thumbs-up": "thumbs-up",
+					"dashicons-thumbs-down": "thumbs-down",
+					"dashicons-layout": "layout",
+					"dashicons-paperclip": "paperclip"
+				},
+				"default_value": "",
+				"allow_null": 0,
+				"ui": 0,
+				"ajax": 0,
+				"placeholder": "",
+				"disabled": 0,
+				"readonly": 0
+			},
+			{
+				"key": "field_576f06fc83142",
+				"label": "Show in Admin Bar",
+				"name": "acpt_show_in_admin_bar",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to make this post type available in the WordPress admin bar.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc8317a",
+				"label": "Labels",
+				"name": "",
+				"type": "tab",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"placement": "top",
+				"endpoint": 0
+			},
+			{
+				"key": "field_5774abc0a9dfc",
+				"label": "Create Labels Automatically",
+				"name": "acpt_auto_generate_labels",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether to automatically create the labels from the plural and singular names.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc83188",
+				"label": "Add New",
+				"name": "acpt_label_add_new",
+				"type": "text",
+				"instructions": "the add new text. The default is \"Add New\" for both hierarchical and non-hierarchical post types.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "Add New",
+				"placeholder": "Add New",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83195",
+				"label": "Add New Item",
+				"name": "acpt_label_add_new_item",
+				"type": "text",
+				"instructions": "Default is Add New Post\/Add New Page.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831a3",
+				"label": "Edit Item",
+				"name": "acpt_label_edit_item",
+				"type": "text",
+				"instructions": "Default is Edit Post\/Edit Page.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831b0",
+				"label": "New Item",
+				"name": "acpt_label_new_item",
+				"type": "text",
+				"instructions": "Default is New Post\/New Page.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831be",
+				"label": "View Item",
+				"name": "acpt_label_view_item",
+				"type": "text",
+				"instructions": "Default is View Post\/View Page.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831cb",
+				"label": "Search Items",
+				"name": "acpt_label_search_items",
+				"type": "text",
+				"instructions": "Default is Search Posts\/Search Pages.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831d9",
+				"label": "Not Found",
+				"name": "acpt_label_not_found",
+				"type": "text",
+				"instructions": "Default is No posts found\/No pages found.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831e6",
+				"label": "Not Found in Trash",
+				"name": "acpt_label_not_found_in_trash",
+				"type": "text",
+				"instructions": "Default is No posts found in Trash\/No pages found in Trash.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc831f3",
+				"label": "Parent Item Colon",
+				"name": "acpt_label_parent_item_colon",
+				"type": "text",
+				"instructions": "This string isn't used on non-hierarchical types. In hierarchical ones the default is 'Parent Page:'.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83200",
+				"label": "All Items",
+				"name": "acpt_label_all_items",
+				"type": "text",
+				"instructions": "Text for the submenu. Default is All Posts\/All Pages.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc8320d",
+				"label": "Archives",
+				"name": "acpt_label_archives",
+				"type": "text",
+				"instructions": "Text for use with archives in nav menus. Default is Post Archives\/Page Archives.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc8321b",
+				"label": "Insert into Item",
+				"name": "acpt_label_insert_into_item",
+				"type": "text",
+				"instructions": "Text for the media frame button. Default is Insert into post\/Insert into page.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83228",
+				"label": "Uploaded to This Item",
+				"name": "acpt_label_uploaded_to_this_item",
+				"type": "text",
+				"instructions": "Text for the media frame filter. Default is Uploaded to this post\/Uploaded to this page.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83235",
+				"label": "Featured Image",
+				"name": "acpt_label_featured_image",
+				"type": "text",
+				"instructions": "Default is Featured Image.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "Featured Image",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83242",
+				"label": "Set Featured Image",
+				"name": "acpt_label_set_featured_image",
+				"type": "text",
+				"instructions": "Default is Set featured image.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "Set featured image.",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83250",
+				"label": "Remove Featured Image",
+				"name": "acpt_label_remove_featured_image",
+				"type": "text",
+				"instructions": "Default is Remove featured image.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "Remove featured image.",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc8325d",
+				"label": "Use Featured Image",
+				"name": "acpt_label_use_featured_image",
+				"type": "text",
+				"instructions": "Default is Use as featured image.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "Use as featured image.",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc8326a",
+				"label": "Menu Name",
+				"name": "acpt_label_menu_name",
+				"type": "text",
+				"instructions": "Default is the same as `Plural Name`.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83279",
+				"label": "Filter Items List",
+				"name": "acpt_label_filter_items_list",
+				"type": "text",
+				"instructions": "Text for the table views hidden heading.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83286",
+				"label": "Items List Navigation",
+				"name": "acpt_label_items_list_navigation",
+				"type": "text",
+				"instructions": "Text for the table pagination hidden heading.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc83293",
+				"label": "Items List",
+				"name": "acpt_label_items_list",
+				"type": "text",
+				"instructions": "Text for the table hidden heading.\n",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc832a0",
+				"label": "Name Admin Bar",
+				"name": "acpt_label_name_admin_bar",
+				"type": "text",
+				"instructions": "Text for use in New in Admin menu bar. Default is the same as `Singular Name`.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_577817c143802",
+				"label": "Rewrite",
+				"name": "",
+				"type": "tab",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc59164",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"placement": "top",
+				"endpoint": 0
+			},
+			{
+				"key": "field_57781a8d43805",
+				"label": "Slug",
+				"name": "acpt_rewrite_with_front",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Should the permalink structure be prepended with the front base.",
+				"default_value": false,
+				"hidden": true
+			},
+			{
+				"key": "field_577819f443804",
+				"label": "Slug",
+				"name": "acpt_rewrite_slug",
+				"type": "text",
+				"instructions": "Customize the permalink structure slug. Defaults to a URL friendly version of the singular name value. Should be translatable.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "\/",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_57781b3343807",
+				"label": "Feeds",
+				"name": "acpt_rewrite_feeds",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether a feed permalink structure should be built for this post type. Defaults to the 'Has Archive' value.",
+				"default_value": true
+			},
+			{
+				"key": "field_5778210043808",
+				"label": "Pages",
+				"name": "acpt_rewrite_pages",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether the permalink structure should provide for pagination.",
+				"default_value": true
+			},
+			{
+				"key": "field_576f06fc73106",
+				"label": "REST API",
+				"name": "",
+				"type": "tab",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc830c9",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"placement": "top",
+				"endpoint": 0
+			},
+			{
+				"key": "field_576f06fc830d6",
+				"label": "Base Slug",
+				"name": "acpt_rest_base",
+				"type": "text",
+				"instructions": "The base slug that this post type will use when accessed using the REST API.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			},
+			{
+				"key": "field_576f06fc830e4",
+				"label": "Controller Class",
+				"name": "acpt_rest_controller_class",
+				"type": "text",
+				"instructions": "An optional custom controller to use instead of WP_REST_Posts_Controller. Must be a subclass of WP_REST_Controller.",
+				"required": 0,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_576f06fc830c9",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				],
+				"wrapper": {
+					"width": "",
+					"class": "child-field",
+					"id": ""
+				},
+				"default_value": "",
+				"placeholder": "",
+				"prepend": "",
+				"append": "",
+				"maxlength": "",
+				"readonly": 0,
+				"disabled": 0
+			}
+		],
+		"location": [
+			[
+				{
+					"param": "post_type",
+					"operator": "==",
+					"value": "acpt_content_type"
+				}
+			]
+		],
+		"menu_order": 100,
+		"position": "normal",
+		"style": "default",
+		"label_placement": "top",
+		"instruction_placement": "field",
+		"hide_on_screen": "",
+		"active": 1,
+		"description": ""
+	},
+	"supports": {
+		"key": "group_576f06faa6677",
+		"title": "acpt-supports",
+		"fields": [
+			{
+				"key": "field_576f06faaa174",
+				"label": "Supported Functionality",
+				"name": "acpt_supports",
+				"type": "checkbox",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"choices": {
+					"title": "Title",
+					"editor": "Content Editor",
+					"author": "Author",
+					"thumbnail": "Thumbnail",
+					"excerpt": "Excerpt",
+					"trackbacks": "Trackbacks",
+					"custom-fields": "Custom Fields",
+					"comments": "Comments",
+					"revisions": "Revisions",
+					"page-attributes": "Page Attributes",
+					"post-formats": "Post Formats"
+				},
+				"default_value": [
+					"title",
+					"editor"
+				],
+				"layout": "vertical",
+				"toggle": 0
+			}
+		],
+		"location": [
+			[
+				{
+					"param": "post_type",
+					"operator": "==",
+					"value": "acpt_content_type"
+				}
+			]
+		],
+		"menu_order": 0,
+		"position": "side",
+		"style": "default",
+		"label_placement": "top",
+		"instruction_placement": "field",
+		"hide_on_screen": "",
+		"active": 1,
+		"description": "",
+		"local": "php"
+	},
+	"taxonomies": {
+		"key": "group_576f1c751aed7",
+		"title": "acpt-taxonomies",
+		"fields": [
+			{
+				"key": "field_576f1c751d202",
+				"label": "Taxonomies",
+				"name": "acpt_taxonomies",
+				"type": "checkbox",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"choices": {
+					"category": "Categories",
+					"post_tag": "Tags"
+				},
+				"default_value": [],
+				"layout": "vertical",
+				"toggle": 0,
+				"multiple": true
+			}
+		],
+		"location": [
+			[
+				{
+					"param": "post_type",
+					"operator": "==",
+					"value": "acpt_content_type"
+				}
+			]
+		],
+		"menu_order": 0,
+		"position": "side",
+		"style": "default",
+		"label_placement": "top",
+		"instruction_placement": "field",
+		"hide_on_screen": "",
+		"active": 1,
+		"description": "",
+		"local": "php"
+	}
 }
