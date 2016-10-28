@@ -2,10 +2,13 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
+use Advanced_Custom_Post_Types\Debug;
+
 class Meta_Boxes {
 
 	private $plugin_dir_url;
 	private $fields;
+	private $field_values = null;
 
 	public function __construct( Fields $fields ) {
 
@@ -99,11 +102,14 @@ class Meta_Boxes {
 	 */
 	public function meta_box_html( $post, $metabox ) {
 
+		$this->set_field_values( $post );
+
 		$group = $this->group_fields_by_tab( $metabox['args'] );
 
 		foreach ( $group->fields as $field ) {
 			if ( ! property_exists( $field, 'hidden' ) || ! $field->hidden ) {
-				$this->field_html( $post, $field );
+
+				$this->field_html( $field );
 			}
 		}
 
@@ -144,7 +150,7 @@ class Meta_Boxes {
 
 			$selected = '';
 			foreach ( $tab->fields as $field ) {
-				$this->field_html( $post, $field );
+				$this->field_html( $field );
 			}
 
 			echo '</div>';
@@ -194,26 +200,27 @@ class Meta_Boxes {
 		return $output;
 	}
 
-	private $post_field_values = null;
+	public function set_field_values( $post ) {
 
-	public function get_field_value( $post, $field_name ) {
+		global $pagenow;
 
-		if ( null === $this->post_field_values ) {
-
-			global $pagenow;
-
-			if ( 'post-new.php' === $pagenow ) {
-
-				$this->post_field_values = $this->fields->defaults();
-
-			} else {
-
-				$post_type_data          = json_decode( $post->post_content, true );
-				$this->post_field_values = $post_type_data['fields'];
-			}
+		if ( $this->field_values ) {
+			return;
 		}
 
-		return isset( $this->post_field_values[ $field_name ] ) ? $this->post_field_values[ $field_name ] : '';
+		if ( 'post-new.php' === $pagenow ) {
+			$this->field_values = $this->fields->defaults();
+		} else {
+			$post_type_data = json_decode( $post->post_content, true );
+			foreach ( $post_type_data['args'] as $name => $value ) {
+				$this->field_values[ 'acpt_' . $name ] = $value;
+			}
+		}
+	}
+
+	public function get_field_value( $field_name ) {
+
+		return isset( $this->field_values[ $field_name ] ) ? $this->field_values[ $field_name ] : '';
 	}
 
 	/**
@@ -222,11 +229,11 @@ class Meta_Boxes {
 	 *
 	 * @internal param $post_id
 	 */
-	public function field_html( $post, $field ) {
+	public function field_html( $field ) {
 
 		$parent_type = $field->type;
 
-		$value = $this->get_field_value( $post, $field->name );
+		$value = $this->get_field_value( $field->name );
 
 		$options = array();
 
@@ -262,12 +269,18 @@ class Meta_Boxes {
 
 		$attr_name = esc_attr( $field->name );
 
+		$readonly = ( property_exists( $field, 'readonly' ) && $field->readonly ) ? ' readonly="readonly"' : '';
+
+		$maxlength = ( property_exists( $field, 'maxlength' ) && is_numeric( $field->maxlength )
+		               && intval( $field->maxlength ) ) ? ' maxlength="' . intval( $field->maxlength ) . '"' : '';
+
 		?>
 		<div class="field <?php echo $field->wrapper->class; ?>"
 		     data-field-key="<?php echo $field->key; ?>"
 		     data-field-type="<?php echo $parent_type; ?>">
 
 			<label for="<?php echo $attr_name; ?>"><?php
+
 				echo $field->label;
 				if ( $field->required ):
 					?><span>*</span><?php
@@ -276,19 +289,20 @@ class Meta_Boxes {
 			<div class="input">
 				<?php
 				if ( $field->type === 'text' || $field->type === 'number' ): ?>
-					<input class="widefat" id="<?php echo $attr_name; ?>" name="<?php echo $attr_name; ?>"
+					<input class="widefat" id="<?php echo $attr_name; ?>"
+					       name="<?php echo $attr_name; ?>"<?php echo $readonly; ?><?php echo $maxlength; ?>
 					       type="<?php echo esc_attr( $field->type ); ?>" value="<?php echo esc_attr( $value ); ?>">
 					<?php
 				elseif ( $field->type === 'textarea' ):
 					?>
-					<textarea id="<?php echo $attr_name; ?>"
+					<textarea id="<?php echo $attr_name; ?>"<?php echo $readonly; ?>
 					          name="<?php echo $attr_name; ?>"><?php echo $value; ?></textarea>
 					<?php
 				elseif ( $field->type === 'checkbox' ):
 
 					foreach ( $options as $option ): ?>
 						<label class="checkbox">
-							<input type="checkbox"
+							<input type="checkbox"<?php echo $readonly; ?>
 							       name="<?php echo esc_attr( $field->name . ( $multiple ? '[]' : '' ) ); ?>"
 								<?php if ( ! $multiple ): ?>
 									id="<?php echo esc_attr( $field->name ); ?>"
@@ -300,8 +314,9 @@ class Meta_Boxes {
 					endforeach;
 				elseif ( $field->type === 'select' ):
 
-					?><select name="<?php echo esc_attr( $field->name . ( $multiple ? '[]' : '' ) ); ?>"
-					          id="<?php echo $attr_name; ?>" title=""><?php
+					?><select<?php echo $readonly; ?>
+					name="<?php echo esc_attr( $field->name . ( $multiple ? '[]' : '' ) ); ?>"
+					id="<?php echo $attr_name; ?>" title=""><?php
 					foreach ( $options as $option ): ?>
 						<option value="<?php echo esc_attr( $option['value'] ); ?>"
 							<?php echo $option['checked'] ? ' selected="selected"' : '' ?>><?php echo $option['text']; ?></option>

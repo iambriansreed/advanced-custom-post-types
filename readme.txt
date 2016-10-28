@@ -61,4 +61,6 @@ Coming soon!
 = 0.3.0 =
 * Added the Local JSON feature which saves post type settings to files within your theme. The idea is similar to caching and both dramatically speeds up ACPT and allows for version control over your post type settings. Removed unused filters and added the save_json filter to determine where post type setting files are saved.
 
+= 0.4.0 =
+* Fixes post name issues more refactoring and cleanup
  

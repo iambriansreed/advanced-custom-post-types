@@ -2,28 +2,28 @@
 
 namespace Advanced_Custom_Post_Types\Admin {
 
+	use Advanced_Custom_Post_Types\Load_Main;
 	use Advanced_Custom_Post_Types\Load_Base;
 	use Advanced_Custom_Post_Types\Settings;
-	use Advanced_Custom_Post_Types\Post_Types;
 
 	class Load extends Load_Base {
 
 		private $settings;
-		private $post_types;
+		private $loader;
 		private $fields;
 		private $post_type;
 
 		public function __construct(
+			Load_Main $loader,
 			Settings $settings,
-			Post_Types $post_types,
 			Fields $fields,
 			Post_Type $post_type
 		) {
 
-			$this->settings   = $settings;
-			$this->post_types = $post_types;
-			$this->fields     = $fields;
-			$this->post_type  = $post_type;
+			$this->loader    = $loader;
+			$this->settings  = $settings;
+			$this->fields    = $fields;
+			$this->post_type = $post_type;
 
 			$cap = $settings->get( 'capability' );
 
@@ -69,6 +69,8 @@ namespace Advanced_Custom_Post_Types\Admin {
 			add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 			add_filter( 'dashboard_glance_items', array( $this, 'dashboard_glance_items' ), 10, 1 );
 			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
+			add_filter( 'enter_title_here', array( $this, 'enter_title_here' ) );
+
 		}
 
 
@@ -101,7 +103,7 @@ namespace Advanced_Custom_Post_Types\Admin {
 			?>
 			<style>
 				/* dashboard_right_now */
-				<?php foreach ( $this->post_types as $post_type )
+				<?php foreach ( $this->loader->get_post_types() as $post_type )
 				{
 					if ( $post_type['args']['public'] )
 					{
@@ -154,8 +156,8 @@ namespace Advanced_Custom_Post_Types\Admin {
 
 			if ( ! $is_acpt_post_type ) {
 				// not an post type to edit
-
 				return;
+
 			} else if ( $is_doing_autosave || ! $is_published ) {
 				// is a post type to edit but it's an autosave or not published
 
@@ -250,6 +252,24 @@ register_post_type( '{$post_data['post_type']}', {$args});
 
 		}
 
+		public function enter_title_here( $title ) {
+
+			$screen = get_current_screen();
+
+			$post_types = $this->loader->get_post_types();
+
+			if ( array_key_exists( $screen->post_type, $post_types ) ) {
+
+				$args = $post_types[ $screen->post_type ]['args'];
+
+				$name = strtolower( $args['singular_name'] );
+
+				$title = "Enter $name name";
+			}
+
+			return $title;
+		}
+
 		/**
 		 * @param $actions
 		 * @param $post
@@ -276,7 +296,7 @@ register_post_type( '{$post_data['post_type']}', {$args});
 		 */
 		public function dashboard_glance_items( $items ) {
 
-			foreach ( $this->post_types as $post_type ) {
+			foreach ( $this->loader->get_post_types() as $post_type ) {
 
 				if ( $post_type['args']['public'] ) {
 

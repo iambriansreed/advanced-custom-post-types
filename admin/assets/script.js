@@ -105,6 +105,7 @@
         var
             plural_name_input = $('[name="acpt_plural_name"]'),
             singular_name_input = $('[name="acpt_singular_name"]'),
+            post_type_name_input = $('[name="acpt_post_type_name"]'),
             auto_generate_checkbox = $('[name="acpt_auto_generate_labels"]'),
             label_inputs = $('[name^="acpt_label_"]');
 
@@ -125,10 +126,23 @@
 
         }).trigger('change');
 
+        post_type_name_input.on('change', function () {
+            post_type_name_input.prop('readonly',
+                !(post_type_name_input.val().length > 20 || post_type_name_input.val().length == 0));
+        }).trigger('change');
+
         function generate_titles() {
 
             if (new_acpt) {
-                singular_name_input.val(pluralize.singular(plural_name_input.val()));
+
+                var singular_name_value = pluralize.singular(plural_name_input.val());
+
+                singular_name_input.val(singular_name_value);
+
+                var post_type_name_value = sanitizeTitle(singular_name_value);
+
+                post_type_name_input.val(post_type_name_value);
+
             }
 
             if (!auto_generate_checkbox[0].checked) return;
@@ -187,6 +201,14 @@
         return str.replace(/\w\S*/g, function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
+    }
+
+    function sanitizeTitle(Text) {
+        return Text
+            .toLowerCase()
+            .replace(/[^\w ]+/g, '')
+            .replace(/ +/g, '_')
+            ;
     }
 
 })
