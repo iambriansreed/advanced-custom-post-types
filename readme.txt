@@ -10,7 +10,7 @@ Customise WordPress with powerful, professional and intuitive post types.
 
 == Description ==
 
-Advanced Custom Post Types is the perfect solution for any WordPress website which needs more content types like other Content Management Systems. Advanced Custom Fields v5+ (Pro) is required.
+Advanced Custom Post Types is the perfect solution for any WordPress website which needs more content types like other Content Management Systems. No additional plugins required!
 
 == Filters ==
 
