@@ -357,6 +357,8 @@ register_post_type( '{$post_data['post_type']}', {$args});
 				),
 				10 => __( 'Content Type draft updated.' )
 			);
+
+			return $messages;
 		}
 
 	}

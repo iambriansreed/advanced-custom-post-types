@@ -70,3 +70,6 @@ Coming soon!
 = 0.5.0 =
 * Fixes SVN merge issues, notices updates, adds warning for legacy post type data
 
+= 0.5.5 =
+* Fixes post_updated_messages bug
+
