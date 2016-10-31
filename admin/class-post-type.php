@@ -2,7 +2,6 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
-use Advanced_Custom_Post_Types\Debug;
 use Advanced_Custom_Post_Types\Load_Main;
 use Advanced_Custom_Post_Types\Settings;
 
@@ -27,8 +26,6 @@ class Post_Type {
 
 	public function save( $post ) {
 
-		$existing_post = get_post( $post->ID );
-
 		// get fields and pre process the data
 		if ( ! isset( $_POST ) || ! is_array( $_POST ) ) {
 			throw new \Exception( 'No POST data to create custom post type with.' );
@@ -48,7 +45,7 @@ class Post_Type {
 		$this->save_json();
 
 		if ( count( $this->errors ) ) {
-			Notices::add( implode( '<br>', $this->errors ), 'error', false );
+			Notices::add_error( implode( '<br>', $this->errors ), false );
 		}
 
 		flush_rewrite_rules();
@@ -112,7 +109,6 @@ class Post_Type {
 	 *
 	 * @param $post_id
 	 *
-	 * @return array
 	 */
 	private function set_field_values( $post_id ) {
 
@@ -175,8 +171,6 @@ class Post_Type {
 
 	/**
 	 * creates the register_post_type arguments from the acpt fields values
-	 *
-	 * @param $this ->field_values
 	 *
 	 * @return array
 	 */

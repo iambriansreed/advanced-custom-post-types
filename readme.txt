@@ -66,3 +66,7 @@ Coming soon!
 
 = 0.4.5 =
 * Fixes At a Glance dashboard issues
+
+= 0.5.0 =
+* Fixes SVN merge issues, notices updates, adds warning for legacy post type data
+

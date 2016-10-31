@@ -2,7 +2,6 @@
 
 namespace Advanced_Custom_Post_Types\Admin {
 
-	use Advanced_Custom_Post_Types\Debug;
 	use Advanced_Custom_Post_Types\Load_Main;
 	use Advanced_Custom_Post_Types\Load_Base;
 	use Advanced_Custom_Post_Types\Settings;
@@ -92,7 +91,7 @@ namespace Advanced_Custom_Post_Types\Admin {
 					);
 				}
 
-				Notices::set( false );
+				Notices::remove_all();
 			}
 		}
 

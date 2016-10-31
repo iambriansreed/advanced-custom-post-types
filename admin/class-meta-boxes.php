@@ -2,8 +2,6 @@
 
 namespace Advanced_Custom_Post_Types\Admin;
 
-use Advanced_Custom_Post_Types\Debug;
-
 class Meta_Boxes {
 
 	private $plugin_dir_url;
@@ -12,9 +10,13 @@ class Meta_Boxes {
 
 	public function __construct( Fields $fields ) {
 
+		global $post;
+
 		$this->fields = $fields;
 
 		$this->plugin_dir_url = plugin_dir_url( __FILE__ );
+
+		$this->set_field_values( $post );
 
 		foreach ( $fields->groups() as $name => $field_group ) {
 
@@ -45,10 +47,7 @@ class Meta_Boxes {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	}
 
-	/**
-	 * @param $hook
-	 */
-	public function admin_enqueue_scripts( $hook ) {
+	public function admin_enqueue_scripts() {
 
 		wp_dequeue_style( 'select2' );
 		wp_deregister_style( 'select2' );
@@ -202,19 +201,23 @@ class Meta_Boxes {
 
 	public function set_field_values( $post ) {
 
-		global $pagenow;
-
 		if ( $this->field_values ) {
 			return;
 		}
 
-		if ( 'post-new.php' === $pagenow ) {
-			$this->field_values = $this->fields->defaults();
-		} else {
-			$post_type_data = json_decode( $post->post_content, true );
+		$this->field_values = $this->fields->defaults();
+
+		$post_type_data = $post->post_content ? json_decode( $post->post_content, true ) : false;
+
+		if ( $post_type_data && is_array( $post_type_data ) &&
+		     isset( $post_type_data['args'] ) && is_array( $post_type_data['args'] )
+		) {
 			foreach ( $post_type_data['args'] as $name => $value ) {
 				$this->field_values[ 'acpt_' . $name ] = $value;
 			}
+		} else {
+
+			Notices::add_warning( 'There was an error loading your Custom Post Type.' );
 		}
 	}
 
@@ -224,7 +227,6 @@ class Meta_Boxes {
 	}
 
 	/**
-	 * @param $post
 	 * @param $field
 	 *
 	 * @internal param $post_id
