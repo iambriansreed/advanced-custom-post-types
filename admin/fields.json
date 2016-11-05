@@ -223,22 +223,6 @@
 				"default_value": false
 			},
 			{
-				"key": "field_576f06fc32742",
-				"label": "Show in Navigation Menus",
-				"name": "acpt_show_in_nav_menus",
-				"type": "true_false",
-				"instructions": "",
-				"required": 0,
-				"conditional_logic": 0,
-				"wrapper": {
-					"width": "",
-					"class": "",
-					"id": ""
-				},
-				"message": "Whether post type is available for selection in navigation menus..",
-				"default_value": true
-			},
-			{
 				"key": "field_576f06fc83082",
 				"label": "Exclude from Search",
 				"name": "acpt_exclude_from_search",
@@ -309,6 +293,22 @@
 				},
 				"placement": "top",
 				"endpoint": 0
+			},
+			{
+				"key": "field_576f06fc32742",
+				"label": "Show in Navigation Menus",
+				"name": "acpt_show_in_nav_menus",
+				"type": "true_false",
+				"instructions": "",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"message": "Whether post type is available for selection in navigation menus.",
+				"default_value": true
 			},
 			{
 				"key": "field_576f06fc83127",

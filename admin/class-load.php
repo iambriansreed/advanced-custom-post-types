@@ -40,7 +40,7 @@ namespace Advanced_Custom_Post_Types\Admin {
 					'not_found'          => __( 'No Content Types found', 'acpt' ),
 					'not_found_in_trash' => __( 'No Content Types found in Trash', 'acpt' ),
 				),
-				'public'          => true,
+				'public'          => false,
 				'show_ui'         => true,
 				'_builtin'        => false,
 				'capability_type' => 'post',
