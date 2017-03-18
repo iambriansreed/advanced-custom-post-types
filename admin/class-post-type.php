@@ -123,7 +123,10 @@ class Post_Type {
 			$name = substr( $acpt_field_name, 5 );
 
 			if ( array_key_exists( $name, $filters ) ) {
-				$value = call_user_func( $filters[ $name ], $value );
+				$function_names = ! is_array( $filters[ $name ] ) ? array( $filters[ $name ] ) : $filters[ $name ];
+				foreach ( $function_names as $function_name ) {
+					$value = call_user_func( $function_name, $value );
+				}
 			}
 
 			$this->field_values[ $name ] = is_string( $value ) ? trim( $value ) : $value;
@@ -168,7 +171,6 @@ class Post_Type {
 		}
 	}
 
-
 	/**
 	 * creates the register_post_type arguments from the acpt fields values
 	 *
@@ -198,7 +200,7 @@ class Post_Type {
 
 			foreach ( $args as $field_name => $field_value ) {
 				if ( 'label_' === substr( $field_name, 0, 6 ) ) {
-					$args['labels'][ substr( $field_name, 6 ) ] = $field_value;
+					$args['labels'][ substr( $field_name, 6 ) ] = sanitize_text_field( $field_value );
 				}
 			}
 		}
@@ -241,8 +243,8 @@ class Post_Type {
 
 	private function get_field_filters() {
 		return array(
-			'plural_name'         => 'ucwords',
-			'singular_name'       => 'ucwords',
+			'plural_name'         => array( 'sanitize_text_field', 'ucwords' ),
+			'singular_name'       => array( 'sanitize_text_field', 'ucwords' ),
 			'public'              => 'boolval',
 			'has_archive'         => 'boolval',
 			'exclude_from_search' => 'boolval',

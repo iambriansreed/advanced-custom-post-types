@@ -2,7 +2,7 @@
 /*
 Plugin Name: Advanced Custom Post Types
 Description: Customise WordPress with custom post types
-Version: 0.5.5
+Version: 0.5.6
 Author: iambriansreed
 Author URI: http://iambrian.com/
 */

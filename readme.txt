@@ -73,3 +73,6 @@ Coming soon!
 = 0.5.5 =
 * Fixes post_updated_messages bug
 
+= 0.5.6 =
+* Fixes issues when WP_PLUGIN_URL is set to a relative path. Thanks @mrksdiehl!
+
