@@ -10,7 +10,7 @@ class Dashicons {
 
 		$this->dashicons = array();
 
-		$dashicons = (array) json_decode( file_get_contents( plugin_dir_url( __FILE__ ) . 'dashicons.json' ) );
+		$dashicons = (array) json_decode( file_get_contents( plugin_dir_path( __FILE__ ) . 'dashicons.json' ) );
 
 		foreach ( $dashicons as $dashicon ) {
 			$this->dashicons[ $dashicon->class ] = $dashicon->content;

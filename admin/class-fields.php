@@ -15,7 +15,7 @@ class Fields {
 
 		$this->dashicons = $dashicons;
 
-		$this->groups = json_decode( file_get_contents( plugin_dir_url( __FILE__ ) . 'fields.json' ), false );
+		$this->groups = json_decode( file_get_contents( plugin_dir_path( __FILE__ ) . 'fields.json' ), false );
 
 		foreach ( $this->groups as $name => $field_group ) {
 
